@@ -1,11 +1,11 @@
-# Getting Started with Reseau-Mistral
-A webapp to validate transport tickets.
-Made with React + Vite, NodeJS.
+# Getting Started with Erascreen
+A webapp to display an interactive screen. Associate a new screen and control it in real-time via websockets.
+Made with React + Vite and Node.js + MongoDB + Socket.io.
 
 ## Installation
 ```bash
-git clone https://github.com/arthur-mdn/reseau-mistral.git
-cd reseau-mistral
+git clone https://github.com/arthur-mdn/erascreen.git
+cd erascreen
 ```
 ### Install the server dependencies
 ```bash
@@ -19,6 +19,13 @@ npm install
 ### Install the client dependencies
 ```bash
 cd client
+npm install
+```
+> ⚠️ You will need to duplicate the `.env.example` file in to `.env` and update the environment variables.
+> 
+### Install the admin dependencies
+```bash
+cd admin
 npm install
 ```
 > ⚠️ You will need to duplicate the `.env.example` file in to `.env` and update the environment variables.
@@ -39,3 +46,11 @@ cd client
 npm run dev
 ```
 Open [http://localhost:5173](http://localhost:5173) to view it in your browser.
+
+### Launch the admin script
+In the admin directory, you can run this to run the app in development mode :
+```bash
+cd admin
+npm run dev
+```
+Open [http://localhost:5174](http://localhost:5174) to view it in your browser.
