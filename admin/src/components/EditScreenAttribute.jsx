@@ -1,0 +1,195 @@
+import React, {useEffect, useState} from 'react';
+import axios from "axios";
+import config from "../config.js";
+import {useDropzone} from "react-dropzone";
+import Loading from "./Loading.jsx";
+import { toast } from 'react-toastify';
+
+function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "text" }) {
+    const [isLoading, setIsLoading] = useState(false);
+    const [inputValue, setInputValue] = useState(value);
+    const [suggestions, setSuggestions] = useState([]);
+
+    const infosAboutAttribute = {
+        "nom": {
+            label: "Nom de l'écran",
+            inputType: "text"
+        },
+        "logo": {
+            label: "Logo",
+            inputType: "file"
+        },
+        "meteo.city": {
+            label: "Configurez la ville souhaitée pour le widget météo",
+            inputType: "text"
+        }
+    }
+    useEffect(() => {
+        if (attribute === 'meteo.city' && inputValue.length >= 2) {
+            axios.get(`${config.serverUrl}/autocomplete/${inputValue}`)
+                .then(res => setSuggestions(res.data))
+                .catch(err => console.error('Erreur d\'autocomplétion:', err));
+        }
+    }, [inputValue, attribute]);
+    const selectCity = async (city) => {
+        setInputValue(city);
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/update`, {
+                attribute,
+                value: city
+            }, {
+                withCredentials: true
+            });
+            onSave(response.data.screenObj);
+            toast.success("Ville mise à jour avec succès !");
+        } catch (error) {
+            console.error('Erreur lors de la modification :', error);
+            toast.error("Erreur lors de la mise à jour de la ville");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append(attribute, file);
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/update`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            });
+            onSave(response.data.screenObj);
+            toast.success("Logo mis à jour avec succès !");
+        } catch (error) {
+            console.error('Erreur lors de la modification :', error);
+            toast.error("Erreur lors de la mise à jour du logo");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleTextChange = (e) => {
+        setInputValue(e.target.value);
+    };
+
+    const handleSaveText = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/update`, {
+                attribute,
+                value: inputValue
+            }, {
+                withCredentials: true
+            });
+            onSave(response.data.screenObj);
+            toast.success("Valeur mise à jour avec succès !");
+        } catch (error) {
+            console.error('Erreur lors de la modification :', error);
+            toast.error("Erreur lors de la mise à jour de la valeur");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const onDrop = async (acceptedFiles) => {
+        const file = acceptedFiles[0];
+        const formData = new FormData();
+        formData.append(attribute, file);
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/update`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            });
+            onSave(response.data.screenObj);
+            toast.success("Logo mis à jour avec succès !");
+        } catch (error) {
+            console.error('Erreur lors du téléchargement :', error);
+            toast.error("Erreur lors de la mise à jour du logo");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/*' });
+
+    if (isLoading) return (
+        <Loading/>
+    );
+
+    if ( attribute === 'meteo.city' ) {
+        return (
+            <div>
+                {
+                    infosAboutAttribute[attribute].label
+                }
+                <input
+                    type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Recherchez une ville..."
+                />
+                {suggestions.length > 0 && (
+                    <div>
+                        {suggestions.map((suggestion, index) => (
+                            <div key={index} onClick={() => selectCity(suggestion.name)}>
+                                {suggestion.name}, {suggestion.country}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+    }
+    if (attribute === 'logo') {
+        return (
+            <>
+                <label>
+                    { infosAboutAttribute[attribute].label }
+                </label>
+                <div>
+                    <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{width:'150px'}} />
+                </div>
+                <div {...getRootProps()} style={{ border: '2px dashed #ccc', padding: '10px', textAlign: 'center' }}>
+                    <input {...getInputProps()} />
+                    Glissez et déposez le logo ici, ou cliquez pour sélectionner un fichier
+                </div>
+            </>
+
+        );
+    }
+    return (
+        <div>
+            {
+                infosAboutAttribute[attribute].label
+            }
+            {inputType === "file" ? (
+                <>
+                    <div>
+                        <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{width:'150px'}} />
+                    </div>
+                    <input type="file" onChange={handleFileChange} />
+                </>
+            ) : (
+                <>
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={handleTextChange}
+                    />
+                    <button type={"button"} onClick={handleSaveText}>Enregistrer</button>
+
+                </>
+
+            )}
+        </div>
+    );
+}
+export default EditScreenAttribute;
+
+
