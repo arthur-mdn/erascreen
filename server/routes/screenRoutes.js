@@ -168,15 +168,16 @@ router.post('/screens/icons/reorder', verifyToken, async (req, res) => {
 
 
 router.post('/screens/directions', verifyToken, async (req, res) => {
+    const screenId = req.selectedScreen
     try {
-        const screen = await Screen.findById(req.params.screenId);
+        const screen = await Screen.findById(screenId);
         if (!screen) {
             return res.status(404).send({ error: 'Écran non trouvé' });
         }
         const newDirection = req.body;
         screen.directions.push(newDirection);
         await screen.save();
-        socketUtils.emitConfigUpdate(req.params.screenId, screen);
+        socketUtils.emitConfigUpdate(screenId, screen);
         res.send({ success: true, screen });
     } catch (error) {
         console.error('Erreur lors de l\'ajout d\'une direction:', error);
@@ -185,14 +186,15 @@ router.post('/screens/directions', verifyToken, async (req, res) => {
 });
 
 router.delete('/screens/directions/:directionIndex', verifyToken, async (req, res) => {
+    const screenId = req.selectedScreen
     try {
-        const screen = await Screen.findById(req.params.screenId);
+        const screen = await Screen.findById(screenId);
         if (!screen) {
             return res.status(404).send({ error: 'Écran non trouvé' });
         }
         screen.directions.splice(req.params.directionIndex, 1);
         await screen.save();
-        socketUtils.emitConfigUpdate(req.params.screenId, screen);
+        socketUtils.emitConfigUpdate(screenId, screen);
         res.send({ success: true, screen });
     } catch (error) {
         console.error('Erreur lors de la suppression d\'une direction:', error);
@@ -201,14 +203,15 @@ router.delete('/screens/directions/:directionIndex', verifyToken, async (req, re
 });
 
 router.post('/screens/directions/reorder', verifyToken, async (req, res) => {
+    const screenId = req.selectedScreen
     try {
-        const screen = await Screen.findById(req.params.screenId);
+        const screen = await Screen.findById(screenId);
         if (!screen) {
             return res.status(404).send({ error: 'Écran non trouvé' });
         }
         screen.directions = req.body.newOrder;
         await screen.save();
-        socketUtils.emitConfigUpdate(req.params.screenId, screen);
+        socketUtils.emitConfigUpdate(screenId, screen);
         res.send({ success: true, screen });
     } catch (error) {
         console.error('Erreur lors de la réorganisation des directions:', error);
