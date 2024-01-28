@@ -16,7 +16,7 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
         acceptedFiles.forEach(file => formData.append('photos', file));
 
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/photos`, formData, {
+            const response = await axios.post(`${config.serverUrl}/screens/photos`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true
             });
@@ -36,7 +36,7 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
     const handleDelete = async (photoName) => {
         setIsLoading(true);
         try {
-            const response = await axios.delete(`${config.serverUrl}/screens/${screenId}/photos`, {
+            const response = await axios.delete(`${config.serverUrl}/screens/photos`, {
                 data: { photoName },
                 withCredentials: true
             });
@@ -60,7 +60,7 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
         items.splice(result.destination.index, 0, reorderedItem);
 
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/photos/reorder`, { newOrder: items }, {
+            const response = await axios.post(`${config.serverUrl}/screens/photos/reorder`, { newOrder: items }, {
                 withCredentials: true
             });
             setPhotos(response.data.screen.photos);

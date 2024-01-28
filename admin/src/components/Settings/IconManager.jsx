@@ -12,24 +12,33 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const onDrop = async (acceptedFiles) => {
+    const uploadIcon = async (file) => {
         const formData = new FormData();
-        acceptedFiles.forEach(file => {
-            formData.append('icon', file);
-        });
-
-        setIsLoading(true);
+        formData.append('icon', file);
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/icons`, formData, {
+            const response = await axios.post(`${config.serverUrl}/screens/icons`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true
             });
-            setIcons(response.data.screen.icons);
-            onIconsChange(response.data.screen);
-            toast.success("Icône ajoutée avec succès !");
+            return response.data.screen;
         } catch (error) {
             console.error('Erreur lors du téléchargement de l\'icone:', error);
-            toast.error("Erreur lors de l'ajout de l'icône");
+            throw error;
+        }
+    };
+
+    const onDrop = async (acceptedFiles) => {
+        setIsLoading(true);
+
+        try {
+            for (const file of acceptedFiles) {
+                const updatedIcons = await uploadIcon(file);
+                setIcons(updatedIcons);
+                onIconsChange({ icons: updatedIcons });
+            }
+            toast.success("Icônes ajoutées avec succès !");
+        } catch (error) {
+            toast.error("Erreur lors de l'ajout des icônes");
         } finally {
             setIsLoading(false);
         }
@@ -38,9 +47,10 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
     const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/*', multiple: true });
 
     const handleDelete = async (iconName) => {
+        console.log(screenId)
         setIsLoading(true);
         try {
-            const response = await axios.delete(`${config.serverUrl}/screens/${screenId}/icons`, {
+            const response = await axios.delete(`${config.serverUrl}/screens/icons`, {
                 data: { iconName },
                 withCredentials: true
             });
@@ -64,7 +74,7 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
 
         setIsLoading(true);
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/icons/reorder`, { newOrder: items }, {
+            const response = await axios.post(`${config.serverUrl}/screens/icons/reorder`, { newOrder: items }, {
                 withCredentials: true
             });
             setIcons(response.data.screen.icons);

@@ -17,7 +17,7 @@ function DarkModeManager({ screenId, initialDarkMode, onConfigChange }) {
             enabled: true
         }));
 
-        axios.post(`${config.serverUrl}/screens/${screenId}/update`, {
+        axios.post(`${config.serverUrl}/screens/update`, {
             attribute: 'dark_mode',
             value: { ranges: updatedDarkModeConfig }
         }, { withCredentials: true })

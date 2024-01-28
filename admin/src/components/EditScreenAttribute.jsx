@@ -35,7 +35,7 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
         setInputValue(city);
         setIsLoading(true);
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/update`, {
+            const response = await axios.post(`${config.serverUrl}/screens/update`, {
                 attribute,
                 value: city
             }, {
@@ -59,7 +59,7 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
         formData.append(attribute, file);
         setIsLoading(true);
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/update`, formData, {
+            const response = await axios.post(`${config.serverUrl}/screens/update`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true
             });
@@ -80,7 +80,7 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
     const handleSaveText = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/update`, {
+            const response = await axios.post(`${config.serverUrl}/screens/update`, {
                 attribute,
                 value: inputValue
             }, {
@@ -102,7 +102,7 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
         formData.append(attribute, file);
         setIsLoading(true);
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/update`, formData, {
+            const response = await axios.post(`${config.serverUrl}/screens/update`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true
             });

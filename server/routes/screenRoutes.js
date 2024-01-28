@@ -77,8 +77,8 @@ router.get('/screens/:id', verifyToken,  async (req, res) => {
 
 
 
-router.post('/screens/:screenId/update', verifyToken, upload.single('logo'), async (req, res) => {
-    const { screenId } = req.params;
+router.post('/screens/update', verifyToken, upload.single('logo'), async (req, res) => {
+    const screenId = req.selectedScreen
 
     try {
         let screen = await Screen.findById(screenId);
@@ -114,8 +114,8 @@ router.post('/screens/:screenId/update', verifyToken, upload.single('logo'), asy
 
 
 
-router.post('/screens/:screenId/icons', verifyToken, upload.array('icon', 10), async (req, res) => {
-    const { screenId } = req.params;
+router.post('/screens/icons', verifyToken, upload.array('icon', 10), async (req, res) => {
+    const screenId = req.selectedScreen
     if (req.files) {
         const iconPaths = req.files.map(file => file.path);
         const updatedScreen = await Screen.findByIdAndUpdate(screenId, { $push: { icons: { $each: iconPaths } } }, { new: true });
@@ -126,9 +126,13 @@ router.post('/screens/:screenId/icons', verifyToken, upload.array('icon', 10), a
     }
 });
 
-router.delete('/screens/:screenId/icons', verifyToken, async (req, res) => {
-    const { screenId } = req.params;
+router.delete('/screens/icons', verifyToken, async (req, res) => {
+    const screenId = req.selectedScreen;
     const { iconName } = req.body;
+
+    if (!screenId || !iconName) {
+        return res.status(400).send({ error: 'Paramètres manquants' });
+    }
 
     try {
         const screen = await Screen.findById(screenId);
@@ -147,8 +151,9 @@ router.delete('/screens/:screenId/icons', verifyToken, async (req, res) => {
     }
 });
 
-router.post('/screens/:screenId/icons/reorder', verifyToken, async (req, res) => {
-    const { screenId } = req.params;
+
+router.post('/screens/icons/reorder', verifyToken, async (req, res) => {
+    const screenId = req.selectedScreen
     const { newOrder } = req.body;
 
     try {
@@ -162,7 +167,7 @@ router.post('/screens/:screenId/icons/reorder', verifyToken, async (req, res) =>
 });
 
 
-router.post('/screens/:screenId/directions', verifyToken, async (req, res) => {
+router.post('/screens/directions', verifyToken, async (req, res) => {
     try {
         const screen = await Screen.findById(req.params.screenId);
         if (!screen) {
@@ -179,7 +184,7 @@ router.post('/screens/:screenId/directions', verifyToken, async (req, res) => {
     }
 });
 
-router.delete('/screens/:screenId/directions/:directionIndex', verifyToken, async (req, res) => {
+router.delete('/screens/directions/:directionIndex', verifyToken, async (req, res) => {
     try {
         const screen = await Screen.findById(req.params.screenId);
         if (!screen) {
@@ -195,7 +200,7 @@ router.delete('/screens/:screenId/directions/:directionIndex', verifyToken, asyn
     }
 });
 
-router.post('/screens/:screenId/directions/reorder', verifyToken, async (req, res) => {
+router.post('/screens/directions/reorder', verifyToken, async (req, res) => {
     try {
         const screen = await Screen.findById(req.params.screenId);
         if (!screen) {
@@ -211,8 +216,8 @@ router.post('/screens/:screenId/directions/reorder', verifyToken, async (req, re
     }
 });
 
-router.post('/screens/:screenId/photos', verifyToken, upload.array('photos', 10), async (req, res) => {
-    const { screenId } = req.params;
+router.post('/screens/photos', verifyToken, upload.array('photos', 10), async (req, res) => {
+    const screenId = req.selectedScreen
     if (req.files) {
         const photoPaths = req.files.map(file => file.path);
         const updatedScreen = await Screen.findByIdAndUpdate(screenId, { $push: { photos: { $each: photoPaths } } }, { new: true });
@@ -223,8 +228,8 @@ router.post('/screens/:screenId/photos', verifyToken, upload.array('photos', 10)
     }
 });
 
-router.delete('/screens/:screenId/photos', verifyToken, async (req, res) => {
-    const { screenId } = req.params;
+router.delete('/screens/photos', verifyToken, async (req, res) => {
+    const screenId = req.selectedScreen
     const { photoName } = req.body;
 
     try {
@@ -245,8 +250,8 @@ router.delete('/screens/:screenId/photos', verifyToken, async (req, res) => {
 });
 
 
-router.post('/screens/:screenId/photos/reorder', verifyToken, async (req, res) => {
-    const { screenId } = req.params;
+router.post('/screens/photos/reorder', verifyToken, async (req, res) => {
+    const screenId = req.selectedScreen
     const { newOrder } = req.body;
 
     try {
@@ -261,8 +266,8 @@ router.post('/screens/:screenId/photos/reorder', verifyToken, async (req, res) =
 
 
 
-router.post('/screens/:screenId/updateConfig', verifyToken, async (req, res) => {
-    const { screenId } = req.params;
+router.post('/screens/updateConfig', verifyToken, async (req, res) => {
+    const screenId = req.selectedScreen
     const configUpdates = req.body;
 
     try {

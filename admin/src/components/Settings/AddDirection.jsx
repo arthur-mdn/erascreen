@@ -18,7 +18,7 @@ function AddDirection({ arrowImages, screenId, onDirectionAdd }) {
     const addDirection = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/directions`, newDirection, {
+            const response = await axios.post(`${config.serverUrl}/screens/directions`, newDirection, {
                 withCredentials: true
             });
             if (response.data.success) {

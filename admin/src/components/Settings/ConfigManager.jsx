@@ -13,7 +13,7 @@ function ConfigManager({ screenId, initialConfig, onConfigChange }) {
         setCurrentConfig(updatedConfig);
 
         setIsLoading(true);
-        axios.post(`${config.serverUrl}/screens/${screenId}/updateConfig`, { [key]: value }, {
+        axios.post(`${config.serverUrl}/screens/updateConfig`, { [key]: value }, {
             withCredentials: true
         })
             .then(response => {

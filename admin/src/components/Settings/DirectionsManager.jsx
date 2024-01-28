@@ -29,7 +29,7 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
 
         setIsLoading(true);
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/${screenId}/directions/reorder`, { newOrder: items }, { withCredentials: true });
+            const response = await axios.post(`${config.serverUrl}/screens/directions/reorder`, { newOrder: items }, { withCredentials: true });
             setDirections(response.data.screen.directions);
             onDirectionsChange(response.data.screen);
             toast.success("Directions réordonnées avec succès !");
@@ -44,7 +44,7 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
     const deleteDirection = async (directionIndex) => {
         setIsLoading(true);
         try {
-            const response = await axios.delete(`${config.serverUrl}/screens/${screenId}/directions/${directionIndex}`, { withCredentials: true });
+            const response = await axios.delete(`${config.serverUrl}/screens/directions/${directionIndex}`, { withCredentials: true });
             setDirections(response.data.screen.directions);
             onDirectionsChange(response.data.screen);
             toast.success("Direction supprimée avec succès !");
