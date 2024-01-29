@@ -314,6 +314,7 @@ button:focus-visible {
   align-items: center;
   padding: 0 0 0 1rem;
   position: relative;
+  flex-shrink: 0;
 }
 .over_top_menu h2{
   position: absolute;
