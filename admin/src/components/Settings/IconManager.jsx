@@ -30,13 +30,18 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
     const onDrop = async (acceptedFiles) => {
         setIsLoading(true);
 
+
         try {
             for (const file of acceptedFiles) {
-                const updatedIcons = await uploadIcon(file);
-                setIcons(updatedIcons);
-                onIconsChange({ icons: updatedIcons });
+                try {
+                    const updatedConfWithNewIcons = await uploadIcon(file);
+                    setIcons(updatedConfWithNewIcons.icons);
+                    onIconsChange(updatedConfWithNewIcons);
+                    toast.success("Icône ajouté avec succès !");
+                } catch (error) {
+                    toast.error("Erreur lors de l'ajout d'un icône");
+                }
             }
-            toast.success("Icônes ajoutées avec succès !");
         } catch (error) {
             toast.error("Erreur lors de l'ajout des icônes");
         } finally {

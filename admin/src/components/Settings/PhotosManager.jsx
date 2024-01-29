@@ -10,22 +10,38 @@ import {toast} from "react-toastify";
 function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
     const [photos, setPhotos] = useState(initialPhotos);
     const [isLoading, setIsLoading] = useState(false);
-    const onDrop = async (acceptedFiles) => {
-        setIsLoading(true);
+    const uploadPhoto = async (file) => {
         const formData = new FormData();
-        acceptedFiles.forEach(file => formData.append('photos', file));
+        formData.append('photos', file);
 
         try {
             const response = await axios.post(`${config.serverUrl}/screens/photos`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true
             });
-            setPhotos(response.data.screen.photos);
-            onPhotosChange(response.data.screen);
-            toast.success("Photo ajoutée avec succès !");
+            return response.data.screen;
         } catch (error) {
             console.error('Erreur lors du téléchargement de la photo:', error);
-            toast.error("Erreur lors de l'ajout de la photo");
+            throw error;
+        }
+    };
+
+    const onDrop = async (acceptedFiles) => {
+        setIsLoading(true);
+
+        try {
+            for (const file of acceptedFiles) {
+                try {
+                    const updatedConfWithNewPhotos = await uploadPhoto(file);
+                    setPhotos(updatedConfWithNewPhotos.photos);
+                    onPhotosChange(updatedConfWithNewPhotos);
+                    toast.success("Photo ajoutée avec succès !");
+                } catch (error) {
+                    toast.error("Erreur lors de l'ajout d'une photo");
+                }
+            }
+        } catch (error) {
+            toast.error("Erreur lors de l'ajout des photos");
         } finally {
             setIsLoading(false);
         }
