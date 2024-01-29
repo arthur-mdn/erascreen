@@ -52,6 +52,7 @@ function TimeRangeSelector({ onRangesChange, intialRanges }) {
         const updatedRanges = ranges.filter((_, i) => i !== index);
         setRanges(updatedRanges);
         onRangesChange(updatedRanges);
+        toast.info("Vous devez enregistrer les modifications pour qu'elles soient prises en compte.")
     };
 
     return (
