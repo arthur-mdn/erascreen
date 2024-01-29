@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaTrash } from "react-icons/fa6";
+import {FaArrowRight, FaTrash} from "react-icons/fa6";
 import { toast } from 'react-toastify';
 
 function TimeRangeSelector({ onRangesChange, intialRanges }) {
@@ -55,25 +55,40 @@ function TimeRangeSelector({ onRangesChange, intialRanges }) {
 
     return (
         <div>
-            {ranges.map((range, index) => (
-                <div key={index}>
-                    {range.start} à {range.end}
-                    <button onClick={() => removeRange(index)}><FaTrash/></button>
-                </div>
-            ))}
+            <div className={"fc g0-5"}>
+                <h3>Plages horaires d'activation du mode sombre</h3>
+                {ranges.map((range, index) => (
+                    <div key={index} style={{boxShadow:"rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px", padding:'0.5rem 1rem', borderRadius:'0.5rem'}} className={"fr ai-c g1 jc-sb"}>
+                        De {range.start} à {range.end}
+                        <button onClick={() => removeRange(index)}><FaTrash/></button>
+                    </div>
+                ))}
+            </div>
+
+            <br/>
+
             <div>
-                <input
-                    type="time"
-                    value={newRange.start}
-                    onChange={(e) => setNewRange({ ...newRange, start: e.target.value })}
-                />
-                -
-                <input
-                    type="time"
-                    value={newRange.end}
-                    onChange={(e) => setNewRange({ ...newRange, end: e.target.value })}
-                />
-                <button onClick={addNewRange}>Ajouter une plage horaire</button>
+                <h3>Ajouter une plage horaire</h3>
+                <div style={{boxShadow:"rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px", padding:'1rem', borderRadius:'0.5rem'}} className={"fr ai-c g1 jc-sb"}>
+                    <div className={"fr g1 ai-c"}>
+                        <input
+                            type="time"
+                            value={newRange.start}
+                            onChange={(e) => setNewRange({ ...newRange, start: e.target.value })}
+                            style={{width:"auto"}}
+                        />
+                        <FaArrowRight/>
+                        <input
+                            type="time"
+                            value={newRange.end}
+                            onChange={(e) => setNewRange({ ...newRange, end: e.target.value })}
+                            style={{width:"auto"}}
+                        />
+                    </div>
+
+                    <button onClick={addNewRange}>Ajouter</button>
+                </div>
+                <br/>
             </div>
         </div>
     );

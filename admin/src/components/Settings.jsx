@@ -16,6 +16,7 @@ import {
 import {FaCogs} from "react-icons/fa";
 import ConfigManager from "./Settings/ConfigManager.jsx";
 import DarkModeManager from "./Settings/DarkModeManager.jsx";
+import TimeIndicator from "./TimeIndicator.jsx";
 
 function Settings({ screen, onScreenUpdate }) {
     const [editNameOpen, setEditNameOpen] = useState(false);
@@ -116,6 +117,7 @@ function Settings({ screen, onScreenUpdate }) {
             </Modal>
 
             <Modal isOpen={editDarkMode} title={"Modifier le mode sombre"} onClose={()=> {setEditDarkMode(false)}}>
+                <TimeIndicator ranges={screen.dark_mode.ranges}/>
                 <DarkModeManager
                     screenId={screen._id}
                     initialDarkMode={screen.dark_mode}

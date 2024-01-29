@@ -137,7 +137,7 @@ body {
 
 
 
-input[type=text], input[type=number], input[type=url], input[type=email], input[type=tel], input[type=password], input[type=datetime-local], input[type=date], textarea, select, .inputs {
+input[type=text], input[type=number], input[type=url], input[type=email], input[type=tel], input[type=password], input[type=datetime-local], input[type=time], input[type=date], textarea, select, .inputs {
   color: black;
   width: 100%;
   padding: 0px 1em;
@@ -147,6 +147,7 @@ input[type=text], input[type=number], input[type=url], input[type=email], input[
   border: 1.5px solid var(--placeholder-text-color);
   font-size: 16px;
   background-color: white;
+  color-scheme: light;
 }
 
 input[type=checkbox]{
@@ -211,6 +212,7 @@ input[type=button], input[type=submit], button[type=submit], button[type=button]
   -webkit-appearance: none !important;
   border: 2px solid transparent;
   transition: all 0.3s;
+  color-scheme: light;
 }
 button[type=button].forgot_password_button{
   background-color: transparent;
