@@ -116,7 +116,7 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
         }
     };
 
-    const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/*' });
+    const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: {'image/*': ['.jpeg', '.jpg', '.png', '.gif']} });
 
     if (isLoading) return (
         <Loading/>

@@ -31,7 +31,7 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
         }
     };
 
-    const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: 'image/*', multiple: true });
+    const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: {'image/*': ['.jpeg', '.jpg', '.png', '.gif']}, multiple: true });
 
     const handleDelete = async (photoName) => {
         setIsLoading(true);
