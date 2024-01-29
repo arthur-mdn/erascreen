@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {FaArrowRight, FaTrash} from "react-icons/fa6";
+import {FaArrowRight, FaPlus, FaTrash} from "react-icons/fa6";
 import { toast } from 'react-toastify';
 
 function TimeRangeSelector({ onRangesChange, intialRanges }) {
@@ -70,7 +70,7 @@ function TimeRangeSelector({ onRangesChange, intialRanges }) {
 
             <div>
                 <h3>Ajouter une plage horaire</h3>
-                <div style={{boxShadow:"rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px", padding:'1rem', borderRadius:'0.5rem'}} className={"fr ai-c g1 jc-sb"}>
+                <div style={{boxShadow:"rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px", padding:'1rem', borderRadius:'0.5rem'}} className={"fr ai-c g1 jc-sb fw-w"}>
                     <div className={"fr g1 ai-c"}>
                         <input
                             type="time"
@@ -87,7 +87,7 @@ function TimeRangeSelector({ onRangesChange, intialRanges }) {
                         />
                     </div>
 
-                    <button onClick={addNewRange}>Ajouter</button>
+                    <button onClick={addNewRange} className={"fr ai-c g0-5 jc-c"}><FaPlus/> Ajouter</button>
                 </div>
                 <br/>
             </div>

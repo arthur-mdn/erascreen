@@ -171,6 +171,9 @@ input[type=checkbox]{
 .g3{
   gap: 3rem;
 }
+.g4{
+  gap: 4rem;
+}
 .ai-c {
     align-items: center;
 }
@@ -179,11 +182,27 @@ input[type=checkbox]{
 
 }
 
+.fw-w{
+  flex-wrap: wrap;
+}
+.fw-nw{
+  flex-wrap: nowrap;
+}
+
 .jc-c{
     justify-content: center;
 }
 .jc-fs{
     justify-content: flex-start;
+}
+.jc-fe{
+    justify-content: flex-end;
+}
+.jc-sb{
+    justify-content: space-between;
+}
+.jc-sa{
+    justify-content: space-around;
 }
 
 .usage{
