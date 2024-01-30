@@ -4,7 +4,7 @@ import {useState} from "react";
 import {toast} from "react-toastify";
 import Loading from "./Loading.jsx";
 
-function AddScreen ()  {
+function AddScreen ({ screen, onScreenAdd})  {
     const [code, setCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -15,6 +15,7 @@ function AddScreen ()  {
         axios.post(`${config.serverUrl}/associate-screen`, { code }, { withCredentials: true })
             .then(response => {
                 console.log(response.data);
+                onScreenAdd(response.data.screen);
                 toast.success("Écran associé avec succès !");
             })
             .catch(error => {

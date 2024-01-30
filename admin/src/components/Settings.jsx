@@ -17,8 +17,9 @@ import {FaCogs} from "react-icons/fa";
 import ConfigManager from "./Settings/ConfigManager.jsx";
 import DarkModeManager from "./Settings/DarkModeManager.jsx";
 import TimeIndicator from "./TimeIndicator.jsx";
+import DelScreen from "./Settings/DelScreen.jsx";
 
-function Settings({ screen, onScreenUpdate }) {
+function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
     const [editNameOpen, setEditNameOpen] = useState(false);
     const [editLogoOpen, setEditLogoOpen] = useState(false);
     const [editIconsOpen, setEditIconsOpen] = useState(false);
@@ -39,7 +40,7 @@ function Settings({ screen, onScreenUpdate }) {
         { label: "Paramètres avancés", icon: <FaCogs/>, onClick: () => setEditSettingsOpen(true) },
     ];
     return (
-        <>
+        <div style={{height:'100%'}} className={"fc jc-sb"}>
             <div>
                 {buttons.map((button, index) => (
                     <button
@@ -124,7 +125,9 @@ function Settings({ screen, onScreenUpdate }) {
                     onConfigChange={(newConfig) => {onScreenUpdate(newConfig)}}
                 />
             </Modal>
-        </>
+
+            <DelScreen onRemoveScreenSelected={()=>{onRemoveScreenSelected()}}/>
+        </div>
 
     );
 }

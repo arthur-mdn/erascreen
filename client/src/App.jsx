@@ -46,8 +46,14 @@ function App() {
 
     socket.on('associate', (data) => {
       localStorage.setItem('screenConfig', JSON.stringify(data));
-      setConfigData(data);
-      setStatus('configured');
+      window.location.reload();
+    });
+
+    socket.on('screen_deleted', () => {
+      localStorage.removeItem('screenConfig');
+      setConfigData(null);
+      setStatus('requesting_code');
+      socket.emit('request_code');
       setShowUpdateIcon(true);
       setTimeout(() => setShowUpdateIcon(false), 5000);
     });

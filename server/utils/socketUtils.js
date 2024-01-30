@@ -12,6 +12,12 @@ const emitConfigUpdate = (screenId, updatedScreen) => {
         io.to(socketId).emit('config_updated', updatedScreen);
     }
 };
+const emitScreenDeletion = (screenId) => {
+    const socketId = getSocketId(screenId);
+    if (socketId && io.sockets.sockets.get(socketId)) {
+        io.to(socketId).emit('screen_deleted');
+    }
+};
 
 const associateScreenSocket = (screenId, socketId) => {
     screenSocketMap[screenId] = socketId;
@@ -30,4 +36,4 @@ const removeSocketId = (socketId) => {
     }
 };
 
-module.exports = { setIo, emitConfigUpdate, associateScreenSocket, removeSocketId };
+module.exports = { setIo, emitConfigUpdate, associateScreenSocket, removeSocketId, emitScreenDeletion };

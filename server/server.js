@@ -104,7 +104,7 @@ app.post('/associate-screen', verifyToken,  async (req, res) => {
             const screen = await Screen.findOne({ code, user: req.user.userId });
 
             socket.emit('associate', screen);
-            res.send({ success: true, message: 'Écran associé avec succès.' });
+            res.send({ success: true, screen: screen, message: 'Écran associé avec succès.' });
         } else {
             res.status(500).send({ error: 'Connexion socket non trouvée' });
         }

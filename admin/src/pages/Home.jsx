@@ -32,18 +32,6 @@ function Home() {
         }
     }, [cookies.selectedScreen, removeCookie]);
 
-    const refreshScreen = () => {
-        axios.get(`${config.serverUrl}/screens/${cookies.selectedScreen}`, { withCredentials: true })
-            .then(response => {
-                setScreenSelected(response.data.screenObj);
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération de l\'écran :', error);
-                if (error.response && error.response.status === 404) {
-                    removeCookie('selectedScreen', { path: '/' });
-                }
-            });
-    }
 
     if (isLoading) return (
         <Loading/>
@@ -73,8 +61,8 @@ function Home() {
                             <img src={"/elements/icons/arrows.svg"} style={{width:'15px'}} alt={"->"}/>
                         </div>
                     </div>
-                    <div className={"screen_selected"}>
-                        <Settings screen={screenSelected} onScreenUpdate={(screenObj) => {setScreenSelected(screenObj)}} />
+                    <div className={"screen_selected"} style={{height:'100%'}}>
+                        <Settings screen={screenSelected} onScreenUpdate={(screenObj) => {setScreenSelected(screenObj)}} onRemoveScreenSelected={()=>{setScreenSelected(null)}}/>
                     </div>
                 </>
             }

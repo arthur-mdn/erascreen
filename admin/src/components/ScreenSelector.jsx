@@ -28,6 +28,10 @@ function ScreenSelector({ onSelectScreen }) {
             });
     }, []);
 
+    const handleScreenAdd = (screen) => {
+        setScreens([...screens, screen]);
+        setAddScreenModalIsOpen(false);
+    }
     const handleScreenSelect = (screen) => {
         setCookie('selectedScreen', screen._id, { path: '/', domain: config.cookieDomain });
         onSelectScreen(screen);
@@ -38,30 +42,32 @@ function ScreenSelector({ onSelectScreen }) {
 
     return (
         <>
-            <div style={{padding:"1rem"}}>
-                {screens.map(screen => (
-                    <button key={screen._id} onClick={() => handleScreenSelect(screen)} className={"profile"}>
-                        <input
-                            type={"radio"}
-                            name={"radio-screen"}
-                            className={"radio-screen"}
-                            id={`radio-screen-${screen._id}`}
-                            checked={screen._id === selectedScreenId}
-                            onChange={() => handleScreenSelect(screen)}
-                        />
-                        <label htmlFor={`radio-screen-${screen._id}`}>
-                        </label>
-                        <div className={"fc ai-fs"} >
-                            <h3>
-                                {screen.nom}
-                            </h3>
-                            <p style={{opacity:0.4}}>
-                                {screen._id}
-                            </p>
-                        </div>
+            <div style={{padding:"1rem", height:'100%'}} className={"fc jc-sb"}>
+                <div className={"fc g0-5"}>
+                    {screens.map(screen => (
+                        <button key={screen._id} onClick={() => handleScreenSelect(screen)} className={"profile"}>
+                            <input
+                                type={"radio"}
+                                name={"radio-screen"}
+                                className={"radio-screen"}
+                                id={`radio-screen-${screen._id}`}
+                                checked={screen._id === selectedScreenId}
+                                onChange={() => handleScreenSelect(screen)}
+                            />
+                            <label htmlFor={`radio-screen-${screen._id}`}>
+                            </label>
+                            <div className={"fc ai-fs"} >
+                                <h3>
+                                    {screen.nom}
+                                </h3>
+                                <p style={{opacity:0.4}}>
+                                    {screen._id}
+                                </p>
+                            </div>
 
-                    </button>
-                ))}
+                        </button>
+                    ))}
+                </div>
 
                 <button
                     type={"button"}
@@ -71,7 +77,7 @@ function ScreenSelector({ onSelectScreen }) {
                 </button>
             </div>
             <Modal isOpen={addScreenModalIsOpen} onClose={() => setAddScreenModalIsOpen(false)}>
-                <AddScreen/>
+                <AddScreen onScreenAdd={(newScreen)=>{handleScreenAdd(newScreen)}}/>
             </Modal>
         </>
 
