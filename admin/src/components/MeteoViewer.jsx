@@ -1,8 +1,12 @@
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
 function MeteoViewer({ screen }) {
+    const date = screen.meteo.date ?? "";
+    const formattedDate = format(new Date(date), 'PPPpp', { locale: fr });
 
     return (
         <>
-            { screen.meteo && (
+            { screen.meteo && screen.meteo.city.length > 0  && (
                 <>
                     <div className={"meteo card fr ai-c"}>
                     {
@@ -31,13 +35,9 @@ function MeteoViewer({ screen }) {
                     }
 
                 </div>
-                    {
-                        screen.meteo && (
-                            <div>
-                                <p>Dernière mise à jour : {screen.meteo.date}</p>
-                            </div>
-                        )
-                    }
+                <div>
+                    <p>Dernière mise à jour : {formattedDate}</p>
+                </div>
                 </>
             )
             }
