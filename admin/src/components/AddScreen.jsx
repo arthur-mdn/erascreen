@@ -14,9 +14,8 @@ function AddScreen ({ screen, onScreenAdd})  {
 
         axios.post(`${config.serverUrl}/associate-screen`, { code }, { withCredentials: true })
             .then(response => {
-                console.log(response.data);
-                onScreenAdd(response.data.screen);
                 toast.success("Écran associé avec succès !");
+                onScreenAdd(response.data.screen);
             })
             .catch(error => {
                 console.error('Erreur lors de l\'association de l\'écran:', error);
@@ -31,7 +30,7 @@ function AddScreen ({ screen, onScreenAdd})  {
 
     return (
         <>
-            <form onSubmit={handleSubmit} method={"post"}>
+            <form onSubmit={handleSubmit} method={"post"}  className={"fc g1"}>
                 <label htmlFor={"code"}>Code d'écran</label>
                 <input type={"text"}
                        name={"code"}
@@ -40,7 +39,7 @@ function AddScreen ({ screen, onScreenAdd})  {
                        value={code}
                        onChange={(e) => setCode(e.target.value)}
                 />
-                <input type={"submit"} value={"associer l'écran"}/>
+                <input type={"submit"} value={"Associer l'écran"}/>
             </form>
         </>
         )

@@ -152,9 +152,13 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
                 <label>
                     { infosAboutAttribute[attribute].label }
                 </label>
-                <div>
-                    <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{width:'150px'}} />
-                </div>
+                {
+                    value && (
+                        <div>
+                            <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{width:'150px'}} />
+                        </div>
+                    )
+                }
                 <div {...getRootProps()} style={{ border: '2px dashed #ccc', padding: '10px', textAlign: 'center' }}>
                     <input {...getInputProps()} />
                     Glissez et déposez le logo ici, ou cliquez pour sélectionner un fichier
@@ -164,15 +168,19 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
         );
     }
     return (
-        <div>
+        <div className={"fc g1"}>
             {
                 infosAboutAttribute[attribute].label
             }
             {inputType === "file" ? (
                 <>
-                    <div>
-                        <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{width:'150px'}} />
-                    </div>
+                    {
+                        value && (
+                            <div>
+                                <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{width:'150px'}} />
+                            </div>
+                        )
+                    }
                     <input type="file" onChange={handleFileChange} />
                 </>
             ) : (

@@ -31,6 +31,7 @@ function ScreenSelector({ onSelectScreen }) {
     const handleScreenAdd = (screen) => {
         setScreens([...screens, screen]);
         setAddScreenModalIsOpen(false);
+        handleScreenSelect(screen);
     }
     const handleScreenSelect = (screen) => {
         setCookie('selectedScreen', screen._id, { path: '/', domain: config.cookieDomain });

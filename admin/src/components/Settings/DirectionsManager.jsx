@@ -109,7 +109,7 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
                 </Droppable>
             </DragDropContext>
 
-            <button onClick={() => setNewDirectionOpen(true)}>Ajouter une direction</button>
+            <button type={"button"} onClick={() => setNewDirectionOpen(true)}>Ajouter une direction</button>
 
             <Modal isOpen={newDirectionOpen} title={"Ajouter une direction"} onClose={()=> {setNewDirectionOpen(false)}}>
                 <AddDirection
