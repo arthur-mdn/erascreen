@@ -22,12 +22,23 @@ function App() {
       reconnectionDelay: 1000,
     });
 
+    let intervalId;
+
     socket.on('connect', () => {
       if (savedConfig) {
-        const { _id } = JSON.parse(savedConfig);
+        const parsedConfig = JSON.parse(savedConfig);
         setStatus('updating_config');
         console.log('Updating config...')
-        socket.emit('update_config', { screenId: _id });
+        socket.emit('update_config', { screenId: parsedConfig._id });
+
+        socket.emit('update_weather', { screenId: parsedConfig._id });
+
+        if (!intervalId) {
+          intervalId = setInterval(() => {
+            console.log("refreshing weather");
+            socket.emit('update_weather', { screenId: parsedConfig._id });
+          }, 30000); // 3600000 ms = 1 heure
+        }
       } else {
         setStatus('requesting_code');
         socket.emit('request_code');
@@ -85,6 +96,9 @@ function App() {
     });
 
     return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
       socket.disconnect();
     };
   }, []);

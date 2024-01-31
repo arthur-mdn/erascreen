@@ -7,7 +7,6 @@ import PhotoSlider from "./PhotoSlider.jsx";
 import {Helmet} from "react-helmet";
 
 function Screen({configData}){
-    console.log(configData)
     return (
         <div>
             <Helmet>

@@ -15,6 +15,7 @@ const screenRoutes = require('./routes/screenRoutes');
 const config = require('./others/config');
 const database = require('./others/database');
 const verifyToken = require("./others/verifyToken");
+const { updateWeatherData } = require("./utils/weatherUtils");
 
 const app = express();
 const server = http.createServer(app);
@@ -66,6 +67,21 @@ io.on('connection', (socket) => {
         activeSockets[uniqueCode] = socket.id;
         socket.emit('receive_code', uniqueCode);
         console.log('Unique code sent:', uniqueCode);
+    });
+
+    socket.on('update_weather', async (data) => {
+        const { screenId } = data;
+        const screen = await Screen.findById(screenId).populate('meteo');
+        if (screen) {
+            try {
+                const updatedScreen = await updateWeatherData(screenId, screen.meteo.weatherId);
+                socket.emit('config_updated', updatedScreen);
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour de la météo:', error);
+            }
+        } else {
+            socket.emit('error', 'Écran non trouvé dans la base de données');
+        }
     });
 
     socket.on('update_config', async (data) => {
