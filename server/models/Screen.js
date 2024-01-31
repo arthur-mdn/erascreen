@@ -97,18 +97,8 @@ const screenSchema = new Schema({
         default: []
     },
     meteo: {
-        city: {
-            type: String,
-            default: ""
-        },
-        date: {
-            type: Date,
-            default: Date.now()
-        },
-        data: {
-            type: Object,
-            default: {}
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Meteo'
     },
     directions: [
         {

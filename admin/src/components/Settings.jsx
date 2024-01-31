@@ -83,7 +83,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                 <EditScreenAttribute
                     screenId={screen._id}
                     attribute="meteo.city"
-                    value={screen.meteo && screen.meteo.city ? screen.meteo.city : ""}
+                    value={screen.meteo.weatherId ? screen.meteo.data.name : ""}
                     onSave={(screenObj) => {onScreenUpdate(screenObj)}}
                 />
             </Modal>

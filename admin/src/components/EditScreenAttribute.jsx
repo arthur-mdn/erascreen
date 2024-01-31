@@ -32,7 +32,6 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
         }
     }, [inputValue, attribute]);
     const selectCity = async (city) => {
-        setInputValue(city);
         setIsLoading(true);
         try {
             const response = await axios.post(`${config.serverUrl}/screens/update`, {
@@ -137,7 +136,7 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
                 {suggestions.length > 0 && (
                     <div>
                         {suggestions.map((suggestion, index) => (
-                            <div key={index} onClick={() => selectCity(suggestion.name)}>
+                            <div key={index} onClick={() => selectCity(suggestion.id)}>
                                 {suggestion.name}, {suggestion.country}
                             </div>
                         ))}

@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
         try {
             const { screenId } = data;
 
-            const screen = await Screen.findById(screenId);
+            const screen = await Screen.findById(screenId).populate('meteo');
             if (screen) {
                 socketUtils.associateScreenSocket(screenId, socket.id);
                 socket.emit('config_updated', screen);
@@ -121,7 +121,7 @@ app.get('/autocomplete/:query', (req, res) => {
 
     const filteredCities = cityList
         .filter(city => city.name.toLowerCase().startsWith(query) && city.country === 'FR')
-        .map(city => ({ name: city.name, country: city.country }));
+        .map(city => ({ id: city.id, name: city.name, country: city.country }));
 
     res.json(filteredCities);
 });

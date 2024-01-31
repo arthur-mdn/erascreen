@@ -8,24 +8,37 @@ const multer = require("multer");
 const path = require("path");
 const socketUtils = require('../utils/socketUtils');
 const axios = require("axios");
+const Meteo = require("../models/Meteo");
 
-async function updateWeatherData(screenId, city) {
+async function updateWeatherData(screenId, cityId) {
     try {
-        const apiKey = process.env.OPENWEATHER_API_KEY;
-        const encodedCity = encodeURIComponent(city);
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodedCity}&appid=${apiKey}&units=metric&lang=fr`;
-        const weatherResponse = await axios.get(url);
-        const weatherData = weatherResponse.data;
-        const screen = await Screen.findById(screenId);
+        const encodedCityId = encodeURIComponent(cityId);
+        // Recherchez si un document Meteo existe déjà pour cette ville
+        let meteo = await Meteo.findOne({ "weatherId": encodedCityId });
+
+        // Si le document n'existe pas ou si la dernière mise à jour date de plus d'une heure, créez/mettez à jour le document Meteo
+        if (!meteo || Date.now() - new Date(meteo.lastUpdated).getTime() > 3600000) { // 3600000 ms = 1 heure
+            const apiKey = process.env.OPENWEATHER_API_KEY;
+            const url = `https://api.openweathermap.org/data/2.5/weather?id=${encodedCityId}&appid=${apiKey}&units=metric&lang=fr`;
+            const weatherResponse = await axios.get(url);
+            const weatherData = weatherResponse.data;
+
+            if (meteo) {
+                meteo.data = weatherData;
+                meteo.lastUpdated = Date.now();
+            } else {
+                meteo = new Meteo({ weatherId: weatherData.id, data: weatherData });
+            }
+            await meteo.save();
+        }
+
+        // Mettez à jour la référence Meteo dans l'écran
+        const screen = await Screen.findByIdAndUpdate(screenId, { meteo: meteo._id }, { new: true }).populate('meteo');
         if (!screen) {
             throw new Error('Écran non trouvé');
         }
-        screen.meteo = screen.meteo || {};
-        screen.meteo.date = Date.now();
-        screen.meteo.city = city;
-        screen.meteo.data = weatherData;
 
-        return await screen.save();
+        return screen;
     } catch (error) {
         console.error('Erreur lors de la mise à jour des données météo:', error);
         throw error;
@@ -55,7 +68,7 @@ const upload = multer({
 
 
 router.get('/screens', verifyToken,  async (req, res) => {
-    const screens = await Screen.find({ user: req.user.userId });
+    const screens = await Screen.find({ user: req.user.userId }).populate('meteo');
     if(screens) {
         res.send({ success: true, screens });
     }else{
@@ -65,7 +78,7 @@ router.get('/screens', verifyToken,  async (req, res) => {
 
 router.get('/screens/:id', verifyToken,  async (req, res) => {
     const { id } = req.params;
-    const screen = await Screen.findOne({ _id: id, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: id, user: req.user.userId }).populate('meteo');
     if(screen) {
         const screenObj  = screen.toObject();
 
@@ -81,7 +94,7 @@ router.post('/screens/update', verifyToken, upload.single('logo'), async (req, r
     const screenId = req.selectedScreen
 
     try {
-        let screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+        let screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
         if (!screen) {
             return res.status(404).send({ error: 'Écran non trouvé' });
         }
@@ -100,7 +113,6 @@ router.post('/screens/update', verifyToken, upload.single('logo'), async (req, r
                 }
             } else if (attribute === 'textSlides') {
                 if (value && value.ranges) {
-                    console.log('value', value)
                     screen.text_slides = value;
                 }
             } else {
@@ -122,7 +134,7 @@ router.delete('/screens/', verifyToken, async (req, res) => {
     const screenId = req.selectedScreen
 
     try {
-        const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+        const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
         if (!screen) {
             return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
@@ -145,7 +157,7 @@ router.delete('/screens/', verifyToken, async (req, res) => {
 router.post('/screens/icons', verifyToken, upload.array('icon', 10), async (req, res) => {
     const screenId = req.selectedScreen
 
-    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
@@ -153,7 +165,7 @@ router.post('/screens/icons', verifyToken, upload.array('icon', 10), async (req,
 
     if (req.files) {
         const iconPaths = req.files.map(file => file.path);
-        const updatedScreen = await Screen.findByIdAndUpdate(screenId, { $push: { icons: { $each: iconPaths } } }, { new: true });
+        const updatedScreen = await Screen.findByIdAndUpdate(screenId, { $push: { icons: { $each: iconPaths } } }, { new: true }).populate('meteo');
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
         res.send({ success: true, screen: updatedScreen });
     } else {
@@ -164,7 +176,7 @@ router.post('/screens/icons', verifyToken, upload.array('icon', 10), async (req,
 router.delete('/screens/icons', verifyToken, async (req, res) => {
     const screenId = req.selectedScreen;
 
-    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
     }
@@ -192,14 +204,14 @@ router.post('/screens/icons/reorder', verifyToken, async (req, res) => {
     const screenId = req.selectedScreen
     const { newOrder } = req.body;
 
-    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
     }
 
     try {
-        const updatedScreen = await Screen.findByIdAndUpdate(screenId, { 'icons': newOrder }, { new: true });
+        const updatedScreen = await Screen.findByIdAndUpdate(screenId, { 'icons': newOrder }, { new: true }).populate('meteo');
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
         res.send({ success: true, screen: updatedScreen });
     } catch (error) {
@@ -211,7 +223,7 @@ router.post('/screens/icons/reorder', verifyToken, async (req, res) => {
 
 router.post('/screens/directions', verifyToken, async (req, res) => {
     const screenId = req.selectedScreen
-    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
@@ -230,7 +242,7 @@ router.post('/screens/directions', verifyToken, async (req, res) => {
 
 router.delete('/screens/directions/:directionIndex', verifyToken, async (req, res) => {
     const screenId = req.selectedScreen;
-    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
@@ -248,7 +260,7 @@ router.delete('/screens/directions/:directionIndex', verifyToken, async (req, re
 
 router.post('/screens/directions/reorder', verifyToken, async (req, res) => {
     const screenId = req.selectedScreen;
-    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
@@ -266,14 +278,14 @@ router.post('/screens/directions/reorder', verifyToken, async (req, res) => {
 
 router.post('/screens/photos', verifyToken, upload.array('photos', 10), async (req, res) => {
     const screenId = req.selectedScreen;
-    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
     }
     if (req.files) {
         const photoPaths = req.files.map(file => file.path);
-        const updatedScreen = await Screen.findByIdAndUpdate(screenId, { $push: { photos: { $each: photoPaths } } }, { new: true });
+        const updatedScreen = await Screen.findByIdAndUpdate(screenId, { $push: { photos: { $each: photoPaths } } }, { new: true }).populate('meteo');
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
         res.send({ success: true, screen: updatedScreen });
     } else {
@@ -284,7 +296,7 @@ router.post('/screens/photos', verifyToken, upload.array('photos', 10), async (r
 router.delete('/screens/photos', verifyToken, async (req, res) => {
     const screenId = req.selectedScreen;
     const { photoName } = req.body;
-    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
@@ -305,14 +317,14 @@ router.delete('/screens/photos', verifyToken, async (req, res) => {
 router.post('/screens/photos/reorder', verifyToken, async (req, res) => {
     const screenId = req.selectedScreen;
     const { newOrder } = req.body;
-    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    const screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
     }
 
     try {
-        const updatedScreen = await Screen.findByIdAndUpdate(screenId, { 'photos': newOrder }, { new: true });
+        const updatedScreen = await Screen.findByIdAndUpdate(screenId, { 'photos': newOrder }, { new: true }).populate('meteo');
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
         res.send({ success: true, screen: updatedScreen });
     } catch (error) {
@@ -326,7 +338,7 @@ router.post('/screens/photos/reorder', verifyToken, async (req, res) => {
 router.post('/screens/updateConfig', verifyToken, async (req, res) => {
     const screenId = req.selectedScreen;
     const configUpdates = req.body;
-    let screen = await Screen.findOne({ _id: screenId, user: req.user.userId });
+    let screen = await Screen.findOne({ _id: screenId, user: req.user.userId }).populate('meteo');
 
     if (!screen) {
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });

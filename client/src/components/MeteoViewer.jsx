@@ -2,7 +2,7 @@ function MeteoViewer({ screen }) {
 
     return (
         <>
-            { screen.meteo && screen.meteo.city.length > 0 && (
+            { screen.meteo && Object.keys(screen.meteo.data).length > 0 && (
                 <div className={"meteo card fr ai-c"}>
                     {
                         (screen.meteo.data && screen.meteo.data.weather) && (
