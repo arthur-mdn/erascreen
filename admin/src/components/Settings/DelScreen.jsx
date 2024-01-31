@@ -42,10 +42,10 @@ function DelScreen( { onRemoveScreenSelected } ) {
                 type={"button"}
                 onClick={() => setIsOpenDelete(true)}
                 className={"setting_element"}
-                style={{justifyContent:"center", backgroundColor:"white", color:"red", border:"1px solid red"}}
+                style={{justifyContent:"center", backgroundColor:"red", color:"white", border:"1px solid red"}}
             >
 
-                <div className={"fr g0-5 ai-c"} style={{color:"red",marginTop:"auto", textAlign:"center"}}>
+                <div className={"fr g0-5 ai-c"} style={{color:"white",marginTop:"auto", textAlign:"center"}}>
                     <FaTrash/>
                     Supprimer l'écran
                 </div>

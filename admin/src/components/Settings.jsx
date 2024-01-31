@@ -114,6 +114,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                     screenId={screen._id}
                     initialConfig={screen.config}
                     onConfigChange={(newConfig) => {onScreenUpdate(newConfig)}}
+                    onRemoveScreenSelected={()=>{onRemoveScreenSelected()}}
                 />
             </Modal>
 
@@ -126,7 +127,6 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                 />
             </Modal>
 
-            <DelScreen onRemoveScreenSelected={()=>{onRemoveScreenSelected()}}/>
         </div>
 
     );

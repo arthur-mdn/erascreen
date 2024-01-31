@@ -3,8 +3,9 @@ import axios from 'axios';
 import config from '../../config';
 import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
+import DelScreen from "./DelScreen.jsx";
 
-function ConfigManager({ screenId, initialConfig, onConfigChange }) {
+function ConfigManager({ screenId, initialConfig, onConfigChange, onRemoveScreenSelected }) {
     const [currentConfig, setCurrentConfig] = useState(initialConfig);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -34,49 +35,54 @@ function ConfigManager({ screenId, initialConfig, onConfigChange }) {
     );
 
     return (
-        <div>
-            {Object.keys(currentConfig).map((key) => {
-                const value = currentConfig[key];
+        <>
+            <div>
+                {Object.keys(currentConfig).map((key) => {
+                    const value = currentConfig[key];
 
-                if (key === 'photos_interval') {
+                    if (key === 'photos_interval') {
+                        return (
+                            <div key={key}>
+                                <label htmlFor={key}>{key} (1-60)</label>
+                                <input
+                                    type="range"
+                                    id={key}
+                                    min="1"
+                                    max="60"
+                                    value={value}
+                                    onChange={(e) => setCurrentConfig({ ...currentConfig, [key]: parseInt(e.target.value) })}
+                                    onMouseUp={(e) => handleInputChange(key, parseInt(e.target.value))}
+                                    onTouchEnd={(e) => handleInputChange(key, parseInt(e.target.value))}
+                                />
+                                <span>{value}</span>
+                            </div>
+                        );
+                    }
+
                     return (
                         <div key={key}>
-                            <label htmlFor={key}>{key} (1-60)</label>
-                            <input
-                                type="range"
-                                id={key}
-                                min="1"
-                                max="60"
-                                value={value}
-                                onChange={(e) => setCurrentConfig({ ...currentConfig, [key]: parseInt(e.target.value) })}
-                                onMouseUp={(e) => handleInputChange(key, parseInt(e.target.value))}
-                                onTouchEnd={(e) => handleInputChange(key, parseInt(e.target.value))}
-                            />
-                            <span>{value}</span>
+                            <label>{key}</label>
+                            {typeof value === 'boolean' ? (
+                                <input
+                                    type="checkbox"
+                                    checked={value}
+                                    onChange={(e) => handleInputChange(key, e.target.checked)}
+                                />
+                            ) : (
+                                <input
+                                    type="text"
+                                    value={value}
+                                    onChange={(e) => handleInputChange(key, e.target.value)}
+                                />
+                            )}
                         </div>
                     );
-                }
-
-                return (
-                    <div key={key}>
-                        <label>{key}</label>
-                        {typeof value === 'boolean' ? (
-                            <input
-                                type="checkbox"
-                                checked={value}
-                                onChange={(e) => handleInputChange(key, e.target.checked)}
-                            />
-                        ) : (
-                            <input
-                                type="text"
-                                value={value}
-                                onChange={(e) => handleInputChange(key, e.target.value)}
-                            />
-                        )}
-                    </div>
-                );
-            })}
-        </div>
+                })}
+            </div>
+            <div style={{marginTop:"auto"}}>
+                <DelScreen onRemoveScreenSelected={()=>{onRemoveScreenSelected()}}/>
+            </div>
+        </>
     );
 }
 

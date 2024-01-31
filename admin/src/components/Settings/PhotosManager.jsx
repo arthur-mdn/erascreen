@@ -99,7 +99,7 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable-photos">
                     {(provided) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef}>
+                        <div {...provided.droppableProps} ref={provided.innerRef} className={"fc g0-5"}>
                             {photos.map((icon, index) => (
                                 <Draggable key={icon} draggableId={icon} index={index}>
                                     {(provided) => (
@@ -107,8 +107,9 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
+                                            className={"fr ai-c g1"}
                                         >
-                                            <img src={`${config.serverUrl}/${icon}`} alt={`Icon ${index}`} style={{width:'50px'}} />
+                                            <img src={`${config.serverUrl}/${icon}`} alt={`Icon ${index}`} style={{width:'150px'}} />
                                             <button onClick={() => handleDelete(icon)}><FaTrash/></button>
                                         </div>
                                     )}
