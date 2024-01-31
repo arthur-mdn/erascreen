@@ -32,6 +32,7 @@ function Login() {
 
     return (
         <form onSubmit={handleSubmit} className={"form"} id={"login_form"}>
+            <img src={"/elements/logo.png"} style={{height:'4rem'}} alt={"DisplayHub_logo"}/>
             <h2>Connexion</h2>
             {errorMessage && <div style={{color:"red",fontWeight:"bold"}}>{errorMessage}</div>}
             <div className={"input_container"}>
