@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {FaArrowRight, FaCopy, FaPlus, FaTrash} from "react-icons/fa6";
 import {toast} from 'react-toastify';
+import Modal from "./Modal.jsx";
 
 function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", additionalInputs = []}) {
     const [ranges, setRanges] = useState(initialRanges || []);
+    const [isAddOpen, setIsAddOpen] = useState(false);
+
     const initialNewRangeState = () => {
         let initialState = {start: '', end: ''};
         additionalInputs.forEach(input => {
@@ -15,6 +18,7 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
 
     const duplicateRange = (range) => {
         setNewRange({...range});
+        setIsAddOpen(true);
     };
 
     const timeToMinutes = (time) => {
@@ -47,6 +51,16 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
             return;
         }
 
+        // Convertir les heures en minutes pour la comparaison
+        const startMinutes = timeToMinutes(newRange.start);
+        const endMinutes = newRange.end === "00:00" ? 24 * 60 : timeToMinutes(newRange.end); // Minuit est traité comme la fin de la journée
+
+        // Vérifier si l'heure de début est avant l'heure de fin
+        if (startMinutes >= endMinutes) {
+            toast.error("L'heure de fin doit être postérieure à l'heure de début.");
+            return;
+        }
+
         if (isOverlapping(newRange, ranges)) {
             toast.error("La nouvelle plage horaire se chevauche avec une existante.");
             return;
@@ -56,9 +70,10 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
         setRanges(updatedRanges);
         setNewRange(initialNewRangeState());
         onRangesChange(updatedRanges);
-        console.log(updatedRanges)
-        toast.info("Vous devez enregistrer les modifications pour qu'elles soient prises en compte.")
+        setIsAddOpen(false); // Fermer le modal si ouvert
+        toast.info("Vous devez enregistrer les modifications pour qu'elles soient prises en compte.");
     };
+
 
     const removeRange = (index) => {
         const updatedRanges = ranges.filter((_, i) => i !== index);
@@ -111,12 +126,15 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
             <br/>
 
             <div>
-                <h3>Ajouter une plage horaire</h3>
-                <div style={{
-                    boxShadow: "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px",
-                    padding: '1rem',
-                    borderRadius: '0.5rem'
-                }} className={"fc g1 jc-sb fw-w"}>
+
+
+
+                    <button onClick={()=>{setIsAddOpen(true)}} className={"fr ai-c g0-5 jc-c"}><FaPlus/> Ajouter</button>
+
+                <br/>
+            </div>
+            <Modal isOpen={isAddOpen} setIsOpen={setIsAddOpen} title={"Ajouter une plage horaire"} onClose={()=>{setIsAddOpen(false)}}>
+                <div className={"fc g1 jc-sb fw-w"}>
                     <div className={"fr g1 ai-c"}>
                         <input
                             type="time"
@@ -161,12 +179,9 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
                             </div>
                         ))
                     }
-
-
-                    <button onClick={addNewRange} className={"fr ai-c g0-5 jc-c"}><FaPlus/> Ajouter</button>
+                    <button type={"button"} onClick={addNewRange}>Ajouter</button>
                 </div>
-                <br/>
-            </div>
+            </Modal>
         </div>
     );
 }
