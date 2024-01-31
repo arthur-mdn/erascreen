@@ -100,8 +100,10 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
                                 </div>
                             ))
                         }
-                        <button onClick={() => duplicateRange(range)}><FaCopy/></button>
-                        <button onClick={() => removeRange(index)}><FaTrash/></button>
+                        <div className={"fr g0-5"}>
+                            <button onClick={() => duplicateRange(range)}><FaCopy/></button>
+                            <button onClick={() => removeRange(index)}><FaTrash/></button>
+                        </div>
                     </div>
                 ))}
             </div>
