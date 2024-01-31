@@ -49,7 +49,7 @@ function TimeIndicator({ ranges }) {
                             left: `${startOffset}%`,
                             width: `${width}%`,
                             height: '100%',
-                            backgroundColor: '#0050a3'
+                            backgroundColor: `${range.backgroundColor || '#0050a3'}`
                         }}></div>
                     );
                 })}
