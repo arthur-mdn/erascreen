@@ -22,7 +22,7 @@ function TimeIndicator({ ranges }) {
     }
 
     return (
-        <div style={{ position: 'relative', width: '100%', marginTop: '10px', height:'6rem' }}>
+        <div style={{ position: 'relative', width: '100%', marginTop: '10px', height:'6rem', flexShrink:0 }}>
             <div>
                 {Array.from({ length: 9 }).map((_, index) => {
                     const hour = index * 3;
