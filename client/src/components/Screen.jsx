@@ -35,7 +35,7 @@ function Screen({configData}){
                     )
                 }
             </div>
-            <div style={{marginTop:'2vw', maxWidth:'100%', height:'75vh',maxHeight:'75vh', gap:'2vw'}} className={"fr jc-sb"}>
+            <div style={{marginTop:'1vw', maxWidth:'100%', height:'75vh',maxHeight:'75vh', gap:'2vw'}} className={"fr jc-sb"}>
                 {
                     configData.directions && configData.directions.length > 0 && (
                         <DirectionsViewer screen={configData}/>

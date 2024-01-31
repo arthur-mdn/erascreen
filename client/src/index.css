@@ -1068,8 +1068,12 @@ body.dark-mode img[alt="Flèche"]{
   overflow: hidden;
   white-space: nowrap;
   box-sizing: border-box;
-  background-color: #0062FF; /* Couleur de fond du texte défilant */
-  color: #ffffff; /* Couleur du texte */
+  background-color: #0062FF;
+  color: #ffffff;
+  font-size: 3.5rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .messagedefilant div {

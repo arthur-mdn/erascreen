@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FaArrowRight, FaPlus, FaTrash} from "react-icons/fa6";
+import {FaArrowRight, FaCopy, FaPlus, FaTrash} from "react-icons/fa6";
 import {toast} from 'react-toastify';
 
 function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", additionalInputs = []}) {
@@ -12,6 +12,10 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
         return initialState;
     };
     const [newRange, setNewRange] = useState(initialNewRangeState);
+
+    const duplicateRange = (range) => {
+        setNewRange({...range});
+    };
 
     const timeToMinutes = (time) => {
         const [hours, minutes] = time.split(':').map(Number);
@@ -96,6 +100,7 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
                                 </div>
                             ))
                         }
+                        <button onClick={() => duplicateRange(range)}><FaCopy/></button>
                         <button onClick={() => removeRange(index)}><FaTrash/></button>
                     </div>
                 ))}
