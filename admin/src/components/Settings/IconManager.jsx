@@ -101,7 +101,7 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable-icons">
                     {(provided) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef}>
+                        <div {...provided.droppableProps} ref={provided.innerRef} className={"fc g0-5"}>
                             {icons.map((icon, index) => (
                                 <Draggable key={icon} draggableId={icon} index={index}>
                                     {(provided) => (
@@ -109,6 +109,7 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
+                                            className={"fr g0-5 ai-c"}
                                         >
                                             <img src={`${config.serverUrl}/${icon}`} alt={`Icon ${index}`} style={{width:'50px'}} />
                                             <button onClick={() => handleDelete(icon)}><FaTrash/></button>
