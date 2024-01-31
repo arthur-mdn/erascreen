@@ -38,6 +38,10 @@ const textTimeRangeSchema = new mongoose.Schema({
         type: String,
         default: ""
     },
+    slideTime: {
+        type: Number,
+        default: 120
+    },
     enabled: {
         type: Boolean,
         default: false

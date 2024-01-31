@@ -18,6 +18,7 @@ function TextSlidesManager({ screenId, initialTextSlides, onConfigChange }) {
             text: range.text,
             backgroundColor: range.backgroundColor,
             textColor: range.textColor,
+            slideTime: range.slideTime,
             enabled: true
         }));
 
@@ -46,7 +47,7 @@ function TextSlidesManager({ screenId, initialTextSlides, onConfigChange }) {
 
     return (
         <div>
-            <TimeRangeSelector onRangesChange={setTextSlidesRanges} initialRanges={textSlidesRanges} timeRangeName={"Plages horaires des textes défilants"} additionalInputs={[{name:"text", type: "textarea", label: "Texte défilant",defaultValue:"Texte défilant"}, {name: "backgroundColor", type: "color", label: "Couleur de fond",defaultValue:"#0062FF"}, {name: "textColor", type: "color", label: "Couleur du texte",defaultValue:"#ffffff"}]} />
+            <TimeRangeSelector onRangesChange={setTextSlidesRanges} initialRanges={textSlidesRanges} timeRangeName={"Plages horaires des textes défilants"} additionalInputs={[{name:"text", type: "textarea", label: "Texte défilant",defaultValue:"Texte défilant"}, {name: "backgroundColor", type: "color", label: "Couleur de fond",defaultValue:"#0062FF"}, {name: "textColor", type: "color", label: "Couleur du texte",defaultValue:"#ffffff"}, {name: "slideTime", type: "number", label: "Temps de défilement du texte (en secondes)",defaultValue:"120"}]} />
             <button type="button" onClick={saveTextSlideConfig}>Enregistrer</button>
         </div>
     );

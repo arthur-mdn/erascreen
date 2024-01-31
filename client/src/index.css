@@ -1047,3 +1047,33 @@ body.dark-mode .card{
 body.dark-mode img[alt="Flèche"]{
   filter: invert(1);
 }
+
+
+
+
+
+
+
+/* Texte défilant */
+@keyframes scrollText {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.messagedefilant {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  background-color: #0062FF; /* Couleur de fond du texte défilant */
+  color: #ffffff; /* Couleur du texte */
+}
+
+.messagedefilant div {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scrollText 10s linear infinite;
+}

@@ -141,14 +141,22 @@ function App() {
         {renderContent()}
 
         {textSlide && (
-            <div style={{
-              color: textSlide.textColor,
-              backgroundColor: textSlide.backgroundColor,
-              // Autres styles pour le texte défilant
-            }}>
-              {textSlide.text}
+            <div className="messagedefilant" style={{ backgroundColor: textSlide.backgroundColor, color: textSlide.textColor }}>
+              <div>
+                {textSlide.text + " " + textSlide.text} {/* Duplication du texte */}
+              </div>
+              <style>
+                {
+                  `
+                .messagedefilant div {
+                  animation: scrollText ${textSlide.slideTime / 2}s linear infinite;
+                }
+              `
+                }
+              </style>
             </div>
         )}
+
       </div>
   );
 }

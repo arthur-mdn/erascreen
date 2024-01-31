@@ -35,9 +35,37 @@ function useTextSlides (configData) {
                     text: activeSlide.text,
                     textColor: activeSlide.textColor,
                     backgroundColor: activeSlide.backgroundColor,
+                    slideTime: activeSlide.slideTime
                 });
             } else {
                 setTextSlide(null);
+            }
+
+            const nextCheckTime = Math.min(
+                ...configData.text_slides.ranges.flatMap(range => {
+                    const [startHours, startMinutes] = range.start.split(':');
+                    const [endHours, endMinutes] = range.end.split(':');
+                    const startTime = new Date(currentDateTime);
+                    startTime.setHours(startHours, startMinutes, 0, 0);
+                    const endTime = new Date(currentDateTime);
+                    endTime.setHours(endHours, endMinutes, 0, 0);
+
+                    // Si la fin est le lendemain, ajouter un jour à endTime
+                    if (endTime <= startTime) {
+                        endTime.setDate(endTime.getDate() + 1);
+                    }
+
+                    // Si la plage horaire est passée aujourd'hui, ajouter un jour à startTime
+                    if (startTime < currentDateTime && endTime < currentDateTime) {
+                        startTime.setDate(startTime.getDate() + 1);
+                    }
+
+                    return [startTime - currentDateTime, endTime - currentDateTime].filter(t => t > 0);
+                })
+            );
+
+            if (nextCheckTime > 0) {
+                setTimeout(checkTextSlides, nextCheckTime);
             }
         };
 

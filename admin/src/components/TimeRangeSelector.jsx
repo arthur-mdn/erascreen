@@ -91,7 +91,7 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
                                                     backgroundColor: range[input.name]
                                                 }}/>
                                             ) :
-                                            <p style={{maxWidth:'100px', textOverflow:"ellipsis", overflow:"hidden"}}>{newRange[input.name]}</p>
+                                            <p style={{maxWidth:'100px', maxHeight:'50px', textOverflow:"ellipsis", overflow:"hidden"}}>{range[input.name]}</p>
                                     }
                                 </div>
                             ))
