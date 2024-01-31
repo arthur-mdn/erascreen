@@ -13,8 +13,8 @@ const Modal = ({ isOpen, onClose, children, title,actions, bgColor = "#f3f3f3", 
     };
 
     const modalVariants = {
-        hidden: { y: "100%", opacity: 0 },
-        visible: { y: 0, opacity: 1 }
+        hidden: { x: "100%", opacity: 0 },
+        visible: { x: 0, opacity: 1 }
     };
     return (
         <AnimatePresence>
