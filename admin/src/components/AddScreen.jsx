@@ -1,48 +1,66 @@
 import axios from "axios";
 import config from "../config.js";
-import {useState} from "react";
-import {toast} from "react-toastify";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Loading from "./Loading.jsx";
+import { useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
-function AddScreen ({ screen, onScreenAdd})  {
+function AddScreen({ onScreenAdd, fromUrl = false }) {
     const [code, setCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const { screenId } = useParams();
+    const [cookies, setCookie] = useCookies(['selectedScreen']);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
+    useEffect(() => {
+        if (screenId && screenId !== code) {
+            setCode(screenId);
+        }
+    }, [screenId, code]);
+
+    useEffect(() => {
+        if (code && screenId === code) {
+            handleSubmit();
+        }
+    }, [code]);
+
+    const handleSubmit = async (event) => {
+        if (event) event.preventDefault();
         setIsLoading(true);
 
-        axios.post(`${config.serverUrl}/associate-screen`, { code }, { withCredentials: true })
-            .then(response => {
-                toast.success("Écran associé avec succès !");
+        try {
+            const response = await axios.post(`${config.serverUrl}/associate-screen`, { code }, { withCredentials: true });
+            toast.success("Écran associé avec succès !");
+            if (fromUrl) {
+                setCookie('selectedScreen', response.data.screen._id, { path: '/', domain: config.cookieDomain });
+                window.location.href = "/";
+            } else {
                 onScreenAdd(response.data.screen);
-            })
-            .catch(error => {
-                console.error('Erreur lors de l\'association de l\'écran:', error);
-                toast.error("Erreur lors de l'association de l'écran.");
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
+            }
+        } catch (error) {
+            toast.error("Erreur lors de l'association de l'écran.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (isLoading) return <Loading />;
 
     return (
         <>
-            <form onSubmit={handleSubmit} method={"post"}  className={"fc g1"}>
+            <form onSubmit={handleSubmit} className={"fc g1"}>
                 <label htmlFor={"code"}>Code d'écran</label>
-                <input type={"text"}
-                       name={"code"}
-                       id={"code"}
-                       placeholder={"Code d'écran"}
-                       value={code}
-                       onChange={(e) => setCode(e.target.value)}
+                <input
+                    type={"text"}
+                    id={"code"}
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    placeholder={"Code d'écran"}
                 />
-                <input type={"submit"} value={"Associer l'écran"}/>
+                <button type="submit">Associer l'écran</button>
             </form>
         </>
-        )
+    );
 }
 
 export default AddScreen;

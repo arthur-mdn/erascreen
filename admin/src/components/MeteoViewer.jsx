@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 function MeteoViewer({ screen }) {
-    const date = screen.meteo.lastUpdated ?? "";
+    const date = (screen.meteo && screen.meteo.lastUpdated) ? screen.meteo.lastUpdated : Date.now();
     const formattedDate = format(new Date(date), 'PPPpp', { locale: fr });
 
     return (

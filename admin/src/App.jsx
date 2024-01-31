@@ -33,7 +33,7 @@ const AuthenticatedApp = () => {
                             <>
                                 {/* Routes privées */}
                                 <Route path="/" element={<Home />} />
-                                <Route path="/add" element={<AddScreen />} />
+                                <Route path="/add/:screenId" element={<AddScreen fromUrl={true}/>} />
                                 <Route path="/logout" element={<Logout />} />
                             </>
                         )}

@@ -107,27 +107,39 @@ io.on('connection', (socket) => {
 });
 
 
-app.post('/associate-screen', verifyToken,  async (req, res) => {
+app.post('/associate-screen', verifyToken, async (req, res) => {
     const { code } = req.body;
 
-    const socketId = activeSockets[code];
-    if (socketId) {
-        const socket = io.sockets.sockets.get(socketId);
-        if (socket) {
-            const newScreen = new Screen({ code, user: req.user.userId });
-            await newScreen.save();
-
-            const screen = await Screen.findOne({ code, user: req.user.userId });
-
-            socket.emit('associate', screen);
-            res.send({ success: true, screen: screen, message: 'Écran associé avec succès.' });
-        } else {
-            res.status(500).send({ error: 'Connexion socket non trouvée' });
+    try {
+        // Vérifier si un écran est déjà associé à ce code
+        const existingScreen = await Screen.findOne({ code });
+        if (existingScreen) {
+            return res.status(400).send({ error: 'Ce code est déjà associé à un écran.' });
         }
-    } else {
-        res.status(404).send({ error: 'Code non trouvé' });
+
+        const socketId = activeSockets[code];
+        if (socketId) {
+            const socket = io.sockets.sockets.get(socketId);
+            if (socket) {
+                const newScreen = new Screen({ code, user: req.user.userId });
+                await newScreen.save();
+
+                // Associer l'écran et émettre l'événement
+                const screen = await Screen.findOne({ code, user: req.user.userId });
+                socket.emit('associate', screen);
+                res.send({ success: true, screen: screen, message: 'Écran associé avec succès.' });
+            } else {
+                res.status(500).send({ error: 'Connexion socket non trouvée' });
+            }
+        } else {
+            res.status(404).send({ error: 'Code non trouvé' });
+        }
+    } catch (error) {
+        console.error('Erreur lors de l\'association de l\'écran:', error);
+        res.status(500).send({ error: 'Erreur serveur' });
     }
 });
+
 
 app.get('/autocomplete/:query', (req, res) => {
     const query = req.params.query.toLowerCase();
