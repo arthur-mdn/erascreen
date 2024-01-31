@@ -1,11 +1,11 @@
-# Getting Started with Erascreen
+# Getting Started with DisplayHub
 A webapp to display an interactive screen. Associate a new screen and control it in real-time via websockets.
 Made with React + Vite and Node.js + MongoDB + Socket.io.
 
 ## Installation
 ```bash
-git clone https://github.com/arthur-mdn/erascreen.git
-cd erascreen
+git clone https://github.com/arthur-mdn/DisplayHub.git
+cd DisplayHub
 ```
 ### Install the server dependencies
 ```bash
