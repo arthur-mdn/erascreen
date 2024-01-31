@@ -13,11 +13,12 @@ import {
     FaImages, FaSun,
     FaUmbrella
 } from "react-icons/fa6";
-import {FaCogs} from "react-icons/fa";
+import {FaCogs, FaSignOutAlt} from "react-icons/fa";
 import ConfigManager from "./Settings/ConfigManager.jsx";
 import DarkModeManager from "./Settings/DarkModeManager.jsx";
 import TimeIndicator from "./TimeIndicator.jsx";
 import DelScreen from "./Settings/DelScreen.jsx";
+import TextSlidesManager from "./Settings/TextSlidesManager.jsx";
 
 function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
     const [editNameOpen, setEditNameOpen] = useState(false);
@@ -27,6 +28,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
     const [editDirectionsOpen, setEditDirectionsOpen] = useState(false);
     const [editPhotosOpen, setEditPhotosOpen] = useState(false);
     const [editDarkMode, setEditDarkMode] = useState(false);
+    const [editTextSlidesOpen, setEditTextSlidesOpen] = useState(false);
     const [editSettingsOpen, setEditSettingsOpen] = useState(false);
 
     const buttons = [
@@ -37,6 +39,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
         { label: "Directions", icon: <FaArrowRightArrowLeft/>, onClick: () => setEditDirectionsOpen(true) },
         { label: "Galerie de photos", icon: <FaImages/>, onClick: () => setEditPhotosOpen(true) },
         { label: "Mode sombre", icon: <FaCircleHalfStroke/>, onClick: () => setEditDarkMode(true)},
+        { label: "Textes défilants", icon: <FaSun/>, onClick: () => setEditTextSlidesOpen(true)},
         { label: "Paramètres avancés", icon: <FaCogs/>, onClick: () => setEditSettingsOpen(true) },
     ];
     return (
@@ -126,6 +129,21 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                     onConfigChange={(newConfig) => {onScreenUpdate(newConfig)}}
                 />
             </Modal>
+
+            <Modal isOpen={editTextSlidesOpen} title={"Modifier les textes défilants"} onClose={()=> {setEditTextSlidesOpen(false)}}>
+                <TimeIndicator ranges={screen.text_slides.ranges}/>
+                <TextSlidesManager
+                    screenId={screen._id}
+                    initialTextSlides={screen.text_slides}
+                    onConfigChange={(newConfig) => {onScreenUpdate(newConfig)}}
+                />
+            </Modal>
+
+
+            <button type={"button"} className={"setting_element"} onClick={()=>{window.location = "/logout"}} style={{color:"red", alignItems:"center" ,justifyContent:"center"}}>
+                <FaSignOutAlt/>
+                Se déconnecter
+            </button>
 
         </div>
 

@@ -6,8 +6,8 @@ import config from "../config.js";
 
 function Logout() {
     const { setAuthStatus } = useAuth();
-    const logout = () => {
-        axios.post(`${config.serverUrl}/auth/logout`, {}, { withCredentials: true })
+    const logout = async () => {
+        await axios.post(`${config.serverUrl}/auth/logout`, {}, {withCredentials: true})
             .then(() => {
                 setAuthStatus("unauthenticated");
             })

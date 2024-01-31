@@ -17,6 +17,33 @@ const timeRangeSchema = new mongoose.Schema({
     }
 });
 
+const textTimeRangeSchema = new mongoose.Schema({
+    start: {
+        type: String,
+        required: true
+    },
+    end: {
+        type: String,
+        required: true
+    },
+    text: {
+        type: String,
+        default: ""
+    },
+    backgroundColor: {
+        type: String,
+        default: ""
+    },
+    textColor: {
+        type: String,
+        default: ""
+    },
+    enabled: {
+        type: Boolean,
+        default: false
+    }
+});
+
 const darkModeSchema = new mongoose.Schema({
     ranges: {
         type: [timeRangeSchema],
@@ -32,6 +59,13 @@ const darkModeSchema = new mongoose.Schema({
                 enabled: true
             }
         ]
+    }
+});
+
+const textSlidesSchema = new mongoose.Schema({
+    ranges: {
+        type: [textTimeRangeSchema],
+        default: []
     }
 });
 
@@ -104,9 +138,11 @@ const screenSchema = new Schema({
         type: Array,
         default: []
     },
-    slidings: {
-        type: Array,
-        default: []
+    text_slides: {
+        type: textSlidesSchema,
+        default: () => ({
+            ranges: []
+        })
     },
     config: {
         hide_slider_dots: {

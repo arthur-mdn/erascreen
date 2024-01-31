@@ -8,7 +8,7 @@ import {toast} from "react-toastify";
 function DarkModeManager({ screenId, initialDarkMode, onConfigChange }) {
     const [darkModeRanges, setDarkModeRanges] = useState(initialDarkMode?.ranges || []);
     const [isLoading, setIsLoading] = useState(false);
-
+    console.log(darkModeRanges)
     const saveDarkModeConfig = () => {
         setIsLoading(true);
         const updatedDarkModeConfig = darkModeRanges.map(range => ({
@@ -42,7 +42,7 @@ function DarkModeManager({ screenId, initialDarkMode, onConfigChange }) {
 
     return (
         <div className={"fc g1"}>
-            <TimeRangeSelector onRangesChange={(newRanges) => {setDarkModeRanges(newRanges)}} intialRanges={darkModeRanges} />
+            <TimeRangeSelector onRangesChange={(newRanges) => {setDarkModeRanges(newRanges)}} initialRanges={darkModeRanges} timeRangeName={"Plages horaires d'activation du mode sombre"} />
             <button type={"button"} onClick={saveDarkModeConfig}>Enregistrer</button>
         </div>
     );

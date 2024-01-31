@@ -98,6 +98,11 @@ router.post('/screens/update', verifyToken, upload.single('logo'), async (req, r
                 if (value && value.ranges) {
                     screen.dark_mode = value;
                 }
+            } else if (attribute === 'textSlides') {
+                if (value && value.ranges) {
+                    console.log('value', value)
+                    screen.text_slides = value;
+                }
             } else {
                 screen[attribute] = value;
             }

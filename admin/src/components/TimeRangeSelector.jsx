@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {FaArrowRight, FaPlus, FaTrash} from "react-icons/fa6";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
-function TimeRangeSelector({ onRangesChange, intialRanges }) {
-    const [ranges, setRanges] = useState(intialRanges || []);
-    const [newRange, setNewRange] = useState({ start: '', end: '' });
+function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", additionalInputs = []}) {
+    const [ranges, setRanges] = useState(initialRanges || []);
+    const initialNewRangeState = () => {
+        let initialState = {start: '', end: ''};
+        additionalInputs.forEach(input => {
+            initialState[input.name] = input.defaultValue || '';
+        });
+        return initialState;
+    };
+    const [newRange, setNewRange] = useState(initialNewRangeState);
 
     const timeToMinutes = (time) => {
         const [hours, minutes] = time.split(':').map(Number);
@@ -41,10 +48,11 @@ function TimeRangeSelector({ onRangesChange, intialRanges }) {
             return;
         }
 
-        const updatedRanges = [...ranges, newRange];
+        const updatedRanges = [...ranges, {...newRange}];
         setRanges(updatedRanges);
-        setNewRange({ start: '', end: '' });
+        setNewRange(initialNewRangeState());
         onRangesChange(updatedRanges);
+        console.log(updatedRanges)
         toast.info("Vous devez enregistrer les modifications pour qu'elles soient prises en compte.")
     };
 
@@ -55,13 +63,39 @@ function TimeRangeSelector({ onRangesChange, intialRanges }) {
         toast.info("Vous devez enregistrer les modifications pour qu'elles soient prises en compte.")
     };
 
+    const handleInputChange = (e, inputName) => {
+        setNewRange({...newRange, [inputName]: e.target.value});
+    };
+
     return (
         <div>
             <div className={"fc g0-5"}>
-                <h3>Plages horaires d'activation du mode sombre</h3>
+                <h3>{timeRangeName}</h3>
                 {ranges.map((range, index) => (
-                    <div key={index} style={{boxShadow:"rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px", padding:'0.5rem 1rem', borderRadius:'0.5rem'}} className={"fr ai-c g1 jc-sb"}>
+                    <div key={index} style={{
+                        boxShadow: "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px",
+                        padding: '0.5rem 1rem',
+                        borderRadius: '0.5rem'
+                    }} className={"fr ai-c g1 jc-sb"}>
                         De {range.start} à {range.end}
+                        {
+                            additionalInputs.map((input, index) => (
+                                <div key={index} className={"fc g1 ai-c"}>
+                                    {/*<label htmlFor={input.name}>{input.label}</label>*/}
+                                    {
+                                        input.type === "color" ? (
+                                                <div style={{
+                                                    width: "20px",
+                                                    height: "20px",
+                                                    borderRadius: "50%",
+                                                    backgroundColor: range[input.name]
+                                                }}/>
+                                            ) :
+                                            <p style={{maxWidth:'100px', textOverflow:"ellipsis", overflow:"hidden"}}>{newRange[input.name]}</p>
+                                    }
+                                </div>
+                            ))
+                        }
                         <button onClick={() => removeRange(index)}><FaTrash/></button>
                     </div>
                 ))}
@@ -71,22 +105,56 @@ function TimeRangeSelector({ onRangesChange, intialRanges }) {
 
             <div>
                 <h3>Ajouter une plage horaire</h3>
-                <div style={{boxShadow:"rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px", padding:'1rem', borderRadius:'0.5rem'}} className={"fr ai-c g1 jc-sb fw-w"}>
+                <div style={{
+                    boxShadow: "rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px",
+                    padding: '1rem',
+                    borderRadius: '0.5rem'
+                }} className={"fc g1 jc-sb fw-w"}>
                     <div className={"fr g1 ai-c"}>
                         <input
                             type="time"
                             value={newRange.start}
-                            onChange={(e) => setNewRange({ ...newRange, start: e.target.value })}
-                            style={{width:"auto"}}
+                            onChange={(e) => setNewRange({...newRange, start: e.target.value})}
+                            style={{width: "auto"}}
                         />
                         <FaArrowRight/>
                         <input
                             type="time"
                             value={newRange.end}
-                            onChange={(e) => setNewRange({ ...newRange, end: e.target.value })}
-                            style={{width:"auto"}}
+                            onChange={(e) => setNewRange({...newRange, end: e.target.value})}
+                            style={{width: "auto"}}
                         />
                     </div>
+                    {
+                        additionalInputs.map((input, index) => (
+                            <div key={index} className={"fc g1 ai-c"}>
+                                <label htmlFor={input.name}>{input.label}</label>
+                                {
+                                    input.type === "textarea" ? (
+                                        <textarea
+                                            id={input.name}
+                                            value={newRange[input.name]}
+                                            onChange={(e) => handleInputChange(e, input.name)}
+                                            style={{
+                                                width: "100%",
+                                                resize: "vertical",
+                                                minHeight: "60px",
+                                                maxHeight: "200px"
+                                            }}
+                                        />
+                                    ) : (
+                                        <input
+                                            id={input.name}
+                                            type={input.type}
+                                            value={newRange[input.name]}
+                                            onChange={(e) => handleInputChange(e, input.name)}
+                                        />
+                                    )
+                                }
+                            </div>
+                        ))
+                    }
+
 
                     <button onClick={addNewRange} className={"fr ai-c g0-5 jc-c"}><FaPlus/> Ajouter</button>
                 </div>
