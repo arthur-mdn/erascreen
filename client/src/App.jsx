@@ -37,7 +37,7 @@ function App() {
           intervalId = setInterval(() => {
             console.log("refreshing weather");
             socket.emit('update_weather', { screenId: parsedConfig._id });
-          }, 30000); // 3600000 ms = 1 heure
+          }, 3600000); // 3600000 ms = 1 heure
         }
       } else {
         setStatus('requesting_code');
