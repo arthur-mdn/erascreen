@@ -10,7 +10,7 @@ import {
     FaCopyright,
     FaHeading,
     FaIcons,
-    FaImages, FaSun,
+    FaImages, FaSun, FaTextWidth,
     FaUmbrella
 } from "react-icons/fa6";
 import {FaCogs, FaSignOutAlt} from "react-icons/fa";
@@ -39,7 +39,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
         { label: "Directions", icon: <FaArrowRightArrowLeft/>, onClick: () => setEditDirectionsOpen(true) },
         { label: "Galerie de photos", icon: <FaImages/>, onClick: () => setEditPhotosOpen(true) },
         { label: "Mode sombre", icon: <FaCircleHalfStroke/>, onClick: () => setEditDarkMode(true)},
-        { label: "Textes défilants", icon: <FaSun/>, onClick: () => setEditTextSlidesOpen(true)},
+        { label: "Textes défilants", icon: <FaTextWidth/>, onClick: () => setEditTextSlidesOpen(true)},
         { label: "Paramètres avancés", icon: <FaCogs/>, onClick: () => setEditSettingsOpen(true) },
     ];
     return (
@@ -52,7 +52,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                         onClick={button.onClick}
                         className={"setting_element"}
                     >
-                        <div className={"fr g1 ai-c"}>
+                        <div className={"fr g1 ai-c"} style={{textAlign:"left"}}>
                             {button.icon}
                             {button.label}
                         </div>
@@ -114,7 +114,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
 
             <Modal isOpen={editSettingsOpen} title={"Modifier les paramètres avancés"} onClose={()=> {setEditSettingsOpen(false)}}>
                 <ConfigManager
-                    screenId={screen._id}
+                    screen={screen}
                     initialConfig={screen.config}
                     onConfigChange={(newConfig) => {onScreenUpdate(newConfig)}}
                     onRemoveScreenSelected={()=>{onRemoveScreenSelected()}}

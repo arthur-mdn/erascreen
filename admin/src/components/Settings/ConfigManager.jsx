@@ -5,7 +5,7 @@ import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
 import DelScreen from "./DelScreen.jsx";
 
-function ConfigManager({ screenId, initialConfig, onConfigChange, onRemoveScreenSelected }) {
+function ConfigManager({ screen, initialConfig, onConfigChange, onRemoveScreenSelected }) {
     const [currentConfig, setCurrentConfig] = useState(initialConfig);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -78,6 +78,10 @@ function ConfigManager({ screenId, initialConfig, onConfigChange, onRemoveScreen
                         </div>
                     );
                 })}
+            </div>
+            <div>
+                <label>Exporter la config</label>
+                <textarea value={JSON.stringify(screen)} readOnly={true} style={{width:"100%",resize:"vertical",minHeight:"60px",maxHeight:"200px"}}/>
             </div>
             <div style={{marginTop:"auto"}}>
                 <DelScreen onRemoveScreenSelected={()=>{onRemoveScreenSelected()}}/>
