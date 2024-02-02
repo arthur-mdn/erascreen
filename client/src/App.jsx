@@ -105,7 +105,6 @@ function App() {
   }, []);
 
   const renderContent = () => {
-    console.log(`${config.adminUrl}/add/${code}`)
     switch (status) {
       case 'connecting':
         return <p>Connexion au serveur...</p>;
