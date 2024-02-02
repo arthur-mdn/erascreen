@@ -134,7 +134,7 @@ function App() {
   return (
       <div className={`App`}>
         {
-            isDarkModeActive &&
+          (configData && isDarkModeActive) &&
             <style>
               {
                 `
@@ -154,7 +154,7 @@ function App() {
         }
         {renderContent()}
 
-        {textSlide && (
+        {(configData && textSlide) && (
             <div className="messagedefilant" style={{ backgroundColor: textSlide.backgroundColor, color: textSlide.textColor }}>
               <div>
                 {textSlide.text + " " + textSlide.text} {/* Duplication du texte */}
