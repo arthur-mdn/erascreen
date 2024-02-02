@@ -6,6 +6,7 @@ import Screen from './components/Screen';
 import {FaCloudDownloadAlt} from "react-icons/fa";
 import useDarkMode from './hooks/useDarkMode';
 import useTextSlides from './hooks/useTextSlides';
+import {QRCodeCanvas, QRCodeSVG} from 'qrcode.react';
 
 function App() {
   const [code, setCode] = useState('');
@@ -112,7 +113,14 @@ function App() {
       case 'requesting_code':
         return <p>Récupération d'un code à usage unique...</p>;
       case 'code_received':
-        return <div><p>Votre code unique: {code}</p></div>;
+        return (
+          <div className={"fc g1 ai-c jc-c"}>
+            <h2>Scannez le QRCode pour associer cet écran à votre compte</h2>
+            <QRCodeCanvas value={`https://${config.adminUrl}/add/${code}`} size={512}/>
+            <h2>Ou saisissez manuellement le code suivant</h2>
+            <h1 style={{fontWeight:"bold", userSelect:"all"}}>{code}</h1>
+          </div>
+        );
       case 'configured':
         return (
             <>
