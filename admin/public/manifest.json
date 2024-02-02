@@ -1,0 +1,13 @@
+{
+  "name": "DisplayHub",
+  "short_name": "DisplayHub",
+  "start_url": "https://admin.displayhub.fr/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/elements/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
