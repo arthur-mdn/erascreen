@@ -116,7 +116,7 @@ function App() {
         return (
           <div className={"fc g1 ai-c jc-c"}>
             <h2>Scannez le QRCode pour associer cet écran à votre compte</h2>
-            <QRCodeCanvas value={`https://${config.adminUrl}/add/${code}`} size={512}/>
+            <QRCodeCanvas value={`${config.adminUrl}/add/${code}`} size={512}/>
             <h2>Ou saisissez manuellement le code suivant</h2>
             <h1 style={{fontWeight:"bold", userSelect:"all"}}>{code}</h1>
           </div>
