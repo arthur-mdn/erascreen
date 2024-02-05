@@ -28,12 +28,13 @@ const AuthenticatedApp = () => {
                                 <Route path="/" element={<Login />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/register" element={<Register />} />
+                                <Route path="/add/:screenId" element={<Login />} />
                             </>
                         ) : (
                             <>
                                 {/* Routes privées */}
                                 <Route path="/" element={<Home />} />
-                                <Route path="/add/:screenId" element={<AddScreen fromUrl={true}/>} />
+                                <Route path="/add/:screenId" element={<AddScreen fromUrl={true} />} />
                                 <Route path="/logout" element={<Logout />} />
                             </>
                         )}
