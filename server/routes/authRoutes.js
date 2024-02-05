@@ -61,7 +61,7 @@ router.post('/auth/register', async (req, res) => {
         await newProfile.save();
 
         const token = jwt.sign({ userId: newUser._id }, config.secretKey, { expiresIn: '365d' });
-        res.cookie('session_token', token, { httpOnly: true });
+        res.cookie('session_token', token, { httpOnly: true, maxAge: 365 * 24 * 60 * 60 * 1000 }); // 365d
 
         res.status(201).json({ message: 'Inscription réussie' });
     } catch (error) {
