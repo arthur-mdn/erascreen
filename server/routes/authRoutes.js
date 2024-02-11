@@ -21,7 +21,7 @@ router.post('/auth/login', async (req, res) => {
         }
 
         const token = jwt.sign({ userId: user._id }, config.secretKey, { expiresIn: '365d' });
-        res.cookie('session_token', token, { httpOnly: true });
+        res.cookie('session_token', token, { httpOnly: true,  maxAge: 365 * 24 * 60 * 60 * 1000 });
         res.json({ message: 'Authentification réussie'});
 
     } catch (error) {
