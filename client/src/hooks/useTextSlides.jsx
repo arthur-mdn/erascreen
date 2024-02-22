@@ -1,8 +1,8 @@
-// hooks/useTextSlides.js
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-function useTextSlides (configData) {
+function useTextSlides(configData) {
     const [textSlide, setTextSlide] = useState(null);
+    const timeoutRef = useRef(null);
 
     useEffect(() => {
         const checkTextSlides = () => {
@@ -12,17 +12,15 @@ function useTextSlides (configData) {
             }
 
             const currentDateTime = new Date();
-            const currentTime = currentDateTime.toTimeString().substr(0, 5); // "HH:MM" format
 
             const activeSlide = configData.text_slides.ranges.find(range => {
                 const [startHours, startMinutes] = range.start.split(':');
                 const [endHours, endMinutes] = range.end.split(':');
-                const startTime = new Date(currentDateTime);
-                startTime.setHours(startHours, startMinutes, 0, 0);
-                const endTime = new Date(currentDateTime);
-                endTime.setHours(endHours, endMinutes, 0, 0);
+                const startTime = new Date();
+                startTime.setHours(parseInt(startHours), parseInt(startMinutes), 0, 0);
+                const endTime = new Date();
+                endTime.setHours(parseInt(endHours), parseInt(endMinutes), 0, 0);
 
-                // Ajuster pour la fin le lendemain si nécessaire
                 if (endTime <= startTime) {
                     endTime.setDate(endTime.getDate() + 1);
                 }
@@ -41,40 +39,27 @@ function useTextSlides (configData) {
                 setTextSlide(null);
             }
 
-            const nextCheckTime = Math.min(
-                ...configData.text_slides.ranges.flatMap(range => {
-                    const [startHours, startMinutes] = range.start.split(':');
-                    const [endHours, endMinutes] = range.end.split(':');
-                    const startTime = new Date(currentDateTime);
-                    startTime.setHours(startHours, startMinutes, 0, 0);
-                    const endTime = new Date(currentDateTime);
-                    endTime.setHours(endHours, endMinutes, 0, 0);
+            // Calculer le délai jusqu'à la prochaine minute pleine
+            const nextMinuteDelay = (60 - currentDateTime.getSeconds()) * 1000;
 
-                    // Si la fin est le lendemain, ajouter un jour à endTime
-                    if (endTime <= startTime) {
-                        endTime.setDate(endTime.getDate() + 1);
-                    }
-
-                    // Si la plage horaire est passée aujourd'hui, ajouter un jour à startTime
-                    if (startTime < currentDateTime && endTime < currentDateTime) {
-                        startTime.setDate(startTime.getDate() + 1);
-                    }
-
-                    return [startTime - currentDateTime, endTime - currentDateTime].filter(t => t > 0);
-                })
-            );
-
-            if (nextCheckTime > 0) {
-                setTimeout(checkTextSlides, nextCheckTime);
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
             }
+
+            // Vérifier à nouveau les slides à la première seconde de la nouvelle minute
+            timeoutRef.current = setTimeout(checkTextSlides, nextMinuteDelay);
         };
 
-        if (configData?.text_slides?.ranges) {
-            checkTextSlides();
-        }
+        checkTextSlides();
 
-    }, [configData]);
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, [configData, configData?.text_slides]);
 
     return textSlide;
 }
+
 export default useTextSlides;
