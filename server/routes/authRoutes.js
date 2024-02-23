@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const Profile = require("../models/Profile");
 const express = require("express");
 const router = express.Router();
 const config = require('../others/config');
@@ -49,16 +48,6 @@ router.post('/auth/register', async (req, res) => {
         });
 
         await newUser.save();
-
-        const newProfile = new Profile({
-            userId: newUser._id,
-            nom: lastName,
-            prenom: firstName,
-            email: email,
-            birthDate: birthDate
-        });
-
-        await newProfile.save();
 
         const token = jwt.sign({ userId: newUser._id }, config.secretKey, { expiresIn: '365d' });
         res.cookie('session_token', token, { httpOnly: true, maxAge: 365 * 24 * 60 * 60 * 1000 }); // 365d

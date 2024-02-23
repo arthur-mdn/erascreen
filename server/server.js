@@ -121,11 +121,12 @@ app.post('/associate-screen', verifyToken, async (req, res) => {
         if (socketId) {
             const socket = io.sockets.sockets.get(socketId);
             if (socket) {
-                const newScreen = new Screen({ code, user: req.user.userId });
+                const newScreen = new Screen({ code, users: [{ user: req.user.userId, role: "creator" }] });
                 await newScreen.save();
 
                 // Associer l'écran et émettre l'événement
-                const screen = await Screen.findOne({ code, user: req.user.userId });
+                const screen = await Screen.findById(newScreen._id).populate('users.user');
+
                 socket.emit('associate', screen);
                 res.send({ success: true, screen: screen, message: 'Écran associé avec succès.' });
             } else {

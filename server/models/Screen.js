@@ -74,11 +74,28 @@ const textSlidesSchema = new mongoose.Schema({
 });
 
 const screenSchema = new Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
+    users: [
+        {
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+                required: true
+            },
+            role: {
+                type: String,
+                required: true,
+                default: "editor"
+            },
+            creation: {
+                type: Date,
+                default: Date.now()
+            },
+            allowed: {
+                type: Array,
+                default: []
+            }
+        }
+    ],
     code: {
         type: String,
         required: true,
