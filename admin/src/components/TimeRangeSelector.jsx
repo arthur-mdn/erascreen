@@ -78,7 +78,8 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
         setRanges(updatedRanges);
         setNewRange(initialNewRangeState());
         onRangesChange(updatedRanges);
-        setIsAddOpen(false); // Fermer le modal si ouvert
+        setIsAddOpen(false);
+        setSelectedRangeIndex(false);
         toast.info("Vous devez enregistrer les modifications pour qu'elles soient prises en compte.");
     };
 
@@ -102,7 +103,8 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
 
         setRanges(updatedRanges);
         onRangesChange(updatedRanges);
-        setIsEditOpen(false); // Fermer le modal de modification
+        setIsEditOpen(false);
+        setSelectedRangeIndex(false);
         toast.info("Modifications enregistrées. N'oubliez pas de sauvegarder.");
     };
 
@@ -166,7 +168,7 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
 
                 <br/>
             </div>
-            <Modal isOpen={isAddOpen} setIsOpen={setIsAddOpen} title={"Ajouter une plage horaire"} onClose={()=>{setIsAddOpen(false)}}>
+            <Modal isOpen={isAddOpen} setIsOpen={setIsAddOpen} title={"Ajouter une plage horaire"} onClose={()=>{setIsAddOpen(false);setSelectedRangeIndex(false);}}>
                 <div className={"fc g1 jc-sb fw-w"}>
                     <div className={"fr g1 ai-c"}>
                         <input
@@ -215,7 +217,7 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
                     <button type={"button"} onClick={addNewRange}>Ajouter</button>
                 </div>
             </Modal>
-            <Modal isOpen={isEditOpen} setIsOpen={setIsEditOpen} title={"Modifier une plage horaire"} onClose={()=>{setIsEditOpen(false)}}>
+            <Modal isOpen={isEditOpen} setIsOpen={setIsEditOpen} title={"Modifier une plage horaire"} onClose={()=>{setIsEditOpen(false);setSelectedRangeIndex(false);}}>
                 <div className={"fc g1 jc-sb fw-w"}>
                     <div className={"fr g1 ai-c"}>
                         <input
