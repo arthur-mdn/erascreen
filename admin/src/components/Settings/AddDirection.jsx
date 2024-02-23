@@ -22,7 +22,7 @@ function AddDirection({ arrowImages, screenId, onDirectionAdd }) {
                 withCredentials: true
             });
             if (response.data.success) {
-                onDirectionAdd(response.data.screen);
+                onDirectionAdd(response.data.screenObj);
                 toast.success("Direction ajoutée avec succès !");
             } else {
                 toast.error("Erreur lors de l'ajout de la direction");

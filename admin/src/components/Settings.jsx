@@ -31,23 +31,29 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
     const [editTextSlidesOpen, setEditTextSlidesOpen] = useState(false);
     const [editSettingsOpen, setEditSettingsOpen] = useState(false);
 
+    console.log(screen)
     const buttons = [
-        { label: "Nom de l'écran", icon: <FaHeading/>, onClick: () => setEditNameOpen(true) },
-        { label: "Logo", icon: <FaCopyright/>, onClick: () => setEditLogoOpen(true) },
-        { label: "Icônes", icon: <FaIcons/>, onClick: () => setEditIconsOpen(true) },
-        { label: "Météo de ville", icon: <FaUmbrella/>, onClick: () => setEditMeteoOpen(true) },
-        { label: "Directions", icon: <FaArrowRightArrowLeft/>, onClick: () => setEditDirectionsOpen(true) },
-        { label: "Galerie de photos", icon: <FaImages/>, onClick: () => setEditPhotosOpen(true) },
-        { label: "Mode sombre", icon: <FaCircleHalfStroke/>, onClick: () => setEditDarkMode(true)},
-        { label: "Textes défilants", icon: <FaTextWidth/>, onClick: () => setEditTextSlidesOpen(true)},
-        { label: "Paramètres avancés", icon: <FaCogs/>, onClick: () => setEditSettingsOpen(true) },
+        { id: "nom", label: "Nom de l'écran", icon: <FaHeading/>, onClick: () => setEditNameOpen(true) },
+        { id: "logo", label: "Logo", icon: <FaCopyright/>, onClick: () => setEditLogoOpen(true) },
+        { id: "icons", label: "Icônes", icon: <FaIcons/>, onClick: () => setEditIconsOpen(true) },
+        { id: "meteo", label: "Météo de ville", icon: <FaUmbrella/>, onClick: () => setEditMeteoOpen(true) },
+        { id: "directions", label: "Directions", icon: <FaArrowRightArrowLeft/>, onClick: () => setEditDirectionsOpen(true) },
+        { id: "photos", label: "Galerie de photos", icon: <FaImages/>, onClick: () => setEditPhotosOpen(true) },
+        { id: "dark_mode", label: "Mode sombre", icon: <FaSun/>, onClick: () => setEditDarkMode(true)},
+        { id: "text_slides", label: "Textes défilants", icon: <FaTextWidth/>, onClick: () => setEditTextSlidesOpen(true)},
+        { id: "config", label: "Paramètres avancés", icon: <FaCogs/>, onClick: () => setEditSettingsOpen(true) }
     ];
+
+    let allowedButtons = []
+    if (screen.permissions && screen.permissions.length > 0) {
+        allowedButtons = buttons.filter(button => screen.permissions.includes(button.id) || screen.permissions.includes("creator"));
+    }
     return (
         <div style={{height:'100%'}} className={"fc jc-sb"}>
             <div>
-                {buttons.map((button, index) => (
+                {allowedButtons.map((button, index) => (
                     <button
-                        key={index}
+                        key={button.id}
                         type={"button"}
                         onClick={button.onClick}
                         className={"setting_element"}

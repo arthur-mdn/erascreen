@@ -35,6 +35,24 @@ const upload = multer({
 });
 
 
+function processScreenObj(screen, currentUserId) {
+    const screenObj = screen.toObject();
+
+    // Trouver l'utilisateur et ajuster les permissions
+    const user = screen.users.find(user => user.user.toString() === currentUserId);
+    if (user && user.role !== "creator") {
+        screenObj.permissions = user.allowed;
+    } else {
+        screenObj.permissions = ["creator"];
+    }
+
+    // Filtrer l'utilisateur actuel de la liste des utilisateurs
+    screenObj.users = screenObj.users.filter(user => user.user.toString() !== currentUserId);
+
+    return screenObj;
+}
+
+
 router.get('/screens', verifyToken,  async (req, res) => {
     const screens = await Screen.find({ "users.user": req.user.userId }).populate('meteo');
     if(screens) {
@@ -47,11 +65,10 @@ router.get('/screens', verifyToken,  async (req, res) => {
 router.get('/screens/:id', verifyToken,  async (req, res) => {
     const { id } = req.params;
     const screen = await Screen.findOne({ _id: id, "users.user": req.user.userId }).populate('meteo');
-    if(screen) {
-        const screenObj  = screen.toObject();
-
+    if (screen) {
+        const screenObj = processScreenObj(screen, req.user.userId);
         res.send({ success: true, screenObj });
-    }else{
+    } else {
         res.status(404).send({ error: 'Écran non trouvé' });
     }
 });
@@ -89,8 +106,9 @@ router.post('/screens/update', verifyToken, upload.single('logo'), async (req, r
         }
 
         const updatedScreen = await screen.save();
+        const screenObj = processScreenObj(updatedScreen, req.user.userId);
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
-        res.send({ success: true, screenObj: updatedScreen });
+        res.send({ success: true, screenObj: screenObj });
     } catch (error) {
         console.error('Erreur lors de la mise à jour :', error);
         res.status(500).send({ error: 'Erreur serveur' });
@@ -135,7 +153,8 @@ router.post('/screens/icons', verifyToken, upload.array('icon', 10), async (req,
         const iconPaths = req.files.map(file => file.path);
         const updatedScreen = await Screen.findByIdAndUpdate(screenId, { $push: { icons: { $each: iconPaths } } }, { new: true }).populate('meteo');
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
-        res.send({ success: true, screen: updatedScreen });
+        const screenObj = processScreenObj(updatedScreen, req.user.userId);
+        res.send({ success: true, screen: screenObj });
     } else {
         res.status(400).send({ error: 'Aucun fichier fourni' });
     }
@@ -160,7 +179,8 @@ router.delete('/screens/icons', verifyToken, async (req, res) => {
         await screen.save();
 
         socketUtils.emitConfigUpdate(screenId, screen);
-        res.send({ success: true, screen });
+        const screenObj = processScreenObj(screen, req.user.userId);
+        res.send({ success: true, screenObj });
     } catch (error) {
         console.error('Erreur lors de la suppression de l\'icone:', error);
         res.status(500).send({ error: 'Erreur serveur' });
@@ -181,7 +201,8 @@ router.post('/screens/icons/reorder', verifyToken, async (req, res) => {
     try {
         const updatedScreen = await Screen.findByIdAndUpdate(screenId, { 'icons': newOrder }, { new: true }).populate('meteo');
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
-        res.send({ success: true, screen: updatedScreen });
+        const screenObj = processScreenObj(updatedScreen, req.user.userId);
+        res.send({ success: true, screen: screenObj });
     } catch (error) {
         console.error('Erreur lors de la réorganisation des icônes:', error);
         res.status(500).send({ error: 'Erreur serveur' });
@@ -201,7 +222,8 @@ router.post('/screens/directions', verifyToken, async (req, res) => {
         screen.directions.push(newDirection);
         await screen.save();
         socketUtils.emitConfigUpdate(screenId, screen);
-        res.send({ success: true, screen });
+        const screenObj = processScreenObj(screen, req.user.userId);
+        res.send({ success: true, screenObj });
     } catch (error) {
         console.error('Erreur lors de l\'ajout d\'une direction:', error);
         res.status(500).send({ error: 'Erreur serveur' });
@@ -219,7 +241,8 @@ router.delete('/screens/directions/:directionIndex', verifyToken, async (req, re
         screen.directions.splice(req.params.directionIndex, 1);
         await screen.save();
         socketUtils.emitConfigUpdate(screenId, screen);
-        res.send({ success: true, screen });
+        const screenObj = processScreenObj(screen, req.user.userId);
+        res.send({ success: true, screenObj });
     } catch (error) {
         console.error('Erreur lors de la suppression d\'une direction:', error);
         res.status(500).send({ error: 'Erreur serveur' });
@@ -237,7 +260,8 @@ router.post('/screens/directions/reorder', verifyToken, async (req, res) => {
         screen.directions = req.body.newOrder;
         await screen.save();
         socketUtils.emitConfigUpdate(screenId, screen);
-        res.send({ success: true, screen });
+        const screenObj = processScreenObj(screen, req.user.userId);
+        res.send({ success: true, screenObj });
     } catch (error) {
         console.error('Erreur lors de la réorganisation des directions:', error);
         res.status(500).send({ error: 'Erreur serveur' });
@@ -255,7 +279,8 @@ router.post('/screens/photos', verifyToken, upload.array('photos', 10), async (r
         const photoPaths = req.files.map(file => file.path);
         const updatedScreen = await Screen.findByIdAndUpdate(screenId, { $push: { photos: { $each: photoPaths } } }, { new: true }).populate('meteo');
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
-        res.send({ success: true, screen: updatedScreen });
+        const screenObj = processScreenObj(updatedScreen, req.user.userId);
+        res.send({ success: true, screen: screenObj });
     } else {
         res.status(400).send({ error: 'Aucun fichier fourni' });
     }
@@ -274,7 +299,8 @@ router.delete('/screens/photos', verifyToken, async (req, res) => {
         await screen.save();
 
         socketUtils.emitConfigUpdate(screenId, screen);
-        res.send({ success: true, screen });
+        const screenObj = processScreenObj(screen, req.user.userId);
+        res.send({ success: true, screenObj });
     } catch (error) {
         console.error('Erreur lors de la suppression de la photo:', error);
         res.status(500).send({ error: 'Erreur serveur' });
@@ -294,7 +320,8 @@ router.post('/screens/photos/reorder', verifyToken, async (req, res) => {
     try {
         const updatedScreen = await Screen.findByIdAndUpdate(screenId, { 'photos': newOrder }, { new: true }).populate('meteo');
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
-        res.send({ success: true, screen: updatedScreen });
+        const screenObj = processScreenObj(updatedScreen, req.user.userId);
+        res.send({ success: true, screen: screenObj});
     } catch (error) {
         console.error('Erreur lors de la réorganisation des photos:', error);
         res.status(500).send({ error: 'Erreur serveur' });
@@ -321,8 +348,8 @@ router.post('/screens/updateConfig', verifyToken, async (req, res) => {
 
         const updatedScreen = await screen.save();
         socketUtils.emitConfigUpdate(screenId, updatedScreen);
-
-        res.send({ success: true, screen: updatedScreen });
+        const screenObj = processScreenObj(updatedScreen, req.user.userId);
+        res.send({ success: true, screen: screenObj });
     } catch (error) {
         console.error('Erreur lors de la mise à jour de la configuration :', error);
         res.status(500).send({ error: 'Erreur serveur' });
