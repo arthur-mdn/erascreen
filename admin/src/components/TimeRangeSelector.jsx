@@ -6,6 +6,8 @@ import Modal from "./Modal.jsx";
 function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", additionalInputs = []}) {
     const [ranges, setRanges] = useState(initialRanges || []);
     const [isAddOpen, setIsAddOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [selectedRangeIndex, setSelectedRangeIndex] = useState(null);
 
     const initialNewRangeState = () => {
         let initialState = {start: '', end: ''};
@@ -19,6 +21,12 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
     const duplicateRange = (range) => {
         setNewRange({...range});
         setIsAddOpen(true);
+    };
+
+    const openEditModal = (index) => {
+        setSelectedRangeIndex(index);
+        setNewRange({ ...ranges[index] });
+        setIsEditOpen(true);
     };
 
     const timeToMinutes = (time) => {
@@ -74,6 +82,30 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
         toast.info("Vous devez enregistrer les modifications pour qu'elles soient prises en compte.");
     };
 
+    const updateRange = () => {
+        if (selectedRangeIndex === null) return;
+
+        // Exclure la plage actuellement en modification pour la vérification des chevauchements
+        const rangesExcludingCurrent = ranges.filter((_, index) => index !== selectedRangeIndex);
+
+        if (isOverlapping(newRange, rangesExcludingCurrent)) {
+            toast.error("La plage horaire modifiée se chevauche avec une existante.");
+            return;
+        }
+
+        const updatedRanges = ranges.map((range, index) => {
+            if (index === selectedRangeIndex) {
+                return { ...newRange };
+            }
+            return range;
+        });
+
+        setRanges(updatedRanges);
+        onRangesChange(updatedRanges);
+        setIsEditOpen(false); // Fermer le modal de modification
+        toast.info("Modifications enregistrées. N'oubliez pas de sauvegarder.");
+    };
+
 
     const removeRange = (index) => {
         const updatedRanges = ranges.filter((_, i) => i !== index);
@@ -116,6 +148,7 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
                             ))
                         }
                         <div className={"fr g0-5"}>
+                            <button onClick={() => openEditModal(index)}><FaArrowRight/></button>
                             <button onClick={() => duplicateRange(range)}><FaCopy/></button>
                             <button onClick={() => removeRange(index)}><FaTrash/></button>
                         </div>
@@ -180,6 +213,55 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
                         ))
                     }
                     <button type={"button"} onClick={addNewRange}>Ajouter</button>
+                </div>
+            </Modal>
+            <Modal isOpen={isEditOpen} setIsOpen={setIsEditOpen} title={"Modifier une plage horaire"} onClose={()=>{setIsEditOpen(false)}}>
+                <div className={"fc g1 jc-sb fw-w"}>
+                    <div className={"fr g1 ai-c"}>
+                        <input
+                            type="time"
+                            value={newRange.start}
+                            onChange={(e) => setNewRange({...newRange, start: e.target.value})}
+                            style={{width: "auto"}}
+                        />
+                        <FaArrowRight/>
+                        <input
+                            type="time"
+                            value={newRange.end}
+                            onChange={(e) => setNewRange({...newRange, end: e.target.value})}
+                            style={{width: "auto"}}
+                        />
+                    </div>
+                    {
+                        additionalInputs.map((input, index) => (
+                            <div key={index} className={"fc g1 ai-c"}>
+                                <label htmlFor={input.name}>{input.label}</label>
+                                {
+                                    input.type === "textarea" ? (
+                                        <textarea
+                                            id={input.name}
+                                            value={newRange[input.name]}
+                                            onChange={(e) => handleInputChange(e, input.name)}
+                                            style={{
+                                                width: "100%",
+                                                resize: "vertical",
+                                                minHeight: "60px",
+                                                maxHeight: "200px"
+                                            }}
+                                        />
+                                    ) : (
+                                        <input
+                                            id={input.name}
+                                            type={input.type}
+                                            value={newRange[input.name]}
+                                            onChange={(e) => handleInputChange(e, input.name)}
+                                        />
+                                    )
+                                }
+                            </div>
+                        ))
+                    }
+                    <button type={"button"} onClick={updateRange}>Modifier</button>
                 </div>
             </Modal>
         </div>
