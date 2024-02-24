@@ -1,14 +1,18 @@
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import config from "../config.js";
-import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Loading from "./Loading.jsx";
 import { useParams } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import Modal from "./Modal.jsx";
+import Scan from "./Scan.jsx"; // Assurez-vous que le chemin d'importation est correct
+import config from "../config.js";
+import {FaQrcode} from "react-icons/fa6";
 
 function AddScreen({ onScreenAdd, fromUrl = false }) {
     const [code, setCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [scanModalIsOpen, setScanModalIsOpen] = useState(false);
     const { screenId } = useParams();
     const [cookies, setCookie] = useCookies(['selectedScreen']);
 
@@ -18,14 +22,7 @@ function AddScreen({ onScreenAdd, fromUrl = false }) {
         }
     }, [screenId, code]);
 
-    useEffect(() => {
-        if (code && screenId === code) {
-            handleSubmit();
-        }
-    }, [code]);
-
-    const handleSubmit = async (event) => {
-        if (event) event.preventDefault();
+    const handleSubmit = async () => {
         setIsLoading(true);
 
         try {
@@ -44,11 +41,30 @@ function AddScreen({ onScreenAdd, fromUrl = false }) {
         }
     };
 
+    const onScanSuccess = (decodedText, decodedResult) => {
+        // Extrait l'ID de l'écran à partir de l'URL scannée
+        console.log(decodedText);
+        const regexPattern = `${config.instanceUrl.replace(/\//g, "\\/")}\\/add\\/([\\w-]+)`;
+        const regex = new RegExp(regexPattern);
+        const match = decodedText.match(regex);
+        if (match && match[1]) {
+            setCode(match[1]);
+            setScanModalIsOpen(false);
+            handleSubmit();
+        } else {
+            toast.error("QR code invalide.");
+        }
+    };
+
+    const onScanError = (error) => {
+        //console.log(`Erreur de scan: ${error}`);
+    };
+
     if (isLoading) return <Loading />;
 
     return (
         <>
-            <form onSubmit={handleSubmit} className={"fc g1"}>
+            <form onSubmit={(e) => {e.preventDefault(); handleSubmit();}} className={"fc g1"}>
                 <label htmlFor={"code"}>Code d'écran</label>
                 <input
                     type={"text"}
@@ -57,8 +73,12 @@ function AddScreen({ onScreenAdd, fromUrl = false }) {
                     onChange={(e) => setCode(e.target.value)}
                     placeholder={"Code d'écran"}
                 />
+                <button type="button" className={"forgot_password_button"} onClick={() => setScanModalIsOpen(true)}> <FaQrcode/> Scanner QR Code</button>
                 <button type="submit">Associer l'écran</button>
             </form>
+            <Modal isOpen={scanModalIsOpen} onClose={() => setScanModalIsOpen(false)} title={"Scanner le QRCode de l'écran"}>
+                <Scan onScanSuccess={onScanSuccess} onScanError={onScanError} />
+            </Modal>
         </>
     );
 }
