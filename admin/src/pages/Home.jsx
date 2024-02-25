@@ -10,9 +10,15 @@ import Settings from "../components/Settings.jsx";
 
 function Home() {
     const [screenSelectorOpen, setScreenSelectorOpen] = useState(false);
-    const [cookies, setCookie, removeCookie] = useCookies(['selectedScreen']);
+    const [cookies, setCookie, removeCookie] = useCookies(['selectedScreen', 'pendingScreenId']);
     const [screenSelected, setScreenSelected] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (cookies.pendingScreenId) {
+            window.location.href = `/add/${cookies.pendingScreenId}`;
+        }
+    }, []);
 
     useEffect(() => {
         if (cookies.selectedScreen) {

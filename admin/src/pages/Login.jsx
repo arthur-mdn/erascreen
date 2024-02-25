@@ -1,14 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import {BrowserRouter as Router, Routes, Route, Navigate, Link} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route, Navigate, Link, useParams} from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../AuthContext';
 import config from '../config';
+import {useCookies} from "react-cookie";
 
 function Login() {
+    const { screenId } = useParams();
     const { setAuthStatus } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [cookies, setCookie, removeCookie] = useCookies(['pendingScreenId']);
+
+    useEffect(() => {
+        if (screenId) {
+            setCookie('pendingScreenId', screenId, { path: '/' });
+        }
+    });
 
     const login = (email, password) => {
         axios.post(`${config.serverUrl}/auth/login`, { email, password }, { withCredentials: true })
