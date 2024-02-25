@@ -93,6 +93,13 @@ function AddScreen({ onScreenAdd, fromUrl = false }) {
 
     return (
         <>
+            {(cookies.pendingScreenId && fromUrl) && (
+
+                    <button type={"button"} style={{marginRight: "auto"}} onClick={() => {
+                        removeCookie('pendingScreenId', { path: '/' });
+                        window.location.href = "/";
+                    }}>Annuler</button>
+            )}
             <form onSubmit={(e) => {e.preventDefault(); handleSubmit();}} className={"fc g1"}>
                 <label htmlFor={"code"}>Code d'écran</label>
                 <input
