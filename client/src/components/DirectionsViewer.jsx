@@ -49,7 +49,8 @@ function DirectionsViewer({ screen }) {
                     <div className={"fr ai-c g1"} key={index}>
                         <img src={`/elements/arrows/${direction.arrow.style}`} alt="Flèche" style={{ transform: `rotate(${direction.arrow.orientation}deg)`, width: '2.5vw' }} />
                         <div style={{textAlign:"left"}}>
-                            <h3 style={{ color: `${direction.title.color}`, fontSize:'1.3vw', fontWeight:"bold" }}>
+                            {/* if color == "#000000", do not set the color, else set the color */}
+                            <h3 style={{ color: `${direction.title.color === "#000000" ? '' : direction.title.color}`, fontSize:'1.3vw', fontWeight:"bold" }}>
                                 {direction.title.text}
                             </h3>
                             <p style={{fontSize:'1.3vw', whiteSpace: 'pre-wrap', fontWeight:"bold"}}>
