@@ -1,6 +1,6 @@
 version: '3'
 
-services: 
+services:
   DisplayHub-mongodb:
     image: mongo
     volumes:
@@ -31,14 +31,14 @@ services:
       - "traefik.http.routers.DisplayHub-admin.rule=Host(`admin.displayhub.fr`)"
       - "traefik.http.routers.DisplayHub-admin.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-admin.tls.certresolver=myresolver"
-      
+
 
   DisplayHub-server:
     build:
       context: ./server
     env_file: ./server/.env
     environment:
-        DB_URI: mongodb://DisplayHub-mongodb:27017/DisplayHub
+      DB_URI: mongodb://DisplayHub-mongodb:27017/DisplayHub
     image: displayhub-server
     labels:
       - "traefik.enable=true"
@@ -46,7 +46,10 @@ services:
       - "traefik.http.services.DisplayHub-server.loadbalancer.server.port=3001"
       - "traefik.http.routers.DisplayHub-server.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-server.tls.certresolver=myresolver"
-
+    volumes:
+      - uploads_volume:/app/uploads
 volumes:
   DisplayHub_mongodb_data:
+    driver: local
+  uploads_volume:
     driver: local
