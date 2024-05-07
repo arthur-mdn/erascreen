@@ -56,9 +56,14 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
                 data: { photoName },
                 withCredentials: true
             });
-            setPhotos(response.data.screen.photos);
-            onPhotosChange(response.data.screen);
-            toast.success("Photo supprimée avec succès !");
+            console.log(response.data.screenObj)
+            if (response.data.screenObj) {
+                setPhotos(response.data.screenObj.photos);
+                onPhotosChange(response.data.screenObj);
+                toast.success("Photo supprimée avec succès !");
+            } else {
+                toast.error("Erreur lors de la suppression de la photo");
+            }
         } catch (error) {
             console.error('Erreur lors de la suppression de la photo:', error);
             toast.error("Erreur lors de la suppression de la photo");

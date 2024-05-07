@@ -166,23 +166,27 @@ function AllowedUsersManager({ screenId, initialAllowedUsers, onConfigChange }) 
                     <Modal isOpen={isModalOpen} onClose={closeModal}
                            title={editIndex !== null ? "Modifier un utilisateur" : "Ajouter un utilisateur"}>
                         Email: <input
+                        type={"email"}
                         value={newUser.email}
                         onChange={(e) => setNewUser({...newUser, email: e.target.value})}
                         readOnly={editIndex !== null}
                     />
-                        <div>Permissions:</div>
-                        {permissions.map(permission => (
-                            <div key={permission}>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={newUser.permissions.includes(permission)}
-                                        onChange={() => handleCheckboxChange(permission)}
-                                    />
-                                    {permission}
-                                </label>
-                            </div>
-                        ))}
+                        <h3>Permissions:</h3>
+                        <div className={"fc g0-5"}>
+                            {permissions.map(permission => (
+                                <div key={permission}>
+                                    <label className={"fr ai-c g0-5"}>
+                                        <input
+                                            type="checkbox"
+                                            checked={newUser.permissions.includes(permission)}
+                                            onChange={() => handleCheckboxChange(permission)}
+                                        />
+                                        {permission}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+
                         <button onClick={handleSaveUser}>
                             {editIndex !== null ? 'Mettre à jour' : 'Ajouter'}
                         </button>

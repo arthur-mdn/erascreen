@@ -97,7 +97,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                 />
             </Modal>
 
-            <Modal isOpen={editIconsOpen} title={"Modifier les icônes"} onClose={()=> {setEditIconsOpen(false)}}>
+            <Modal isOpen={editIconsOpen} title={"Modifier les icônes"} onClose={()=> {setEditIconsOpen(false)}} overflowY={true}>
                 <IconManager
                     screenId={screen._id}
                     initialIcons={screen.icons}
@@ -105,7 +105,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                 />
             </Modal>
 
-            <Modal isOpen={editDirectionsOpen} title={"Modifier les directions"} onClose={()=> {setEditDirectionsOpen(false)}}>
+            <Modal isOpen={editDirectionsOpen} title={"Modifier les directions"} onClose={()=> {setEditDirectionsOpen(false)}} overflowY={true}>
                 <DirectionsManager
                     screenId={screen._id}
                     initialDirections={screen.directions}
@@ -113,7 +113,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                 />
             </Modal>
 
-            <Modal isOpen={editPhotosOpen} title={"Modifier les photos"} onClose={()=> {setEditPhotosOpen(false)}}>
+            <Modal isOpen={editPhotosOpen} title={"Modifier les photos"} onClose={()=> {setEditPhotosOpen(false)}} overflowY={true}>
                 <PhotosManager
                     screenId={screen._id}
                     initialPhotos={screen.photos}

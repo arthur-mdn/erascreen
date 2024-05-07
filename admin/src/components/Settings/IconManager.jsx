@@ -59,8 +59,8 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
                 data: { iconName },
                 withCredentials: true
             });
-            setIcons(response.data.screen.icons);
-            onIconsChange(response.data.screen);
+            setIcons(response.data.screenObj.icons);
+            onIconsChange(response.data.screenObj);
             toast.success("Icône supprimée avec succès !");
         } catch (error) {
             console.error('Erreur lors de la suppression de l\'icone:', error);

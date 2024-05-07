@@ -45,8 +45,8 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
         setIsLoading(true);
         try {
             const response = await axios.delete(`${config.serverUrl}/screens/directions/${directionIndex}`, { withCredentials: true });
-            setDirections(response.data.screen.directions);
-            onDirectionsChange(response.data.screen);
+            setDirections(response.data.screenObj.directions);
+            onDirectionsChange(response.data.screenObj);
             toast.success("Direction supprimée avec succès !");
         } catch (error) {
             console.error('Erreur lors de la suppression d\'une direction:', error);

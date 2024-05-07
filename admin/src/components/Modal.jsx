@@ -5,7 +5,7 @@ import {FaTimes} from "react-icons/fa";
 import {FaEllipsis} from "react-icons/fa6";
 import {Link} from "react-router-dom";
 
-const Modal = ({ isOpen, onClose, children, title,actions, bgColor = "#f3f3f3", padding="1rem" , hideBg= false}) => {
+const Modal = ({ isOpen, onClose, children, title,actions, bgColor = "#f3f3f3", padding="1rem" , hideBg= false, overflowY = false}) => {
     const [actionPopup, setActionPopup] = useState(false);
     const backdropVariants = {
         hidden: { opacity: 0 },
@@ -63,7 +63,7 @@ const Modal = ({ isOpen, onClose, children, title,actions, bgColor = "#f3f3f3", 
                                         </div>
                                     }
 
-                                    <div style={{padding:padding, height:"100%", display:"flex", flexDirection:"column"}}>
+                                    <div style={{padding:padding, height:"100%", display:"flex", flexDirection:"column", overflowY:overflowY ? "scroll" : "", maxHeight: overflowY ? "94vh" : "" }}>
                                         {children}
                                     </div>
                                     {actionPopup && (
