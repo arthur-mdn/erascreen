@@ -161,7 +161,7 @@ function App() {
                                 <FaCloudDownloadAlt size={'2rem'}/>
                             </div>}
                         <Screen configData={configData}/>
-                        <Pub displayTime={12000} animationTime={2000} intervalTime={30000} />
+                        <Pub displayTime={12000} animationTime={2000} intervalTime={18000} />
                     </>);
             case 'disconnected':
                 return <p>Connexion perdue. Tentative de reconnexion...</p>;

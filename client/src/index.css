@@ -1102,7 +1102,7 @@ body.dark-mode img[alt="Flèche"]{
 .pub-card {
   position: absolute;
   margin-left: 1rem;
-  bottom: 1rem;
+  bottom: 6.5rem;
   left: -100%;
   width: fit-content;
   background-color: white;

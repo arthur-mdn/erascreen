@@ -21,14 +21,14 @@ function Pub({ displayTime, animationTime, intervalTime }) {
             }, 10);
         };
 
-        const intervalId = setInterval(animate, displayTime + animationTime * 3 + intervalTime);
+        const intervalId = setInterval(animate, displayTime + animationTime * 2 + intervalTime);
         animate();
 
         return () => clearInterval(intervalId);
     }, [displayTime, animationTime, intervalTime]);
 
     return isVisible ? (
-        <div className={"pub-card"} style={{ left: `${leftPosition}%`, transition: `left ${transitionTime}ms` }}>
+        <div className={"pub-card card"} style={{ left: `${leftPosition}%`, transition: `left ${transitionTime}ms` }}>
             <img src={"/elements/logo.png"} alt="Ad" style={{ height: "4rem" }} />
         </div>
     ) : null;
