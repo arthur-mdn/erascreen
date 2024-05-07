@@ -147,9 +147,11 @@ router.post('/screens/update', verifyToken, upload.single('logo'), async (req, r
                 if (!await hasPermission(userId, screenId, "nom")) {
                     return res.status(403).send({ error: 'Permission refusée' });
                 }
-                if (value && value.ranges) {
+                if (value) {
                     screen.nom = value;
                 }
+            } else {
+                return res.status(400).send({ error: 'Attribut non pris en charge' });
             }
         }
 
