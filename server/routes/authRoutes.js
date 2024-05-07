@@ -65,7 +65,6 @@ router.get('/auth/validate-session', (req, res) => {
         return res.json({ isAuthenticated: false });
     }
     try {
-        console.log(token, config.secretKey)
         jwt.verify(token, config.secretKey);
         res.json({ isAuthenticated: true });
     } catch (err) {

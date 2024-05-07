@@ -30,8 +30,8 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
         setIsLoading(true);
         try {
             const response = await axios.post(`${config.serverUrl}/screens/directions/reorder`, { newOrder: items }, { withCredentials: true });
-            setDirections(response.data.screen.directions);
-            onDirectionsChange(response.data.screen);
+            setDirections(response.data.screenObj.directions);
+            onDirectionsChange(response.data.screenObj);
             toast.success("Directions réordonnées avec succès !");
         } catch (error) {
             console.error('Erreur lors de la réorganisation des directions:', error);
