@@ -1,5 +1,6 @@
 //routes/screenRoutes.js
 const Screen = require("../models/Screen")
+const User = require("../models/User")
 const express = require("express");
 const router = express.Router();
 const verifyToken = require('../others/verifyToken');
@@ -380,10 +381,10 @@ router.post('/screens/updateConfig', verifyToken, async (req, res) => {
 
 // Ajouter un utilisateur à un écran
 router.post('/screens/users', verifyToken, async (req, res) => {
-    const { id } = req.params;
+    const screenId = req.selectedScreen;
     const { userEmail, role, permissions } = req.body;
 
-    const screen = await Screen.findById(id);
+    const screen = await Screen.findById(screenId);
     if (!screen) return res.status(404).send({ error: 'Écran non trouvé' });
 
     const user = await User.findOne({ email: userEmail });
@@ -399,18 +400,19 @@ router.post('/screens/users', verifyToken, async (req, res) => {
     res.send({ success: true, message: 'Utilisateur ajouté avec succès' });
 });
 
+
 // Modifier les permissions d'un utilisateur sur un écran
 router.put('/screens/users/:userId', verifyToken, async (req, res) => {
-    const { id, userId } = req.params;
-    const { role, permissions } = req.body;
+    const { userId } = req.params;
+    const screenId = req.selectedScreen;
+    const { permissions } = req.body;
 
-    const screen = await Screen.findById(id);
+    const screen = await Screen.findById(screenId);
     if (!screen) return res.status(404).send({ error: 'Écran non trouvé' });
 
     const userIndex = screen.users.findIndex(u => u.user.toString() === userId);
     if (userIndex === -1) return res.status(404).send({ error: 'Utilisateur non trouvé sur cet écran' });
 
-    screen.users[userIndex].role = role;
     screen.users[userIndex].permissions = permissions;
     await screen.save();
 
@@ -419,9 +421,10 @@ router.put('/screens/users/:userId', verifyToken, async (req, res) => {
 
 // Supprimer un utilisateur d'un écran
 router.delete('/screens/users/:userId', verifyToken, async (req, res) => {
-    const { id, userId } = req.params;
+    const { userId } = req.params;
+    const screenId = req.selectedScreen;
 
-    const screen = await Screen.findById(id);
+    const screen = await Screen.findById(screenId);
     if (!screen) return res.status(404).send({ error: 'Écran non trouvé' });
 
     screen.users = screen.users.filter(u => u.user.toString() !== userId);
