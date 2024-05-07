@@ -121,39 +121,38 @@ function App() {
                 return <p>Récupération d'un code à usage unique...</p>;
             case 'code_received':
                 return (<div className={"fc g0-5 ai-c jc-c"}>
-                        <div className={"fc ai-c g1"}>
-                            <h1>Associer cet écran à votre compte DisplayHub</h1>
-                            <QRCodeCanvas value={`${config.adminUrl}/add/${code}`} size={512}/>
-                            <h1 style={{fontWeight: "bold", userSelect: "all"}}>{code}</h1>
-                        </div>
 
+                    <img src={"/elements/logo.png"} style={{height: "6rem", marginBottom:"2rem"}}/>
 
-                        <div style={{padding: "1rem"}} className={"fc g1"}>
-                            <div className={" fr ai-c g1 bg-white p1 br0-5 ta-l"}>
-                                <FaMobileScreenButton size={'2rem'} style={{flexShrink: 0}}/>
-                                <div>
-                                    Scannez le QRCode avec votre appareil mobile pour associer cet écran à votre compte
-                                    DisplayHub.
-                                </div>
-                            </div>
-                            Ou
-                            <div className={"fr ai-c g1 bg-white p1 br0-5 ta-l"}>
-                                <FaRightToBracket size={'2rem'} style={{flexShrink: 0}}/>
-                                <div>
-                                    Connectez vous à votre compte sur <a href={`${config.adminUrl}`}
-                                                                         style={{color: "#0b1dea"}}>{config.adminUrl}</a>
-                                </div>
-                            </div>
-                            <div className={"fr ai-c g1 bg-white p1 br0-5 ta-l"}>
-                                <FaKeyboard size={'2rem'} style={{flexShrink: 0}}/>
-                                <div>
-                                    Ouvre le sélecteur d'écran, cliquez sur Ajouter un écran, et saisissez manuellement
-                                    le code pour associer cet écran à votre compte DisplayHub.
-                                </div>
+                    <div className={"fc ai-c g1"}>
+                        <QRCodeCanvas value={`${config.adminUrl}/add/${code}`} size={512}/>
+                        <h1 style={{fontWeight: "bold", userSelect: "all"}}>{code}</h1>
+                    </div>
+
+                    <div style={{padding: "1rem"}} className={"fc g1"}>
+                        <div className={" fr ai-c g1 bg-white p1 br0-5 ta-l"}>
+                            <FaMobileScreenButton size={'2rem'} style={{flexShrink: 0}}/>
+                            <div>
+                                Scannez le QRCode avec votre appareil mobile pour associer cet écran à votre compte DisplayHub.
                             </div>
                         </div>
+                        Ou
+                        <div className={"fr ai-c g1 bg-white p1 br0-5 ta-l"}>
+                            <FaRightToBracket size={'2rem'} style={{flexShrink: 0}}/>
+                            <div>
+                                Connectez vous à votre compte sur <a href={`${config.adminUrl}`}
+                                                                     style={{color: "#0b1dea"}}>{config.adminUrl}</a>
+                            </div>
+                        </div>
+                        <div className={"fr ai-c g1 bg-white p1 br0-5 ta-l"}>
+                            <FaKeyboard size={'2rem'} style={{flexShrink: 0}}/>
+                            <div>
+                                Cliquez sur Choisir un écran, ensuite sur Ajouter un écran, et saisissez manuellement le code pour associer cet écran à votre compte DisplayHub.
+                            </div>
+                        </div>
+                    </div>
 
-                    </div>);
+                </div>);
             case 'configured':
                 return (<>
                         {showUpdateIcon &&
