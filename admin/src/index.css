@@ -374,7 +374,7 @@ button:focus-visible {
 .profile {
   width: 100%;
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: center;
   background-color: #ffffff;
   padding: 0.5rem 1rem;

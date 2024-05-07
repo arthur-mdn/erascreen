@@ -31,6 +31,9 @@ body{
 .bg-grey{
   background-color: #f1f1f1;
 }
+.bg-white{
+  background-color: white;
+}
 a {
   font-weight: 500;
   color: #646cff;
@@ -182,6 +185,19 @@ input[type=checkbox]{
   justify-content: flex-start;
 }
 
+.p1{
+  padding: 1rem;
+}
+.br0-5{
+  border-radius: 0.5rem;
+}
+.ta-c{
+    text-align: center;
+
+}
+.ta-l{
+    text-align: left;
+}
 .usage{
   padding: 0.5rem 1rem;
   background-color: white;

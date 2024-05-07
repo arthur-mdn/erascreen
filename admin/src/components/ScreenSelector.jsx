@@ -58,7 +58,7 @@ function ScreenSelector({ onSelectScreen }) {
                             />
                             <label htmlFor={`radio-screen-${screen._id}`}>
                             </label>
-                            <FaTv/>
+                            <FaTv size={"2rem"}/>
                             <div className={"fc ai-fs g0-25"} >
                                 <h3>
                                     {screen.nom}
