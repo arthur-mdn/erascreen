@@ -31,9 +31,11 @@ const removeSocketId = (socketId) => {
     for (const screenId in screenSocketMap) {
         if (screenSocketMap[screenId] === socketId) {
             delete screenSocketMap[screenId];
-            break;
+            return screenId;
         }
     }
+    return null;
 };
+
 
 module.exports = { setIo, emitConfigUpdate, associateScreenSocket, removeSocketId, emitScreenDeletion };

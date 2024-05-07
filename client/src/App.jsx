@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import { io } from 'socket.io-client';
 import './App.css';
 import config from './config';
@@ -15,6 +15,7 @@ function App() {
   const [showUpdateIcon, setShowUpdateIcon] = useState(false);
   const isDarkModeActive = useDarkMode(configData);
   const textSlide = useTextSlides(configData);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const savedConfig = localStorage.getItem('screenConfig');
@@ -96,6 +97,11 @@ function App() {
       }
     });
 
+    socket.on('error', (error) => {
+      console.error('Socket error:', error);
+      setStatus('error');
+        setError(error);
+    })
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
@@ -105,6 +111,7 @@ function App() {
   }, []);
 
   const renderContent = () => {
+    console.log(status)
     switch (status) {
       case 'connecting':
         return <p>Connexion au serveur...</p>;
@@ -134,6 +141,14 @@ function App() {
           );
       case 'disconnected':
         return <p>Connexion perdue. Tentative de reconnexion...</p>;
+      case 'error':
+            return <>
+                <p>{`Une erreur s'est produite. ${error} `}</p>
+                <button onClick={() => {
+                    localStorage.clear();
+                    window.location.reload();
+                }}>Réinitialiser les données locales</button>
+            </>;
       default:
         return <p>État inconnu</p>;
     }

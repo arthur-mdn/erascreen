@@ -23,7 +23,9 @@ const io = new Server(server, {
     cors: {
         origin: config.clientUrl,
         credentials: true
-    }
+    },
+    pingInterval: 10000,
+    pingTimeout: 5000
 });
 socketUtils.setIo(io);
 
@@ -53,6 +55,13 @@ app.use(authRoutes);
 app.use(screenRoutes);
 app.use('/uploads', express.static('uploads'));
 
+
+// set all screens "offline"
+Screen.updateMany({}, { status: "offline" })
+    .then(() => console.log("Tous les écrans sont maintenant hors ligne"))
+    .catch((error) => console.error("Erreur lors de la mise à jour des écrans:", error));
+
+
 const activeSockets = {};
 
 io.on('connection', (socket) => {
@@ -60,6 +69,7 @@ io.on('connection', (socket) => {
 
     socket.on('associate', async (data) => {
         const { screenId } = data;
+        await Screen.findByIdAndUpdate(screenId, { status: "online" });
         socketUtils.associateScreenSocket(screenId,socket.id);
     });
 
@@ -76,6 +86,7 @@ io.on('connection', (socket) => {
         if (screen) {
             try {
                 const updatedScreen = await updateWeatherData(screenId, screen.meteo.weatherId);
+                await Screen.findByIdAndUpdate(screenId, { status: "online" });
                 socket.emit('config_updated', updatedScreen);
             } catch (error) {
                 console.error('Erreur lors de la mise à jour de la météo:', error);
@@ -92,6 +103,7 @@ io.on('connection', (socket) => {
             const screen = await Screen.findById(screenId).populate('meteo');
             if (screen) {
                 socketUtils.associateScreenSocket(screenId, socket.id);
+                await Screen.findByIdAndUpdate(screenId, { status: "online" });
                 socket.emit('config_updated', screen);
             } else {
                 socket.emit('error', 'Écran non trouvé dans la base de données');
@@ -102,8 +114,18 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('disconnect', () => {
-       socketUtils.removeSocketId(socket.id);
+    socket.on('disconnect', async () => {
+        const screenId = socketUtils.removeSocketId(socket.id);
+        if (screenId) {
+            await Screen.findByIdAndUpdate(screenId, {status: "offline"});
+        }
+    });
+
+    socket.conn.on('pingTimeout', async () => {
+        const screenId = socketUtils.removeSocketId(socket.id);
+        if (screenId) {
+            await Screen.findByIdAndUpdate(screenId, {status: "offline"});
+        }
     });
 });
 
