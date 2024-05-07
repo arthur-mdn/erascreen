@@ -8,6 +8,7 @@ const verifyToken = (req, res, next) => {
         return res.status(403).send('Un token est requis pour l\'authentification');
     }
     try {
+        console.log(token, config.secretKey)
         req.user = jwt.verify(token, config.secretKey);
         req.selectedScreen = selectedScreen;
     } catch (err) {

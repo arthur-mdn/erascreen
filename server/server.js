@@ -28,16 +28,13 @@ const io = new Server(server, {
 socketUtils.setIo(io);
 
 app.use(bodyParser.json());
-app.use(cookieParser({
-    sameSite: 'none',
-    secure: true
-}));
+
 app.use(cors((req, callback) => {
     const allowedOrigins = [config.clientUrl, config.adminUrl];
     let corsOptions;
 
     if (allowedOrigins.includes(req.header('Origin'))) {
-        corsOptions = { origin: true, credentials: true };
+        corsOptions = { origin: true, credentials: true};
     } else {
         corsOptions = { origin: false };
     }
@@ -45,6 +42,10 @@ app.use(cors((req, callback) => {
     callback(null, corsOptions);
 }));
 
+app.use(cookieParser({
+    sameSite: 'none',
+    secure: true
+}));
 
 database.connect();
 

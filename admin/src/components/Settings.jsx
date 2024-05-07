@@ -11,7 +11,7 @@ import {
     FaHeading,
     FaIcons,
     FaImages, FaSun, FaTextWidth,
-    FaUmbrella
+    FaUmbrella, FaUsers
 } from "react-icons/fa6";
 import {FaCogs, FaSignOutAlt} from "react-icons/fa";
 import ConfigManager from "./Settings/ConfigManager.jsx";
@@ -19,6 +19,7 @@ import DarkModeManager from "./Settings/DarkModeManager.jsx";
 import TimeIndicator from "./TimeIndicator.jsx";
 import DelScreen from "./Settings/DelScreen.jsx";
 import TextSlidesManager from "./Settings/TextSlidesManager.jsx";
+import AllowedUsersManager from "./Settings/AllowedUsersManager.jsx";
 
 function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
     const [editNameOpen, setEditNameOpen] = useState(false);
@@ -29,6 +30,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
     const [editPhotosOpen, setEditPhotosOpen] = useState(false);
     const [editDarkMode, setEditDarkMode] = useState(false);
     const [editTextSlidesOpen, setEditTextSlidesOpen] = useState(false);
+    const [editAllowedUsersOpen, setEditAllowedUsersOpen] = useState(false);
     const [editSettingsOpen, setEditSettingsOpen] = useState(false);
 
     console.log(screen)
@@ -41,6 +43,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
         { id: "photos", label: "Galerie de photos", icon: <FaImages/>, onClick: () => setEditPhotosOpen(true) },
         { id: "dark_mode", label: "Mode sombre", icon: <FaSun/>, onClick: () => setEditDarkMode(true)},
         { id: "text_slides", label: "Textes défilants", icon: <FaTextWidth/>, onClick: () => setEditTextSlidesOpen(true)},
+        { id: "allowed_users", label: "Utilisateurs autorisés", icon: <FaUsers/>, onClick: () => setEditAllowedUsersOpen(true)},
         { id: "config", label: "Paramètres avancés", icon: <FaCogs/>, onClick: () => setEditSettingsOpen(true) }
     ];
 
@@ -145,6 +148,13 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                 />
             </Modal>
 
+            <Modal isOpen={editAllowedUsersOpen} title={"Modifier les utilisateurs autorisés"} onClose={()=> {setEditAllowedUsersOpen(false)}}>
+                <AllowedUsersManager
+                    screenId={screen._id}
+                    initialAllowedUsers={screen.users}
+                    onConfigChange={(newConfig) => {onScreenUpdate(newConfig)}}
+                />
+            </Modal>
 
             <button type={"button"} className={"setting_element"} onClick={()=>{window.location = "/logout"}} style={{color:"red", alignItems:"center" ,justifyContent:"center"}}>
                 <FaSignOutAlt/>

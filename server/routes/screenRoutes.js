@@ -39,18 +39,38 @@ function processScreenObj(screen, currentUserId) {
     const screenObj = screen.toObject();
 
     // Trouver l'utilisateur et ajuster les permissions
-    const user = screen.users.find(user => user.user.toString() === currentUserId);
-    if (user && user.role !== "creator") {
-        screenObj.permissions = user.allowed;
-    } else {
+    const user = screen.users.find(user => user.user._id.toString() === currentUserId);
+    if (user && user.role === "creator") {
         screenObj.permissions = ["creator"];
+    } else {
+        screenObj.permissions = user.permissions;
     }
 
     // Filtrer l'utilisateur actuel de la liste des utilisateurs
-    screenObj.users = screenObj.users.filter(user => user.user.toString() !== currentUserId);
+    screenObj.users = screenObj.users.filter(user => user.user._id.toString() !== currentUserId);
+
+    // Supprimer les informations sensibles des comptes utilisateurs (password, socketId, birthDate)
+    // tout en conservant le "role" et "creation"
+    screenObj.users = screenObj.users.map(user => {
+        const { password, socketId, birthDate, user: userInfo, ...rest } = user;
+        const { _id, email, firstName, lastName } = userInfo; // Ajustez ceci en fonction des champs que vous souhaitez conserver
+        return {
+            ...rest,
+            user: {
+                _id,
+                email,
+                firstName,
+                lastName,
+                // Incluez explicitement les champs que vous souhaitez conserver
+                role: user.role,
+                creation: user.creation,
+            }
+        };
+    });
 
     return screenObj;
 }
+
 
 
 router.get('/screens', verifyToken,  async (req, res) => {
@@ -64,7 +84,7 @@ router.get('/screens', verifyToken,  async (req, res) => {
 
 router.get('/screens/:id', verifyToken,  async (req, res) => {
     const { id } = req.params;
-    const screen = await Screen.findOne({ _id: id, "users.user": req.user.userId }).populate('meteo');
+    const screen = await Screen.findOne({ _id: id, "users.user": req.user.userId }).populate('meteo').populate('users.user');
     if (screen) {
         const screenObj = processScreenObj(screen, req.user.userId);
         res.send({ success: true, screenObj });
@@ -354,6 +374,60 @@ router.post('/screens/updateConfig', verifyToken, async (req, res) => {
         console.error('Erreur lors de la mise à jour de la configuration :', error);
         res.status(500).send({ error: 'Erreur serveur' });
     }
+});
+
+
+
+// Ajouter un utilisateur à un écran
+router.post('/screens/users', verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const { userEmail, role, permissions } = req.body;
+
+    const screen = await Screen.findById(id);
+    if (!screen) return res.status(404).send({ error: 'Écran non trouvé' });
+
+    const user = await User.findOne({ email: userEmail });
+    if (!user) return res.status(404).send({ error: 'Utilisateur non trouvé' });
+
+    // Vérifier si l'utilisateur est déjà ajouté
+    const isUserAdded = screen.users.some(u => u.user.toString() === user._id.toString());
+    if (isUserAdded) return res.status(400).send({ error: 'Utilisateur déjà ajouté' });
+
+    screen.users.push({ user: user._id, role, permissions });
+    await screen.save();
+
+    res.send({ success: true, message: 'Utilisateur ajouté avec succès' });
+});
+
+// Modifier les permissions d'un utilisateur sur un écran
+router.put('/screens/users/:userId', verifyToken, async (req, res) => {
+    const { id, userId } = req.params;
+    const { role, permissions } = req.body;
+
+    const screen = await Screen.findById(id);
+    if (!screen) return res.status(404).send({ error: 'Écran non trouvé' });
+
+    const userIndex = screen.users.findIndex(u => u.user.toString() === userId);
+    if (userIndex === -1) return res.status(404).send({ error: 'Utilisateur non trouvé sur cet écran' });
+
+    screen.users[userIndex].role = role;
+    screen.users[userIndex].permissions = permissions;
+    await screen.save();
+
+    res.send({ success: true, message: 'Permissions modifiées avec succès' });
+});
+
+// Supprimer un utilisateur d'un écran
+router.delete('/screens/users/:userId', verifyToken, async (req, res) => {
+    const { id, userId } = req.params;
+
+    const screen = await Screen.findById(id);
+    if (!screen) return res.status(404).send({ error: 'Écran non trouvé' });
+
+    screen.users = screen.users.filter(u => u.user.toString() !== userId);
+    await screen.save();
+
+    res.send({ success: true, message: 'Utilisateur supprimé avec succès' });
 });
 
 

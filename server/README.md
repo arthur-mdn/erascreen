@@ -1,8 +1,21 @@
-# React + Vite
+# Raspberry AutoLoader
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Download unclutter
+```bash
+sudo apt-get install unclutter
+```
 
-Currently, two official plugins are available:
+Create .config/lxsession/LXDE-pi/autostart to run the script on boot
+```bash
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi
+#@xscreensaver -no-splash
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+@xset s off
+@xset -dpms
+set s noblank
+
+@unclutter -idle 0.1
+
+@chromium-browser --start-fullscreen --kiosk --app=https://client.displayhub.fr
+```

@@ -147,6 +147,7 @@ function App() {
               {
                 `
                 body, html, #root{
+                  color: white;
                   background-color: rgb(32, 35, 37);
                 }
                 .card{

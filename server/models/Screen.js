@@ -90,7 +90,7 @@ const screenSchema = new Schema({
                 type: Date,
                 default: Date.now()
             },
-            allowed: {
+            permissions: {
                 type: Array,
                 default: []
             }

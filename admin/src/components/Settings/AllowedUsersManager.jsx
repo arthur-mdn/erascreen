@@ -2,92 +2,55 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import config from '../../config';
 import Loading from "../Loading.jsx";
-import {toast} from "react-toastify";
-import DelScreen from "./DelScreen.jsx";
+import { toast } from "react-toastify";
+import Modal from "../Modal.jsx";
+import { FaCheck } from "react-icons/fa6";
 
-function ConfigManager({ screen, initialConfig, onConfigChange, onRemoveScreenSelected }) {
-    const [currentConfig, setCurrentConfig] = useState(initialConfig);
+function AllowedUsersManager({ screenId, initialAllowedUsers, onConfigChange }) {
+    const [allowedUsers, setAllowedUsers] = useState(initialAllowedUsers || []);
     const [isLoading, setIsLoading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [newUser, setNewUser] = useState({ email: '', permissions: [] });
 
-    const handleInputChange = (key, value) => {
-        const updatedConfig = { ...currentConfig, [key]: value };
-        setCurrentConfig(updatedConfig);
+    const permissions = [
+        "nom", "logo", "icons", "meteo", "directions", "photos", "dark_mode", "text_slides", "allowed_users", "config"
+    ];
 
-        setIsLoading(true);
-        axios.post(`${config.serverUrl}/screens/updateConfig`, { [key]: value }, {
-            withCredentials: true
-        })
-            .then(response => {
-                if (response.data.success) {
-                    onConfigChange(response.data.screen);
-                    toast.success(`${key} mis à jour avec succès !`);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la mise à jour de la configuration :', error);
-                toast.error(`Erreur lors de la mise à jour de ${key}`);
-            })
-            .finally(() => setIsLoading(false));
-    };
-
-    if (isLoading) return (
-        <Loading/>
-    );
 
     return (
-        <>
-            <div>
-                {Object.keys(currentConfig).map((key) => {
-                    const value = currentConfig[key];
-
-                    if (key === 'photos_interval') {
-                        return (
-                            <div key={key}>
-                                <label htmlFor={key}>{key} (1-60)</label>
-                                <input
-                                    type="range"
-                                    id={key}
-                                    min="1"
-                                    max="60"
-                                    value={value}
-                                    onChange={(e) => setCurrentConfig({ ...currentConfig, [key]: parseInt(e.target.value) })}
-                                    onMouseUp={(e) => handleInputChange(key, parseInt(e.target.value))}
-                                    onTouchEnd={(e) => handleInputChange(key, parseInt(e.target.value))}
-                                />
-                                <span>{value}</span>
-                            </div>
-                        );
-                    }
-
-                    return (
-                        <div key={key}>
-                            <label>{key}</label>
-                            {typeof value === 'boolean' ? (
-                                <input
-                                    type="checkbox"
-                                    checked={value}
-                                    onChange={(e) => handleInputChange(key, e.target.checked)}
-                                />
-                            ) : (
-                                <input
-                                    type="text"
-                                    value={value}
-                                    onChange={(e) => handleInputChange(key, e.target.value)}
-                                />
-                            )}
+        <div>
+            {isLoading ? <Loading /> : (
+                <>
+                    <button onClick={() => setIsModalOpen(true)}>Ajouter un utilisateur</button>
+                    {allowedUsers.map((user, index) => (
+                        <div key={index}>
+                            {user.user.email} - Permissions: {user.permissions.join(', ')}
+                            <button onClick={() => openModalForEdit(index)}>Modifier</button>
+                            <button onClick={() => handleDeleteUser(index)}>Supprimer</button>
                         </div>
-                    );
-                })}
-            </div>
-            <div>
-                <label>Exporter la config</label>
-                <textarea value={JSON.stringify(screen)} readOnly={true} style={{width:"100%",resize:"vertical",minHeight:"60px",maxHeight:"200px"}}/>
-            </div>
-            <div style={{marginTop:"auto"}}>
-                <DelScreen onRemoveScreenSelected={()=>{onRemoveScreenSelected()}}/>
-            </div>
-        </>
+                    ))}
+                    <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Ajouter/Modifier un utilisateur">
+                        Email: <input value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
+                        <div>Permissions:</div>
+                        {permissions.map(permission => (
+                            <div key={permission}>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={newUser.permissions.includes(permission)}
+                                    />
+                                    {permission}
+                                </label>
+                            </div>
+                        ))}
+                        <button>
+                            {/* 'Mettre à jour' : 'Ajouter'*/}
+                        </button>
+                    </Modal>
+                </>
+            )}
+        </div>
     );
 }
 
-export default ConfigManager;
+export default AllowedUsersManager;
