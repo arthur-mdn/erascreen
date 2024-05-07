@@ -171,6 +171,9 @@ input[type=checkbox]{
 .g0-5{
   gap: 0.5rem;
 }
+.g0-25{
+  gap: 0.25rem;
+}
 .g1{
   gap: 1rem;
 }
@@ -678,4 +681,24 @@ button[type=button].Toastify__close-button{
   background: transparent;
   color: black;
   padding: 0;
+}
+
+div.online, div.offline{
+  width: 15px;
+  height: 15px;
+  background-color: grey;
+border-radius: 50%;
+
+}
+div.offline{
+  background-color: red;
+}
+div.online{
+  background-color: green;
+}
+span.offline{
+  color: red;
+}
+span.online{
+  color: green;
 }

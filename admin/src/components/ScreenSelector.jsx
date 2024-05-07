@@ -6,6 +6,7 @@ import Modal from "./Modal.jsx";
 import AddScreen from "./AddScreen.jsx";
 import Loading from "./Loading.jsx";
 import {toast} from "react-toastify";
+import {FaTv} from "react-icons/fa6";
 function ScreenSelector({ onSelectScreen }) {
     const [screens, setScreens] = useState([]);
     const [cookies, setCookie] = useCookies(['selectedScreen']);
@@ -57,13 +58,21 @@ function ScreenSelector({ onSelectScreen }) {
                             />
                             <label htmlFor={`radio-screen-${screen._id}`}>
                             </label>
-                            <div className={"fc ai-fs"} >
+                            <FaTv/>
+                            <div className={"fc ai-fs g0-25"} >
                                 <h3>
                                     {screen.nom}
                                 </h3>
                                 <p style={{opacity:0.4}}>
                                     {screen._id}
                                 </p>
+                                <div className={`fr g0-5 ai-c`}>
+                                    <div className={`${screen.status}`}>
+                                    </div>
+                                    <span className={`${screen.status}`}>
+                                        {screen.status === "online" ? "En ligne" : "Hors ligne"}
+                                    </span>
+                                </div>
                             </div>
 
                         </button>
