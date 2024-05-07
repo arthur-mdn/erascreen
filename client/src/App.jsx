@@ -8,6 +8,7 @@ import useDarkMode from './hooks/useDarkMode';
 import useTextSlides from './hooks/useTextSlides';
 import {QRCodeCanvas} from 'qrcode.react';
 import {FaKeyboard, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
+import Pub from "./components/Pub.jsx";
 
 function App() {
     const [code, setCode] = useState('');
@@ -160,6 +161,7 @@ function App() {
                                 <FaCloudDownloadAlt size={'2rem'}/>
                             </div>}
                         <Screen configData={configData}/>
+                        <Pub displayTime={12000} animationTime={2000} intervalTime={30000} />
                     </>);
             case 'disconnected':
                 return <p>Connexion perdue. Tentative de reconnexion...</p>;

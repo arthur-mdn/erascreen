@@ -1097,3 +1097,21 @@ body.dark-mode img[alt="Flèche"]{
   white-space: nowrap;
   animation: scrollText 10s linear infinite;
 }
+
+
+.pub-card {
+  position: absolute;
+  margin-left: 1rem;
+  bottom: 1rem;
+  left: -100%;
+  width: fit-content;
+  background-color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999999999999;
+  transition: left 500ms ease-in-out;
+}
