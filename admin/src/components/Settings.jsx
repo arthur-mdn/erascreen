@@ -33,7 +33,6 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
     const [editAllowedUsersOpen, setEditAllowedUsersOpen] = useState(false);
     const [editSettingsOpen, setEditSettingsOpen] = useState(false);
 
-    console.log(screen)
     const buttons = [
         { id: "nom", label: "Nom de l'écran", icon: <FaHeading/>, onClick: () => setEditNameOpen(true) },
         { id: "logo", label: "Logo", icon: <FaCopyright/>, onClick: () => setEditLogoOpen(true) },
