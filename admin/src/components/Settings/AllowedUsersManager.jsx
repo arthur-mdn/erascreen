@@ -187,7 +187,7 @@ function AllowedUsersManager({ screenId, initialAllowedUsers, onConfigChange }) 
                             ))}
                         </div>
 
-                        <button onClick={handleSaveUser}>
+                        <button onClick={handleSaveUser} type={"button"}>
                             {editIndex !== null ? 'Mettre à jour' : 'Ajouter'}
                         </button>
                     </Modal>
