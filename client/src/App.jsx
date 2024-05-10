@@ -126,7 +126,7 @@ function App() {
                     <img src={"/elements/logo.png"} style={{height: "6rem", marginBottom:"2rem"}}/>
 
                     <div className={"fc ai-c g1"}>
-                        <QRCodeCanvas value={`${config.adminUrl}/add/${code}`} size={512}/>
+                        <QRCodeCanvas value={`${config.adminUrl}/screens/add/${code}`} size={512}/>
                         <h1 style={{fontWeight: "bold", userSelect: "all"}}>{code}</h1>
                     </div>
 

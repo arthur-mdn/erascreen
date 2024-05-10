@@ -16,7 +16,7 @@ function Home() {
 
     useEffect(() => {
         if (cookies.pendingScreenId) {
-            window.location.href = `/add/${cookies.pendingScreenId}`;
+            window.location.href = `/screens/add/${cookies.pendingScreenId}`;
         }
     }, []);
 

@@ -73,7 +73,7 @@ function AddScreen({ onScreenAdd, fromUrl = false }) {
     const onScanSuccess = (decodedText, decodedResult) => {
         // Extrait l'ID de l'écran à partir de l'URL scannée
         console.log(decodedText);
-        const regexPattern = `${config.instanceUrl.replace(/\//g, "\\/")}\\/add\\/([\\w-]+)`;
+        const regexPattern = `${config.instanceUrl.replace(/\//g, "\\/")}\\/screens\\/add\\/([\\w-]+)`;
         const regex = new RegExp(regexPattern);
         const match = decodedText.match(regex);
         if (match && match[1]) {

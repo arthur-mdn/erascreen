@@ -155,10 +155,7 @@ function Settings({ screen, onScreenUpdate, onRemoveScreenSelected }) {
                 />
             </Modal>
 
-            <button type={"button"} className={"setting_element"} onClick={()=>{window.location = "/logout"}} style={{color:"red", alignItems:"center" ,justifyContent:"center"}}>
-                <FaSignOutAlt/>
-                Se déconnecter
-            </button>
+
 
         </div>
 
