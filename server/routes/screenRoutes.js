@@ -1,4 +1,4 @@
-//routes/screenRoutes.js
+//about/screenRoutes.js
 const Screen = require("../models/Screen")
 const User = require("../models/User")
 const express = require("express");
