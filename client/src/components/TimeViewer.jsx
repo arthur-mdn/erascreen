@@ -24,9 +24,9 @@ function TimeViewer() {
     const secondes = currentTime.getSeconds().toString().padStart(2, '0');
 
     return (
-        <div className={"card"} style={{flexDirection:"column", gap:0, padding:' 1vw 1.5vw'}}>
-            <p style={{fontSize:'1.3vw', fontWeight:"bold"}}>{`${jourDeLaSemaine} ${jourDuMois} ${moisEnCours} ${anneeEnCours}`}</p>
-            <p style={{fontSize:'1.3vw', fontWeight:"bold"}}>{`${heures}h${minutes}:${secondes}`}</p>
+        <div className={"card time"} style={{flexDirection:"column", gap:0, padding:' 1vw 1.5vw'}}>
+            <p style={{fontWeight:"bold"}}>{`${jourDeLaSemaine} ${jourDuMois} ${moisEnCours} ${anneeEnCours}`}</p>
+            <p style={{fontWeight:"bold"}}>{`${heures}h${minutes}:${secondes}`}</p>
         </div>
     );
 }

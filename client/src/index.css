@@ -1044,7 +1044,7 @@ body{
 
 .slick-list{
   overflow: hidden;
-  border-radius: 0.5vw;
+  border-radius: 10px;
 }
 
 
@@ -1115,3 +1115,74 @@ body.dark-mode img[alt="Flèche"]{
   z-index: 999999999999999;
   transition: left 500ms ease-in-out;
 }
+
+.direction-arrow{
+width:2.5vw
+}
+
+.direction-text h3{
+  font-size: 1.5vw;
+}
+
+.direction-text p{
+  font-size: 1.3vw;
+}
+.time.card p{
+  font-size: 1.3vw;
+}
+.card.logo{
+  height: 6vw;
+}
+
+@media (max-width: 768px) {
+  .direction-arrow{
+    width: 5vw;
+  }
+
+  .direction-text h3{
+    font-size: 3vw;
+  }
+
+  .direction-text p{
+    font-size: 2.5vw;
+  }
+
+  .directions-and-photos{
+    flex-direction: column;
+
+  }
+  .directions-and-photos .directions-full-container{
+    width: 100%!important;
+    height: 40%;
+    border-radius: 1vw;
+
+  }
+  .directions-and-photos .photos-full-container{
+    width: 100%!important;
+    height: 60%;
+    border-radius: 1vw;
+
+  }
+
+  .pub-card img{
+    height: 3rem!important;
+  }
+  .time.card{
+    border-radius: 1vw;
+  }
+  .time.card p{
+    font-size: 2vw;
+  }
+  .card.logo{
+    border-radius: 1vw;
+    height: 8vw;
+  }
+
+  .slick-list{
+    overflow: hidden;
+    border-radius: 1vw;
+  }
+}
+
+
+

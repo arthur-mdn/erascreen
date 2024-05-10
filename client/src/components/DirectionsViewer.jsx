@@ -33,7 +33,7 @@ function DirectionsViewer({ screen }) {
     } : {};
 
     return (
-        <div ref={containerRef} className={"card ai-fs jc-sb fc "} style={{flexDirection:'column', width:'40%', overflow:"hidden", position:"relative"}}>
+        <div ref={containerRef} className={"directions-full-container card ai-fs jc-sb fc "} style={{flexDirection:'column', width:'40%', overflow:"hidden", position:"relative"}}>
             {
                 shouldScroll &&
                 <style>
@@ -47,13 +47,13 @@ function DirectionsViewer({ screen }) {
             <div className={"directions-container fc"} ref={directionsRef} style={{...animationStyle, position:"absolute",gap:'0.5vw', top: 0, padding:'0.5vw 0', minHeight:'100%', justifyContent:"space-around"}}>
                 {screen.directions.map((direction, index) => (
                     <div className={"fr ai-c g1"} key={index}>
-                        <img src={`/elements/arrows/${direction.arrow.style}`} alt="Flèche" style={{ transform: `rotate(${direction.arrow.orientation}deg)`, width: '2.5vw' }} />
-                        <div style={{textAlign:"left"}}>
+                        <img src={`/elements/arrows/${direction.arrow.style}`} alt="Flèche" style={{ transform: `rotate(${direction.arrow.orientation}deg)`}} className={"direction-arrow"} />
+                        <div style={{textAlign:"left"}} className={"direction-text"}>
                             {/* if color == "#000000", do not set the color, else set the color */}
-                            <h3 style={{ color: `${direction.title.color === "#000000" ? '' : direction.title.color}`, fontSize:'1.3vw', fontWeight:"bold" }}>
+                            <h3 style={{ color: `${direction.title.color === "#000000" ? '' : direction.title.color}`, fontWeight:"bold" }}>
                                 {direction.title.text}
                             </h3>
-                            <p style={{fontSize:'1.3vw', whiteSpace: 'pre-wrap', fontWeight:"bold"}}>
+                            <p style={{whiteSpace: 'pre-wrap', fontWeight:"bold"}}>
                                 {direction.description}
                             </p>
                         </div>

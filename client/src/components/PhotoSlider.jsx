@@ -20,7 +20,7 @@ function PhotoSlider({ photos, interval, hideDots, screen }) {
     };
 
     return (
-        <div style={{ width: screen.directions.length > 0 ? '60%' : '100%'}}> {/* Ajustez la hauteur maximale selon vos besoins */}
+        <div style={{ width: screen.directions.length > 0 ? '60%' : '100%'}} className={"photos-full-container"}> {/* Ajustez la hauteur maximale selon vos besoins */}
             <Slider {...settings}>
                 {photos.map((photo, index) => (
                     <div key={index} style={{ width: '100%', height: '100%' }}>

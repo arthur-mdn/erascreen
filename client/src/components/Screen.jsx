@@ -15,7 +15,7 @@ function Screen({configData}){
             <div className={"fr jc-sb ai-c"}>
                 {
                     configData.logo && (
-                        <img src={`${config.serverUrl}/${configData.logo}`} className={"card"} alt="Logo" style={{height:'6vw'}}/>
+                        <img src={`${config.serverUrl}/${configData.logo}`} className={"card logo"} alt="Logo"/>
                     )
                 }
                 {
@@ -34,7 +34,7 @@ function Screen({configData}){
                     )
                 }
             </div>
-            <div style={{marginTop:'1vw', maxWidth:'100%', height:'75vh',maxHeight:'75vh', gap:'2vw'}} className={"fr jc-sb"}>
+            <div style={{marginTop:'1vw', maxWidth:'100%', height:'75vh',maxHeight:'75vh', gap:'2vw'}} className={"fr jc-sb directions-and-photos"}>
                 {
                     configData.directions && configData.directions.length > 0 && (
                         <DirectionsViewer screen={configData}/>
