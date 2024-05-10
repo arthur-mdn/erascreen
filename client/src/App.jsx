@@ -121,12 +121,12 @@ function App() {
             case 'requesting_code':
                 return <p>Récupération d'un code à usage unique...</p>;
             case 'code_received':
-                return (<div className={"fc g0-5 ai-c jc-c"}>
+                return (<div className={"fc g0-5 ai-c jc-c p1"}>
 
-                    <img src={"/elements/logo.png"} style={{height: "6rem", marginBottom:"2rem"}}/>
+                    <img src={"/elements/logo.png"} style={{height: "4rem", marginBottom:"1rem", marginRight:"auto"}}/>
 
                     <div className={"fc ai-c g1"}>
-                        <QRCodeCanvas value={`${config.adminUrl}/screens/add/${code}`} size={512}/>
+                        <QRCodeCanvas value={`${config.adminUrl}/screens/add/${code}`} size={512} style={{maxWidth:"100%", height:'auto', width:'35vh'}}/>
                         <h1 style={{fontWeight: "bold", userSelect: "all"}}>{code}</h1>
                     </div>
 
