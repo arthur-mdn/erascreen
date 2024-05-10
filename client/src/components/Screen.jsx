@@ -46,6 +46,7 @@ function Screen({configData}){
                             photos={configData.photos}
                             interval={configData.config.photos_interval || 3000}
                             hideDots={configData.config.hide_slider_dots}
+                            screen={configData}
                         />
                     )
                 }
