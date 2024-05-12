@@ -29,7 +29,7 @@ function Pub({ displayTime, animationTime, intervalTime }) {
 
     return isVisible ? (
         <div className={"pub-card card"} style={{ left: `${leftPosition}%`, transition: `left ${transitionTime}ms` }}>
-            <img src={"/elements/logo.png"} alt="Ad" style={{ height: "4rem" }} />
+            <img src={"/elements/logo.svg"} alt="Ad" style={{ height: "4rem" }} />
         </div>
     ) : null;
 }

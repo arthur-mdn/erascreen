@@ -3,11 +3,11 @@ import {io} from 'socket.io-client';
 import './App.css';
 import config from './config';
 import Screen from './components/Screen';
-import {FaCloudDownloadAlt} from "react-icons/fa";
+import {FaArrowCircleDown, FaCloudDownloadAlt} from "react-icons/fa";
 import useDarkMode from './hooks/useDarkMode';
 import useTextSlides from './hooks/useTextSlides';
 import {QRCodeCanvas} from 'qrcode.react';
-import {FaKeyboard, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
+import {FaArrowRotateLeft, FaKeyboard, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
 import Pub from "./components/Pub.jsx";
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
     useEffect(() => {
         const savedConfig = localStorage.getItem('screenConfig');
         const socket = io(`${config.serverUrl}`, {
-            reconnectionAttempts: 3, reconnectionDelay: 1000,
+            reconnectionAttempts: 1500, reconnectionDelay: 1000,
         });
 
         let intervalId;
@@ -122,15 +122,27 @@ function App() {
         console.log(status)
         switch (status) {
             case 'connecting':
-                return <p>Connexion au serveur...</p>;
+                return <div className={"fc ai-c g1"}>
+                    <img src={"/elements/icons/wifi-connecting.svg"} style={{width: "8rem"}}/>
+                    <p>Connexion au serveur...</p>
+                </div>;
             case 'connection_failed':
-                return <p>Impossible de se connecter au serveur. Veuillez vérifier votre connexion.</p>;
+                return <div className={"fc ai-c g1"}>
+                    <img src={"/elements/icons/wifi-error.svg"} style={{width:"8rem"}}/>
+                    <p>Impossible de se connecter au serveur. Veuillez vérifier votre connexion.</p>
+                    <button type={"button"} onClick={() => {
+                        window.location.reload();
+                    }}>
+                        <FaArrowRotateLeft/>
+                        Réessayer
+                    </button>
+                </div>;
             case 'requesting_code':
                 return <p>Récupération d'un code à usage unique...</p>;
             case 'code_received':
                 return (<div className={"fc g0-5 ai-c jc-c p1"}>
 
-                    <img src={"/elements/logo.png"} style={{height: "4rem", marginBottom:"1rem", marginRight:"auto"}}/>
+                <img src={"/elements/logo.svg"} style={{height: "4rem", marginBottom:"1rem", marginRight:"auto"}}/>
 
                     <div className={"fc ai-c g1"}>
                         <QRCodeCanvas value={`${config.adminUrl}/screens/add/${code}`} size={512} style={{maxWidth:"100%", height:'auto', width:'35vh'}}/>
@@ -175,7 +187,7 @@ function App() {
             case 'error':
                 return <>
                     <p>{`Une erreur s'est produite. ${error} `}</p>
-                    <button onClick={() => {
+                    <button type={"button"} onClick={() => {
                         localStorage.clear();
                         window.location.reload();
                     }}>Réinitialiser les données locales
