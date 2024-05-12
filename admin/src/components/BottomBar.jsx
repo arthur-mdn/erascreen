@@ -27,7 +27,7 @@ function BottomBar() {
                     <li style={styles.menuItem}>
                         <Link to={'/screens'} style={isActive(location.pathname, '/screens') ? { ...styles.menuLink, color:'#6A6D71' } : styles.menuLink}>
                             <FaTv size={20} />
-                            <span style={styles.menuLinkSpan}>Screens</span>
+                            <span style={styles.menuLinkSpan}>Écrans</span>
                         </Link>
                     </li>
                     <li style={styles.menuItem}>

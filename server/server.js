@@ -85,6 +85,7 @@ io.on('connection', (socket) => {
         const screen = await Screen.findById(screenId).populate('meteo');
         if (screen) {
             try {
+                console.log(screen)
                 const updatedScreen = await updateWeatherData(screenId, screen.meteo.weatherId);
                 await Screen.findByIdAndUpdate(screenId, { status: "online" });
                 socket.emit('config_updated', updatedScreen);

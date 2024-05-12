@@ -33,14 +33,15 @@ function App() {
                 setStatus('updating_config');
                 console.log('Updating config...')
                 socket.emit('update_config', {screenId: parsedConfig._id});
-
-                socket.emit('update_weather', {screenId: parsedConfig._id});
-
-                if (!intervalId) {
-                    intervalId = setInterval(() => {
-                        console.log("refreshing weather");
-                        socket.emit('update_weather', {screenId: parsedConfig._id});
-                    }, 3600000); // 3600000 ms = 1 heure
+                // if meteo weatherId is set, update weather data
+                if (parsedConfig.meteo && parsedConfig.meteo.weatherId){
+                    socket.emit('update_weather', {screenId: parsedConfig._id});
+                    if (!intervalId) {
+                        intervalId = setInterval(() => {
+                            console.log("refreshing weather");
+                            socket.emit('update_weather', {screenId: parsedConfig._id});
+                        }, 3600000); // 3600000 ms = 1 heure
+                    }
                 }
             } else {
                 setStatus('requesting_code');
@@ -55,6 +56,12 @@ function App() {
             setStatus('configured');
             setShowUpdateIcon(true);
             setTimeout(() => setShowUpdateIcon(false), 5000);
+            if (!intervalId) {
+                intervalId = setInterval(() => {
+                    console.log("refreshing weather");
+                    socket.emit('update_weather', {screenId: parsedConfig._id});
+                }, 3600000); // 3600000 ms = 1 heure
+            }
         });
 
         socket.on('receive_code', (uniqueCode) => {
