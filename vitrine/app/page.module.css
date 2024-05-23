@@ -1,10 +1,10 @@
 .main {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  padding: 6rem;
-  min-height: 100vh;
+  padding: 2rem;
+  height: 100%;
+  gap: 4rem;
 }
 
 .description {
@@ -16,6 +16,8 @@
   width: 100%;
   z-index: 2;
   font-family: var(--font-mono);
+  align-items: center;
+  justify-content: center;
 }
 
 .description a {
@@ -40,6 +42,7 @@
 }
 
 .grid {
+  margin-top: auto;
   display: grid;
   grid-template-columns: repeat(4, minmax(25%, auto));
   max-width: 100%;
@@ -78,7 +81,7 @@
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 4rem 0;
+  padding: 0;
 }
 
 .center::before {
@@ -134,7 +137,6 @@
 
   .grid {
     grid-template-columns: 1fr;
-    margin-bottom: 120px;
     max-width: 320px;
     text-align: center;
   }
@@ -148,7 +150,7 @@
   }
 
   .center {
-    padding: 8rem 0 6rem;
+    padding: 0;
   }
 
   .center::before {
@@ -164,43 +166,7 @@
     padding: 1rem;
   }
 
-  .description p,
-  .description div {
-    display: flex;
-    justify-content: center;
-    position: fixed;
-    width: 100%;
-  }
 
-  .description p {
-    align-items: center;
-    inset: 0 0 auto;
-    padding: 2rem 1rem 1.4rem;
-    border-radius: 0;
-    border: none;
-    border-bottom: 1px solid rgba(var(--callout-border-rgb), 0.25);
-    background: linear-gradient(
-      to bottom,
-      rgba(var(--background-start-rgb), 1),
-      rgba(var(--callout-rgb), 0.5)
-    );
-    background-clip: padding-box;
-    backdrop-filter: blur(24px);
-  }
-
-  .description div {
-    align-items: flex-end;
-    pointer-events: none;
-    inset: auto 0 0;
-    padding: 2rem;
-    height: 200px;
-    background: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgb(var(--background-end-rgb)) 40%
-    );
-    z-index: 1;
-  }
 }
 
 /* Tablet and Smaller Desktop */
@@ -226,5 +192,169 @@
   }
   to {
     transform: rotate(0deg);
+  }
+}
+
+
+
+
+
+.ctaCard {
+  position: relative;
+  border-radius: 2rem;
+  padding: 4.5rem;
+  text-align: center;
+  background: linear-gradient(to bottom right, #173ab7, #5271e0);
+}
+
+
+.ctaCard__container {
+  max-width: 46rem;
+  margin: 0 auto;
+}
+@media only screen and (max-width: 56.25em) {
+  .ctaCard__container {
+    max-width: 85%;
+  }
+}
+.ctaCard__title {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #fff;
+}
+.ctaCard__description {
+  max-width: 75%;
+  margin: 0 auto;
+  margin-bottom: 3rem;
+  font-size: 1rem;
+  font-weight: 300;
+  color: #fff;
+}
+.ctaCard__inputBox {
+  display: flex;
+  align-items: center;
+    justify-content: center;
+  gap: 1rem;
+}
+.ctaCard__input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  display: inline-block;
+  outline: none;
+  border: 2px solid rgba(243, 248, 254, 0.3);
+  border-radius: 10rem;
+  font-size: 1rem;
+  font-family: "Mulish", sans-serif;
+  color: #fff;
+  background-color: rgba(243, 248, 254, 0.4);
+}
+.ctaCard__input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+.ctaCard__input:focus {
+  outline: 4px solid rgba(218, 70, 218, 0.4);
+  border: 2px solid transparent;
+}
+.ctaCard__button {
+  height: 54px;
+  aspect-ratio: 1/1;
+  outline: none;
+  border: none;
+  border-radius: 50rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+.ctaCard__button path {
+  transition: all 0.3s ease;
+}
+.ctaCard__button:hover path {
+  stroke: #da46da;
+}
+.ctaCard__button:active {
+  transform: translate(0.3rem, -50%);
+}
+@media only screen and (max-width: 37.5em) {
+  .ctaCard__button:active {
+    transform: none;
+  }
+}
+@media only screen and (max-width: 37.5em) {
+  .ctaCard__inputBox {
+    flex-direction: column;
+  }
+  .ctaCard__title{
+    font-size: 1.5rem;
+  }
+  .ctaCard__button {
+    width: 100%;
+    gap: 0.5rem;
+  }
+  .ctaCard__button:after {
+    content: "Envoyer";
+    color: black;
+    font-size: 1rem;
+  }
+  .ctaCard__input{
+    font-size: 0.8rem;
+  }
+  .main{
+    gap:2rem
+  }
+}
+.ctaCard__img-box {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 4rem;
+  transform: translate(-50%, 50%);
+}
+@media only screen and (max-width: 56.25em) {
+  .ctaCard__img-box {
+    gap: 0;
+  }
+}
+.ctaCard__img {
+  width: 9.4rem;
+  height: 9.4rem;
+  border: 0.8rem solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1.4rem 2.5rem -1.5rem rgba(82, 113, 224, 0.5);
+  transition: filter 0.3s ease;
+}
+.ctaCard__img:hover {
+  filter: grayscale(1);
+}
+@media only screen and (max-width: 56.25em) {
+  .ctaCard__img:hover {
+    filter: none;
+  }
+}
+@media only screen and (max-width: 37.5em) {
+  .ctaCard__img:hover {
+    transform: none;
+  }
+}
+@media only screen and (max-width: 56.25em) {
+  .ctaCard__img {
+    margin-right: -2.4rem;
+  }
+}
+
+@media only screen and (max-width: 67.5em) {
+  .ctaCard {
+    width: 90%;
+  }
+}
+@media only screen and (max-width: 56.25em) {
+  .ctaCard {
+    padding: 4rem 0 4rem;
+    width: 100%;
   }
 }
