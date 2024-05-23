@@ -14,7 +14,7 @@ function ContactForm() {
     return (
         <>
             <header className={styles.ctaCard__header}>
-                <p className={styles.ctaCard__title}>Envie d'obtenir un accès en anticipé ?</p>
+                <p className={styles.ctaCard__title}>Envie d&apos;obtenir un accès en anticipé ?</p>
                 <p className={styles.ctaCard__description}>
                     Saisissez votre adresse e-mail pour obtenir un accès en avant-première à notre plateforme.
                 </p>
@@ -46,7 +46,7 @@ export default function Home() {
             <Image src={"logo.svg"} alt={"logo"} width={200} height={0} style={{height: "auto", width: "100%", maxWidth: "300px"}}/>
             <div className={styles.description}>
                 <p>
-                    La solution d'affichage dynamique idéale. Diffusez vos contenus sur vos écrans en toute simplicité.
+                    La solution d&apos;affichage dynamique idéale. Diffusez vos contenus sur vos écrans en toute simplicité.
                 </p>
             </div>
             <div className={styles.center}>
