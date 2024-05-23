@@ -48,6 +48,17 @@ services:
       - "traefik.http.routers.DisplayHub-server.tls.certresolver=myresolver"
     volumes:
       - uploads_volume:/app/uploads
+
+  DisplayHub-vitrine:
+    build:
+      context: ./vitrine
+    image: displayhub-vitrine
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.DisplayHub-vitrine.rule=Host(`displayhub.fr`)"
+      - "traefik.http.routers.DisplayHub-vitrine.entrypoints=websecure"
+      - "traefik.http.routers.DisplayHub-vitrine.tls.certresolver=myresolver"
+
 volumes:
   DisplayHub_mongodb_data:
     driver: local
