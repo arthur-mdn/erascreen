@@ -113,7 +113,7 @@ function Screen() {
     return (
         <>
             <div className={"screen-detail"}>
-                <img src={`${screen.image}`}/>
+                <img src={`${config.serverUrl}/${screen.image}`}/>
                 <div className={"fc ai-fs g0-25 h100"}>
                     <h3 className={"fw-b"}>
                         {screen.nom}
