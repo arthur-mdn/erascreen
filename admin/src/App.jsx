@@ -26,7 +26,7 @@ const AuthenticatedApp = () => {
                 <>
                     <NavBar/>
                     <ToastContainer/>
-                    <div className={"fc w100"}>
+                    <div className={"fc w100 content"}>
                         <Routes>
                             {authStatus === "unauthenticated" ? (
                                 <>
@@ -40,8 +40,9 @@ const AuthenticatedApp = () => {
                                 <>
                                     {/* Routes privées */}
                                     <Route path="/" element={<Accueil/>}/>
-                                    <Route path="/screens" element={<Screens/>}/>
-                                    <Route path="/screens/add/:screenId" element={<AddScreen fromUrl={true}/>}/>
+                                    <Route path="/screens/*" element={<Screens/>}/>
+                                    {/*<Route path="/screens/list" element={<Screens/>}/>*/}
+                                    {/*<Route path="/screens/add/:screenId" element={<AddScreen fromUrl={true}/>}/>*/}
                                     <Route path="/programmes" element={<Programmes/>}/>
                                     <Route path="/profil" element={<Profil/>}/>
                                     <Route path="/logout" element={<Logout/>}/>
