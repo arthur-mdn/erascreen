@@ -5,7 +5,7 @@ import { Clock, Monitor, Home, Cog } from 'lucide-react';
 function NavBar() {
     const location = useLocation();
 
-    function isActive(base, path) {
+    function isActive(path, base) {
         return path === base || path.startsWith(`${base}/`);
     }
 
