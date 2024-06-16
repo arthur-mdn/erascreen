@@ -1,0 +1,12 @@
+{
+  "/": "Accueil",
+  "login": "Connexion",
+  "register": "Inscription",
+  "screens": "Écrans",
+  "list": "Liste",
+  "add": "Ajouter",
+  "del": "Supprimer",
+  "programmes": "Programmes",
+  "profil": "Profil",
+  "logout": "Déconnexion"
+}

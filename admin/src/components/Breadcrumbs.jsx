@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {ChevronRight, Menu} from 'lucide-react';
+import { getTranslation} from "../../utils/translations.js";
 
 const Breadcrumbs = () => {
     const location = useLocation();
@@ -16,7 +17,7 @@ const Breadcrumbs = () => {
                     return (
                         <li key={to}>
                             <Link to={to}>
-                                {value.charAt(0).toUpperCase() + value.slice(1)}
+                                {getTranslation(value.charAt(0) + value.slice(1))}
                             </Link>
                             {index < pathnames.length - 1 && <ChevronRight />}
                         </li>
