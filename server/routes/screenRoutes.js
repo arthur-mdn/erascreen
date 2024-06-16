@@ -86,12 +86,19 @@ router.get('/screens', verifyToken,  async (req, res) => {
 
 router.get('/screens/:id', verifyToken,  async (req, res) => {
     const { id } = req.params;
-    const screen = await Screen.findOne({ _id: id, "users.user": req.user.userId }).populate('meteo').populate('users.user');
-    if (screen) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).send({ error: 'ID invalide' });
+    }
+    try {
+        const screen = await Screen.findOne({ _id: id, "users.user": req.user.userId }).populate('meteo').populate('users.user');
+        if (!screen) {
+            return res.status(404).send({ error: 'Écran non trouvé' });
+        }
         const screenObj = processScreenObj(screen, req.user.userId);
         res.send({ success: true, screenObj });
-    } else {
-        res.status(404).send({ error: 'Écran non trouvé' });
+    } catch (error) {
+        console.error('Erreur lors de la récupération de l\'écran:', error);
+        res.status(500).send({ error: 'Erreur serveur' });
     }
 });
 
