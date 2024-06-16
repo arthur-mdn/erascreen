@@ -11,7 +11,7 @@ function NavBar() {
 
     return (
         <>
-            <div style={{ minWidth: '110px' }} className={"hide-mobile"}></div>
+            <div style={{ minWidth: '100px' }} className={"hide-mobile"}></div>
             <nav className="navbar">
                 <ul className="menu">
                     <li className={"fc ai-c hide-mobile"}>

@@ -1,14 +1,13 @@
 // App.jsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './AuthContext';
+import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
+import {AuthProvider, useAuth} from './AuthContext';
 import Login from "./pages/Login.jsx";
 import Logout from "./pages/Logout.jsx";
 import Accueil from './pages/Accueil.jsx';
 import Loading from "./components/Loading.jsx";
 import Register from "./pages/Register.jsx";
-import AddScreen from "./components/AddScreen.jsx";
-import { ToastContainer } from 'react-toastify';
+import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NavBar from "./components/NavBar.jsx";
 import Screens from "./pages/Screens.jsx";
@@ -16,12 +15,12 @@ import Programmes from "./pages/Programmes.jsx";
 import Profil from "./pages/Profil.jsx";
 
 const AuthenticatedApp = () => {
-    const { authStatus } = useAuth();
+    const {authStatus} = useAuth();
 
     return (
         <Router>
             {authStatus === "loading" ? (
-                <Loading />
+                <Loading/>
             ) : (
                 <>
                     <NavBar/>
@@ -53,7 +52,7 @@ const AuthenticatedApp = () => {
                                    element={<Navigate to={authStatus === "unauthenticated" ? "/login" : "/"}/>}/>
                         </Routes>
                     </div>
-                    <div style={{minHeight: '110px',width:"100%"}} className={"hide-desktop"}></div>
+                    <div style={{minHeight: '100px', width: "100%"}} className={"hide-desktop"}></div>
                 </>
             )}
         </Router>
@@ -63,7 +62,7 @@ const AuthenticatedApp = () => {
 const App = () => {
     return (
         <AuthProvider>
-            <AuthenticatedApp />
+            <AuthenticatedApp/>
         </AuthProvider>
     );
 };

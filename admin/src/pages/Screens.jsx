@@ -21,6 +21,10 @@ function Home() {
         }
     }, []);
 
+    function isActive(path, base) {
+        return path === base || path.startsWith(`${base}/`);
+    }
+
     // useEffect(() => {
     //     if (cookies.selectedScreen) {
     //         axios.get(`${config.serverUrl}/screens/${cookies.selectedScreen}`, { withCredentials: true })
@@ -45,31 +49,52 @@ function Home() {
     );
 
     return (
-        <>
-            <Breadcrumbs/>
-            <Routes>
-                <>
-                    <Route path="/list/*" element={<ScreensList/>}/>
-                    <Route path="/add/*" element={<AddScreen/>}/>
-                    <Route path="/del" element={<>del</>}/>
-                </>
-                <Route path="*" element={<div className={"fr g0-5 p1"}>
-                    <Link to={"list"} className={"setting-button"}>
+        <div className={"fr h100 w100 bg-blue-to-gray"}>
+            <div className={"fc h100 bg-grey p1 br-l-1 fs-0 dn"}>
+                <h4 className={"fw-b"}>Écrans</h4>
+                <br/>
+                <div className={"fc g1"} >
+                    <Link to={"list"} className={`fr g0-5 ai-c ${isActive(location.pathname, '/screens/list') ? 'active' : ''}`}>
                         <MonitorCheck size={24}/>
                         <h4>Écrans associés</h4>
                     </Link>
-
-                    <Link to={"add"} className={"setting-button"}>
+                    <Link to={"add"} className={`fr g0-5 ai-c ${isActive(location.pathname, '/screens/add') ? 'active' : ''}`}>
                         <MonitorSmartphone size={24}/>
                         <h4>Associer un nouvel écran</h4>
                     </Link>
-
-                    <Link to={"del"} className={"setting-button"}>
+                    <Link to={"del"} className={`fr g0-5 ai-c ${isActive(location.pathname, '/screens/del') ? 'active' : ''}`}>
                         <MonitorOff size={24}/>
                         <h4>Dissocier un écran</h4>
                     </Link>
-                </div>}/>
-            </Routes>
+                </div>
+            </div>
+            <div className={"w100 br-l-1 bg-white bs"}>
+                <Breadcrumbs/>
+                <Routes>
+                    <>
+                        <Route path="/list/*" element={<ScreensList/>}/>
+                        <Route path="/add/*" element={<AddScreen/>}/>
+                        <Route path="/del/*" element={<>del</>}/>
+                    </>
+                    <Route path="*" element={<div className={"fr g0-5 p1"}>
+                        <Link to={"list"} className={"setting-button"}>
+                            <MonitorCheck size={24}/>
+                            <h4>Écrans associés</h4>
+                        </Link>
+
+                        <Link to={"add"} className={"setting-button"}>
+                            <MonitorSmartphone size={24}/>
+                            <h4>Associer un nouvel écran</h4>
+                        </Link>
+
+                        <Link to={"del"} className={"setting-button"}>
+                            <MonitorOff size={24}/>
+                            <h4>Dissocier un écran</h4>
+                        </Link>
+                    </div>}/>
+                </Routes>
+            </div>
+
             {/*{*/}
             {/*    !screenSelected &&*/}
             {/*    <>*/}
@@ -101,7 +126,7 @@ function Home() {
             {/*<Modal isOpen={screenSelectorOpen} onClose={() => setScreenSelectorOpen(false)} title={"Sélectionnez votre écran"} padding={"0"}>*/}
             {/*    <ScreenSelector onSelectScreen={() => setScreenSelectorOpen(false)}/>*/}
             {/*</Modal>*/}
-        </>
+        </div>
     );
 
 }
