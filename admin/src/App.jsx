@@ -26,7 +26,7 @@ const AuthenticatedApp = () => {
                 <>
                     <NavBar/>
                     <ToastContainer/>
-                    <div className={"fc w100 content"}>
+                    <div className={"fc w100 h100 content"}>
                         <Routes>
                             {authStatus === "unauthenticated" ? (
                                 <>

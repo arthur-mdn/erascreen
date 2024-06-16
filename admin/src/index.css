@@ -54,6 +54,9 @@ body, html{
   .hide-desktop {
     display: block;
   }
+  .content {
+    border-radius: 0;
+  }
 }
 .bg-grey{
   background-color: #f1f1f1;
@@ -209,6 +212,13 @@ input[type=checkbox]{
     align-items: flex-start;
 
 }
+.fs-0{
+    flex-shrink: 0;
+}
+.fs-1{
+    flex-shrink: 1;
+}
+
 
 .fw-w{
   flex-wrap: wrap;
@@ -661,4 +671,34 @@ span.online{
   .hide-mobile {
     display: none;
   }
+}
+
+
+/* Bread Crumb */
+nav.bread{
+  border-bottom: 1px solid #F2F7FF;
+
+}
+.breadcrumb {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.breadcrumb li {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumb li a {
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.breadcrumb li a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb li svg {
+  margin: 0 8px;
 }

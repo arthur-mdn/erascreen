@@ -6,6 +6,7 @@ import {MonitorCheck, MonitorOff, MonitorSmartphone} from "lucide-react";
 import {Link, Route, Routes} from "react-router-dom";
 import AddScreen from "../components/AddScreen.jsx";
 import ScreensList from "./ScreensList.jsx";
+import Breadcrumbs from "../components/Breadcrumbs.jsx";
 
 
 function Home() {
@@ -45,11 +46,10 @@ function Home() {
 
     return (
         <>
-
+            <Breadcrumbs/>
             <Routes>
                 <>
-                    <Route path="/list" element={<ScreensList/>}/>
-                    <Route path="/screen/:screenId" element={<Screen/>}/>
+                    <Route path="/list/*" element={<ScreensList/>}/>
                     <Route path="/add/*" element={<AddScreen/>}/>
                     <Route path="/del" element={<>del</>}/>
                 </>

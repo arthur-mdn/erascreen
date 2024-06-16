@@ -38,7 +38,7 @@ function ScreenSelector({ onSelectScreen }) {
             <div style={{padding:"1rem", height:'100%'}} className={"fc jc-sb"}>
                 <div className={"fc g0-5"}>
                     {screens.map(screen => (
-                        <Link to={`/screens/screen/${screen._id}`} key={screen._id} className={"screen"}>
+                        <Link to={`/screens/list/${screen._id}`} key={screen._id} className={"screen"}>
                             <img src={`${screen.image}`}/>
                             <div className={"fc ai-fs g0-25 h100"}>
                                 <h3 className={"fw-b"}>
