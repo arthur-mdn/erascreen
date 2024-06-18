@@ -3,9 +3,9 @@
   "login": "Connexion",
   "register": "Inscription",
   "screens": "Écrans",
-  "list": "Liste",
-  "add": "Ajouter",
-  "del": "Supprimer",
+  "list": "Écrans associés",
+  "add": "Associer un nouvel écran",
+  "del": "Dissocier un écran",
   "programmes": "Programmes",
   "profil": "Profil",
   "logout": "Déconnexion"

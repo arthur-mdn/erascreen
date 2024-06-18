@@ -23,9 +23,9 @@ const AuthenticatedApp = () => {
                 <Loading/>
             ) : (
                 <>
-                    <NavBar/>
+                    <NavBar hidden={authStatus === "unauthenticated"}/>
                     <ToastContainer/>
-                    <div className={"fc w100 h100 content"}>
+                    <div className={`fc w100 h100 content ${authStatus === "unauthenticated" ? "logged-out" : ""}`}>
                         <Routes>
                             {authStatus === "unauthenticated" ? (
                                 <>

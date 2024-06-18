@@ -715,7 +715,9 @@ nav.bread{
 }
 
 
-
+.logged-out.content{
+  border-radius: 0;
+}
 .dn{
   display: none;
 }

@@ -2,13 +2,16 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Clock, Monitor, Home, Cog } from 'lucide-react';
 
-function NavBar() {
+function NavBar({hidden}) {
     const location = useLocation();
 
     function isActive(path, base) {
         return path === base || path.startsWith(`${base}/`);
     }
 
+    if (hidden){
+        return
+    }
     return (
         <>
             <div style={{ minWidth: '100px' }} className={"hide-mobile"}></div>
