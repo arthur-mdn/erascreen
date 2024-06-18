@@ -5,7 +5,7 @@
   "screens": "Écrans",
   "list": "Écrans associés",
   "add": "Associer un nouvel écran",
-  "del": "Dissocier un écran",
+  "delete": "Dissocier un écran",
   "programmes": "Programmes",
   "profil": "Profil",
   "logout": "Déconnexion"

@@ -62,7 +62,7 @@ function Home() {
                         <MonitorSmartphone size={24}/>
                         <h4>Associer un nouvel écran</h4>
                     </Link>
-                    <Link to={"del"} className={`fr g0-5 ai-c ${isActive(location.pathname, '/screens/del') ? 'active' : ''}`}>
+                    <Link to={"delete"} className={`fr g0-5 ai-c ${isActive(location.pathname, '/screens/delete') ? 'active' : ''}`}>
                         <MonitorOff size={24}/>
                         <h4>Dissocier un écran</h4>
                     </Link>
@@ -76,7 +76,7 @@ function Home() {
                         <Route path="/add/*" element={<AddScreen/>}/>
                         <Route path="/del/*" element={<>del</>}/>
                     </>
-                    <Route path="*" element={<div className={"fr g0-5 p1"}>
+                    <Route path="*" element={<div className={"fr g0-5 p1 setting-buttons"}>
                         <Link to={"list"} className={"setting-button"}>
                             <MonitorCheck size={24}/>
                             <h4>Écrans associés</h4>
@@ -87,7 +87,7 @@ function Home() {
                             <h4>Associer un nouvel écran</h4>
                         </Link>
 
-                        <Link to={"del"} className={"setting-button"}>
+                        <Link to={"delete"} className={"setting-button"}>
                             <MonitorOff size={24}/>
                             <h4>Dissocier un écran</h4>
                         </Link>

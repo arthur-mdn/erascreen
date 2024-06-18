@@ -721,3 +721,9 @@ nav.bread{
 .dn{
   display: none;
 }
+
+@media (max-width: 768px) {
+  .setting-buttons{
+    flex-direction: column;
+  }
+}
