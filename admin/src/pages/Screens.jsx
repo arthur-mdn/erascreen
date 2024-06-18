@@ -15,12 +15,6 @@ function Home() {
     const [screenSelected, setScreenSelected] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        if (cookies.pendingScreenId) {
-            window.location.href = `/screens/add/${cookies.pendingScreenId}`;
-        }
-    }, []);
-
     function isActive(path, base) {
         return path === base || path.startsWith(`${base}/`);
     }
@@ -73,7 +67,8 @@ function Home() {
                 <Routes>
                     <>
                         <Route path="/list/*" element={<ScreensList/>}/>
-                        <Route path="/add/*" element={<AddScreen/>}/>
+                        <Route path="/add" element={<AddScreen/>}/>
+                        <Route path="/add/:screenId" element={<AddScreen/>}/>
                         <Route path="/del/*" element={<>del</>}/>
                     </>
                     <Route path="*" element={<div className={"fr g0-5 p1 setting-buttons"}>

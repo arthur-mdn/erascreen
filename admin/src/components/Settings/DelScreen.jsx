@@ -6,11 +6,13 @@ import {toast} from "react-toastify";
 import {FaArrowRight, FaTrash} from "react-icons/fa6";
 import Modal from "../Modal.jsx";
 import {useCookies} from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 function DelScreen( { onRemoveScreenSelected } ) {
     const [isLoading, setIsLoading] = useState(false);
     const [isOpenDelete, setIsOpenDelete] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(['selectedScreen']);
+    const navigate = useNavigate();
     const handleScreenDelete = () => {
         setIsLoading(true);
         axios.delete(`${config.serverUrl}/screens/`, {
@@ -21,6 +23,7 @@ function DelScreen( { onRemoveScreenSelected } ) {
                     removeCookie('selectedScreen', { path: '/' });
                     onRemoveScreenSelected();
                     toast.success(`Écran supprimé avec succès !`);
+                    navigate(`/screens/list`);
                 }
             })
             .catch(error => {

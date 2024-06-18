@@ -54,6 +54,7 @@ database.connect();
 app.use(authRoutes);
 app.use(screenRoutes);
 app.use('/uploads', express.static('uploads'));
+app.use('/public', express.static('public'));
 
 
 // set all screens "offline"

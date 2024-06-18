@@ -110,6 +110,10 @@ const screenSchema = new Schema({
         type: String,
         default: ""
     },
+    image: {
+        type: String,
+        default: "public/template-screen-image.png"
+    },
     icons: {
         type: Array,
         default: []

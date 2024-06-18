@@ -24,12 +24,6 @@ function ScreensList() {
     const [screenSelected, setScreenSelected] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        if (cookies.pendingScreenId) {
-            window.location.href = `/screens/add/${cookies.pendingScreenId}`;
-        }
-    }, []);
-
     // useEffect(() => {
     //     if (cookies.selectedScreen) {
     //         axios.get(`${config.serverUrl}/screens/${cookies.selectedScreen}`, { withCredentials: true })
