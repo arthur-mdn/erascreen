@@ -63,7 +63,7 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
     );
 
     return (
-        <>
+        <div className={"p1"}>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable-directions">
                     {(provided) => (
@@ -118,7 +118,7 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
                     onDirectionAdd={(newConfig) => {handleAddDirection(newConfig)}}
                 />
             </Modal>
-        </>
+        </div>
     );
 }
 

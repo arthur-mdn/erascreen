@@ -11,7 +11,7 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
     const [suggestions, setSuggestions] = useState([]);
 
     const infosAboutAttribute = {
-        "nom": {
+        "name": {
             label: "Nom de l'écran",
             inputType: "text"
         },
@@ -123,7 +123,7 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
 
     if ( attribute === 'meteo.city' ) {
         return (
-            <div>
+            <div className={"p1"}>
                 {
                     infosAboutAttribute[attribute].label
                 }
@@ -147,7 +147,7 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
     }
     if (attribute === 'logo') {
         return (
-            <>
+            <div className={"p1"}>
                 <label>
                     { infosAboutAttribute[attribute].label }
                 </label>
@@ -162,12 +162,12 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
                     <input {...getInputProps()} />
                     Glissez et déposez le logo ici, ou cliquez pour sélectionner un fichier
                 </div>
-            </>
+            </div>
 
         );
     }
     return (
-        <div className={"fc g1"}>
+        <div className={"fc g1 p1"}>
             {
                 infosAboutAttribute[attribute].label
             }

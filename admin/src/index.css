@@ -5,17 +5,17 @@
 
   color-scheme: light dark;
   color: rgba(0, 0, 0, 0.87);
-  background-color: #1E21A4;
+  background-color: #002390;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --activated-color: #1E21A4;
+  --activated-color: #002390;
   --text-color: #FFFFFF;
   --second-text-color: #ffffff;
   --placeholder-text-color: #cfcfcf;
-  --bg-color: #1E21A4;
+  --bg-color: #002390;
   --bg-white: #F5F5F6;
   --card-bg-color: #1D1D1D;
   --sub-card-bg-color: #f0f0f0;
@@ -115,7 +115,7 @@ html {
   box-sizing: border-box;
 }
 *, *:before, *:after {
-  box-sizing: inherit;
+  box-sizing: border-box;
   margin:0;
   font-family: "Roboto", sans-serif;
   list-style: none;
@@ -265,7 +265,9 @@ input[type=checkbox]{
 .p1{
   padding: 1rem;
 }
-
+.m1{
+    margin: 1rem;
+}
 .mb1{
   margin-bottom: 1rem;
 }
@@ -379,7 +381,7 @@ button:focus-visible {
   height: 60px;
   top: 0;
   left: 0;
-  background-color: #1E21A4;
+  background-color: #002390;
   color: white;
   align-items: center;
   padding: 0 0 0 1rem;
@@ -536,7 +538,9 @@ button:focus-visible {
 }
 
 
-button.setting_element {
+a.setting_element {
+  display: flex;
+  padding: 0.8rem 1rem;
   border-bottom: 1px solid lightgrey;
   transition: background-color 0.3s;
   width: 100%;
@@ -545,7 +549,7 @@ button.setting_element {
   justify-content: flex-start;
   gap: 1.5rem
 }
-button.setting_element:hover {
+a.setting_element:hover {
   background-color: rgba(0, 0, 0, 0.05);
   color: black;
   opacity: 1;

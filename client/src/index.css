@@ -11,7 +11,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --activated-color: #1E21A4;
+  --activated-color: #002390;
     --text-color: #ffffff;
 }
 /*
@@ -324,7 +324,7 @@ button:focus-visible {
   height: 60px;
   top: 0;
   left: 0;
-  background-color: #1E21A4;
+  background-color: #002390;
   color: white;
   align-items: center;
   padding: 0 0 0 1rem;
@@ -398,8 +398,8 @@ input[type="radio"].radio-profile:checked + label:after {
 }
 
 input[type="radio"].radio-profile:checked + label:after, input[type="radio"].radio-profile:checked + label:before {
-  background-color: #1E21A4;
-  border: 1px solid #1E21A4;
+  background-color: #002390;
+  border: 1px solid #002390;
 
 }
 
@@ -436,7 +436,7 @@ input[type="radio"].radio-profile:checked + label:after, input[type="radio"].rad
 }
 
 .actual_profile_selector div{
-  border: 1px solid #1E21A4;
+  border: 1px solid #002390;
   width: 40px;
   height: 40px;
   display: flex;
@@ -491,7 +491,7 @@ input[type="radio"].radio-profile:checked + label:after, input[type="radio"].rad
 }
 
 button.increment, button.decrement {
-  background: #1E21A4;
+  background: #002390;
   border-radius: 50px;
   padding: 0;
   width: 25px;

@@ -3,11 +3,22 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ChevronRight, Menu } from 'lucide-react';
 import { getTranslation } from "../../utils/translations.js";
+import {
+    FaArrowRightArrowLeft,
+    FaCopyright,
+    FaHeading,
+    FaIcons,
+    FaImages,
+    FaSun,
+    FaTextWidth,
+    FaUmbrella, FaUsers
+} from "react-icons/fa6";
+import {FaCogs} from "react-icons/fa";
 
 const Breadcrumbs = () => {
     const location = useLocation();
     const pathnames = location.pathname.split('/').filter((x) => x);
-    const knownPaths = ['screens', 'list', 'add', 'edit', 'delete', 'programmes', 'profil', 'login', 'register', 'logout'];
+    const knownPaths = ['screens', 'list', 'add', 'edit', 'delete', 'programmes', 'profil', 'login', 'register', 'logout', 'name', 'logo', 'icons', 'meteo', 'directions', 'photos', 'dark_mode', 'text_slides', 'allowed_users', 'avanced_settings'];
 
     const isObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 

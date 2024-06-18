@@ -36,7 +36,7 @@ function DelScreen( { onRemoveScreenSelected } ) {
 
     return (
 
-        <div style={{margin:'1rem'}}>
+        <div>
 
             <button
                 type={"button"}

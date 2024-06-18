@@ -35,7 +35,7 @@ function ConfigManager({ screen, initialConfig, onConfigChange, onRemoveScreenSe
     );
 
     return (
-        <>
+        <div className={"p1"}>
             <div>
                 {Object.keys(currentConfig).map((key) => {
                     const value = currentConfig[key];
@@ -86,7 +86,7 @@ function ConfigManager({ screen, initialConfig, onConfigChange, onRemoveScreenSe
             <div style={{marginTop:"auto"}}>
                 <DelScreen onRemoveScreenSelected={()=>{onRemoveScreenSelected()}}/>
             </div>
-        </>
+        </div>
     );
 }
 

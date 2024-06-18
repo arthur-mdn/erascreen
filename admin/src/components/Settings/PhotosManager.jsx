@@ -100,7 +100,7 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
     );
 
     return (
-        <>
+        <div className={"p1"}>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable-photos">
                     {(provided) => (
@@ -131,7 +131,7 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
                     Glissez et déposez des photos ici, ou cliquez pour sélectionner des photos
                 </div>
             </div>
-        </>
+        </div>
 
     );
 }

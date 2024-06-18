@@ -8,5 +8,15 @@
   "delete": "Dissocier un écran",
   "programmes": "Programmes",
   "profil": "Profil",
-  "logout": "Déconnexion"
+  "logout": "Déconnexion",
+  "name": "Nom de l'écran",
+  "logo": "Logo",
+  "icons": "Icônes",
+  "meteo": "Météo",
+  "directions": "Directions",
+  "photos": "Galerie de photos",
+  "dark_mode": "Mode sombre",
+  "text_slides": "Textes défilants",
+  "allowed_users": "Utilisateurs autorisés",
+  "avanced_settings": "Paramètres avancés"
 }

@@ -5,7 +5,7 @@ function MeteoViewer({ screen }) {
     const formattedDate = format(new Date(date), 'PPPpp', { locale: fr });
 
     return (
-        <>
+        <div className={"p1"}>
             { screen.meteo && Object.keys(screen.meteo.data).length > 0  && (
                 <>
                     <div className={"meteo card fr ai-c"}>
@@ -41,7 +41,7 @@ function MeteoViewer({ screen }) {
                 </>
             )
             }
-        </>
+        </div>
 
     );
 }

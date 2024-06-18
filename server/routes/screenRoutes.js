@@ -150,7 +150,7 @@ router.post('/screens/update', verifyToken, upload.single('logo'), async (req, r
                 if (value && value.ranges) {
                     screen.text_slides = value;
                 }
-            } else if (attribute === 'nom') {
+            } else if (attribute === 'name') {
                 if (!await hasPermission(userId, screenId, "nom")) {
                     return res.status(403).send({ error: 'Permission refusée' });
                 }

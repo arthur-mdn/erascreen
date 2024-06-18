@@ -97,7 +97,7 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
         <Loading/>
     );
     return (
-        <>
+        <div className={"p1"}>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable-icons">
                     {(provided) => (
@@ -129,7 +129,7 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
                     Glissez et déposez des icônes ici, ou cliquez pour sélectionner des icônes
                 </div>
             </div>
-        </>
+        </div>
 
     );
 }

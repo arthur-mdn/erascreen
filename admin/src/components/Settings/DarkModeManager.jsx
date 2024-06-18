@@ -41,7 +41,7 @@ function DarkModeManager({ screenId, initialDarkMode, onConfigChange }) {
     if (isLoading) return <Loading />;
 
     return (
-        <div className={"fc g1"}>
+        <div className={"fc g1 p1"}>
             <TimeRangeSelector onRangesChange={(newRanges) => {setDarkModeRanges(newRanges)}} initialRanges={darkModeRanges} timeRangeName={"Plages horaires d'activation du mode sombre"} />
             <button type={"button"} onClick={saveDarkModeConfig}>Enregistrer</button>
         </div>

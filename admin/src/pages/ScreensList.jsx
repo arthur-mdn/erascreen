@@ -56,7 +56,7 @@ function ScreensList() {
     return (
         <>
             <Routes>
-                <Route path="/:screenId" element={<Screen/>}/>
+                <Route path="/:screenId/*" element={<Screen/>}/>
                 <Route path="*" element={<>
                     <ScreenSelector/>
                 </>}/>

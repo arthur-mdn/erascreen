@@ -115,7 +115,7 @@ function AllowedUsersManager({ screenId, initialAllowedUsers, onConfigChange }) 
     }, []);
 
     return (
-        <div>
+        <div className={"p1"}>
             {isLoading ? <Loading /> : (
                 <>
                     <div className={"fc g1 w100"}>
