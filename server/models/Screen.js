@@ -101,7 +101,7 @@ const screenSchema = new Schema({
         required: true,
         unique: true
     },
-    nom: {
+    name: {
         type: String,
         required: true,
         default: "Écran"

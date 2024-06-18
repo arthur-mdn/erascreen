@@ -7,7 +7,7 @@ import Modal from "../Modal.jsx";
 import { FaPen, FaTrash } from "react-icons/fa6";
 
 const permissions = [
-    "nom", "logo", "icons", "meteo", "directions", "photos", "dark_mode", "text_slides", "allowed_users", "config"
+    "name", "logo", "icons", "meteo", "directions", "photos", "dark_mode", "text_slides", "allowed_users", "config"
 ];
 
 function AllowedUsersManager({ screenId, initialAllowedUsers, onConfigChange }) {

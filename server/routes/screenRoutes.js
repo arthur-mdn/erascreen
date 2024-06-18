@@ -151,11 +151,11 @@ router.post('/screens/update', verifyToken, upload.single('logo'), async (req, r
                     screen.text_slides = value;
                 }
             } else if (attribute === 'name') {
-                if (!await hasPermission(userId, screenId, "nom")) {
+                if (!await hasPermission(userId, screenId, "name")) {
                     return res.status(403).send({ error: 'Permission refusée' });
                 }
                 if (value) {
-                    screen.nom = value;
+                    screen.name = value;
                 }
             } else {
                 return res.status(400).send({ error: 'Attribut non pris en charge' });

@@ -10,7 +10,7 @@ function Screen({configData}){
     return (
         <div>
             <Helmet>
-                <title>{configData.nom}</title>
+                <title>{configData.name}</title>
             </Helmet>
             <div className={"fr jc-sb ai-c"}>
                 {
@@ -51,7 +51,7 @@ function Screen({configData}){
                     )
                 }
             </div>
-            {/*<h2 style={{fontSize:'1.3vw'}}>{configData.nom}</h2>*/}
+            {/*<h2 style={{fontSize:'1.3vw'}}>{configData.name}</h2>*/}
             {/*<p>{configData._id}</p>*/}
         </div>
     );

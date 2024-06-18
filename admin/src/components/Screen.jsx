@@ -103,7 +103,7 @@ function Screen() {
                 <Route path="/name" element={<EditScreenAttribute
                     screenId={screen._id}
                     attribute={"name"}
-                    value={screen.nom}
+                    value={screen.name}
                     onSave={(screenObj) => {
                         onScreenUpdate(screenObj)
                     }}
@@ -191,7 +191,7 @@ function Screen() {
                         <img src={`${config.serverUrl}/${screen.image}`} />
                         <div className={"fc ai-fs g0-25 h100"}>
                             <h3 className={"fw-b"}>
-                                {screen.nom}
+                                {screen.name}
                             </h3>
                             <div className={`fr g0-5 ai-c`}>
                                 <div className={`${screen.status}`}>
