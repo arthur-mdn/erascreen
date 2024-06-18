@@ -688,12 +688,12 @@ span.online{
   }
 }
 
-
 /* Bread Crumb */
-nav.bread{
+nav.bread {
   border-bottom: 1px solid #F2F7FF;
-
+  overflow-y: scroll;
 }
+
 .breadcrumb {
   display: flex;
   list-style: none;
@@ -703,6 +703,8 @@ nav.bread{
 .breadcrumb li {
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  margin-right: 8px;
 }
 
 .breadcrumb li a {
@@ -716,6 +718,10 @@ nav.bread{
 
 .breadcrumb li svg {
   margin: 0 8px;
+}
+
+.breadcrumb li span {
+  font-weight: bold;
 }
 
 
