@@ -726,4 +726,12 @@ nav.bread{
   .setting-buttons{
     flex-direction: column;
   }
+  .br-l-1, .content{
+    border-radius: 0;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+  }
+  .bg-blue-to-gray {
+    background: linear-gradient(0deg, #002390 0%, #002390 10%, #F2F7FF 11%, #F2F7FF 100%);
+  }
 }
