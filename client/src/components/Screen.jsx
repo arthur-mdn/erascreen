@@ -1,10 +1,12 @@
 import config from "../config.js";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import MeteoViewer from "./MeteoViewer";
 import TimeViewer from "./TimeViewer";
 import DirectionsViewer from "./DirectionsViewer";
 import PhotoSlider from "./PhotoSlider.jsx";
+import DisplayLogo from "./DisplayLogo.jsx";
 import {Helmet} from "react-helmet";
+import DisplayIcons from "./DisplayIcons.jsx";
 
 function Screen({configData}){
     return (
@@ -13,11 +15,7 @@ function Screen({configData}){
                 <title>{configData.name}</title>
             </Helmet>
             <div className={"fr jc-sb ai-c"}>
-                {
-                    configData.logo && (
-                        <img src={`${config.serverUrl}/${configData.logo}`} className={"card logo"} alt="Logo"/>
-                    )
-                }
+                <DisplayLogo logo={configData.logo}/>
                 {
                     configData.meteo && (
                         <MeteoViewer screen={configData}/>
@@ -27,9 +25,7 @@ function Screen({configData}){
                 {
                     configData.icons && configData.icons.length > 0 && (
                         <div className={"card fr ai-c g0-5"}>
-                            {configData.icons.map(icon => (
-                                <img key={icon} src={`${config.serverUrl}/${icon}`} alt={`Icon`} style={{width:'4vw', height:'4vw', objectFit:"contain"}} />
-                            ))}
+                            <DisplayIcons icons={configData.icons}/>
                         </div>
                     )
                 }

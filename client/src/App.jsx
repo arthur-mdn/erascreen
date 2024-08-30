@@ -9,6 +9,7 @@ import useTextSlides from './hooks/useTextSlides';
 import {QRCodeCanvas} from 'qrcode.react';
 import {FaArrowRotateLeft, FaKeyboard, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
 import Pub from "./components/Pub.jsx";
+import { cacheImages, deleteDatabases } from "./utils/cacheUtils";
 
 function App() {
     const [code, setCode] = useState('');
@@ -49,13 +50,14 @@ function App() {
             }
         });
 
-        socket.on('config_updated', (updatedConfig) => {
+        socket.on('config_updated', async (updatedConfig) => {
             localStorage.setItem('screenConfig', JSON.stringify(updatedConfig));
             setConfigData(updatedConfig);
             console.log('Config updated:', updatedConfig)
             setStatus('configured');
             setShowUpdateIcon(true);
             setTimeout(() => setShowUpdateIcon(false), 5000);
+
             if (!intervalId) {
                 intervalId = setInterval(() => {
                     console.log("refreshing weather");
@@ -74,13 +76,14 @@ function App() {
             window.location.reload();
         });
 
-        socket.on('screen_deleted', () => {
+        socket.on('screen_deleted', async () => {
             localStorage.removeItem('screenConfig');
             setConfigData(null);
             setStatus('requesting_code');
             socket.emit('request_code');
             setShowUpdateIcon(true);
             setTimeout(() => setShowUpdateIcon(false), 5000);
+            await deleteDatabases();
         });
 
         socket.on('disconnect', () => {
