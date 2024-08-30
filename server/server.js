@@ -174,7 +174,10 @@ app.get('/autocomplete/:query', (req, res) => {
     }
 
     const filteredCities = cityList
-        .filter(city => city.name.toLowerCase().startsWith(query) && city.country === 'FR')
+        .filter(city =>
+            city.name.toLowerCase().replace(/\s+/g, '-').startsWith(query.replace(/\s+/g, '-')) &&
+            city.country === 'FR'
+        )
         .map(city => ({ id: city.id, name: city.name, country: city.country }));
 
     res.json(filteredCities);

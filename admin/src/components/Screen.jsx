@@ -127,6 +127,7 @@ function Screen() {
                 <Route path="/meteo" element={<>
                     <MeteoViewer screen={screen} />
                     <EditScreenAttribute
+                        screen={screen}
                         screenId={screen._id}
                         attribute="meteo.city"
                         value={(screen.meteo && screen.meteo.weatherId) ? screen.meteo.data.name : ""}

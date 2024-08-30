@@ -4,8 +4,9 @@ import config from "../config.js";
 import {useDropzone} from "react-dropzone";
 import Loading from "./Loading.jsx";
 import { toast } from 'react-toastify';
+import {FaLocationDot, FaLocationPin, FaMapPin} from "react-icons/fa6";
 
-function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "text" }) {
+function EditScreenAttribute({ screen, screenId, attribute, value, onSave, inputType = "text" }) {
     const [isLoading, setIsLoading] = useState(false);
     const [inputValue, setInputValue] = useState(value);
     const [suggestions, setSuggestions] = useState([]);
@@ -49,6 +50,25 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
             setIsLoading(false);
         }
     };
+
+    const resetMeteo = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${config.serverUrl}/screens/update`, {
+                attribute,
+                value: ''
+            }, {
+                withCredentials: true
+            });
+            onSave(response.data.screenObj);
+            toast.success("Ville supprimée avec succès !");
+        } catch (error) {
+            console.error('Erreur lors de la modification :', error);
+            toast.error("Erreur lors de la suppression de la ville");
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
@@ -127,6 +147,9 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
                 {
                     infosAboutAttribute[attribute].label
                 }
+                {screen.meteo && (
+                    <button type={"button"} onClick={resetMeteo}>Supprimer la météo</button>
+                )}
                 <input
                     type="text"
                     value={inputValue}
@@ -134,10 +157,10 @@ function EditScreenAttribute({ screenId, attribute, value, onSave, inputType = "
                     placeholder="Recherchez une ville..."
                 />
                 {suggestions.length > 0 && (
-                    <div>
+                    <div className={"city-suggestions"}>
                         {suggestions.map((suggestion, index) => (
-                            <div key={index} onClick={() => selectCity(suggestion.id)}>
-                                {suggestion.name}, {suggestion.country}
+                            <div key={index} onClick={() => selectCity(suggestion.id)} className={"city-suggestion"}>
+                                <FaLocationDot/> <div>{suggestion.name}, {suggestion.country}</div>
                             </div>
                         ))}
                     </div>
