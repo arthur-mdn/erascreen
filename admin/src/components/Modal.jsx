@@ -50,21 +50,47 @@ const Modal = ({ isOpen, onClose, children, title,actions, bgColor = "#f3f3f3", 
                                 <div className="modal-content" style={{height:'100%',backgroundColor:hideBg ? "transparent" : bgColor, position:"relative", display:"flex", flexDirection:"column", pointerEvents:"all"}}>
                                     {
                                         !hideBg &&
-                                        <div className={"over_top_menu jc-sb"} style={{padding:"0 1rem", position:"relative"}}>
-                                            <FaTimes onClick={()=>{onClose()}}/>
-                                            <h4 style={{position:"absolute", left:"50%", transform:"translateX(-50%)", fontWeight:"bold", whiteSpace:'nowrap', wordBreak:"break-word"}}>
+                                        <div className={"over_top_menu jc-sb"}
+                                             style={{padding: "0 1rem", position: "relative"}}>
+
+                                            <button onClick={() => {
+                                                onClose()
+                                            }} style={{
+                                                padding: '0.5rem 0.5rem',
+                                                backgroundColor: "transparent",
+                                                color: "white"
+                                            }} className={"fc ai-c jc-c"}>
+                                                <FaTimes/>
+                                            </button>
+                                            <h4 style={{
+                                                position: "absolute",
+                                                left: "50%",
+                                                transform: "translateX(-50%)",
+                                                fontWeight: "bold",
+                                                whiteSpace: 'nowrap',
+                                                wordBreak: "break-word"
+                                            }}>
                                                 {title}
                                             </h4>
                                             {actions && actions.length > 0 && (
-                                                <div onClick={()=>{setActionPopup(!actionPopup)}}>
+                                                <div onClick={() => {
+                                                    setActionPopup(!actionPopup)
+                                                }}>
                                                     <FaEllipsis/>
                                                 </div>
                                             )}
                                         </div>
                                     }
 
-                                    <div style={{padding:padding, height:"100%", display:"flex", flexDirection:"column", overflowY:overflowY ? "scroll" : "", maxHeight: overflowY ? "94vh" : "" }}>
-                                        {children}
+                                    <div style={{
+                                        padding: padding,
+                                        height: "100%",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        overflowY: overflowY ? "scroll" : "",
+                                        maxHeight: overflowY ? "94vh" : ""
+                                    }}>
+                                    {children}
                                     </div>
                                     {actionPopup && (
                                         <div style={{position:"fixed",zIndex:9999, top:0, width:"100%", height:"100%" }}>
