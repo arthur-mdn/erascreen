@@ -27,12 +27,12 @@ export default function displayLogo({logo}) {
     }, [logo]);
 
   return (
-    <div>
+    <>
         {
-            cachedLogo && (
+            (cachedLogo && logo) && (
                 <img src={cachedLogo} className={"card logo"} alt="Logo" />
             )
         }
-    </div>
+    </>
   );
 }

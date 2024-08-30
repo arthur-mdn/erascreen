@@ -70,6 +70,25 @@ function EditScreenAttribute({ screen, screenId, attribute, value, onSave, input
         }
     }
 
+    const resetLogo = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${config.serverUrl}/screens/update`, {
+                attribute,
+                value: ''
+            }, {
+                withCredentials: true
+            });
+            onSave(response.data.screenObj);
+            toast.success("Logo supprimé avec succès !");
+        } catch (error) {
+            console.error('Erreur lors de la modification :', error);
+            toast.error("Erreur lors de la suppression du logo");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -181,6 +200,10 @@ function EditScreenAttribute({ screen, screenId, attribute, value, onSave, input
                         </div>
                     )
                 }
+
+                {value && (
+                    <button type={"button"} onClick={resetLogo}>Supprimer le logo</button>
+                )}
                 <div {...getRootProps()} style={{ border: '2px dashed #ccc', padding: '10px', textAlign: 'center' }}>
                     <input {...getInputProps()} />
                     Glissez et déposez le logo ici, ou cliquez pour sélectionner un fichier
