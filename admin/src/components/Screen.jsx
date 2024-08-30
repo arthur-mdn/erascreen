@@ -1,5 +1,5 @@
 // Screen.jsx
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import EditScreenAttribute from "./EditScreenAttribute.jsx";
 import IconManager from "./Settings/IconManager.jsx";
 import MeteoViewer from "./MeteoViewer.jsx";
@@ -24,6 +24,7 @@ import { useCookies } from "react-cookie";
 import Loading from "./Loading.jsx";
 import axios from "axios";
 import config from "../config.js";
+import FeaturedImage from "./Settings/FeaturedImage.jsx";
 
 function Screen() {
     const { screenId } = useParams();
@@ -96,7 +97,6 @@ function Screen() {
     if (error) {
         return <div>Error: {error}</div>;
     }
-
     return (
         <>
             <Routes>
@@ -188,7 +188,9 @@ function Screen() {
                 />} />
                 <Route path="*" element={<>
                     <div className={"screen-detail"}>
-                        <img src={`${config.serverUrl}/${screen.image}`} />
+                        <FeaturedImage permissions={screen.permissions} featured_image={screen.featured_image} onSave={(screenObj) => {
+                            onScreenUpdate(screenObj)
+                        }} />
                         <div className={"fc ai-fs g0-25 h100"}>
                             <h3 className={"fw-b"}>
                                 {screen.name}
@@ -200,13 +202,13 @@ function Screen() {
                                     {screen.status === "online" ? "En ligne" : "Hors ligne"}
                                 </span>
                             </div>
-                            <p style={{ opacity: 0.4 }}>
+                            <p style={{opacity: 0.4}}>
                                 {screen._id}
                             </p>
                         </div>
                     </div>
 
-                    <div style={{ height: '100%' }} className={"fc jc-sb"}>
+                    <div style={{height: '100%'}} className={"fc jc-sb"}>
                         <div>
                             {allowedButtons.map((button) => (
                                 <Link

@@ -745,3 +745,12 @@ nav.bread {
     background: linear-gradient(0deg, #002390 0%, #002390 10%, #F2F7FF 11%, #F2F7FF 100%);
   }
 }
+
+
+.edit-avilable{
+  cursor: pointer;
+  position: relative;
+}
+.edit-avilable:hover{
+  opacity: 0.8;
+}

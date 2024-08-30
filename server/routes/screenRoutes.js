@@ -55,7 +55,7 @@ function processScreenObj(screen, currentUserId) {
     // tout en conservant le "role" et "creation"
     screenObj.users = screenObj.users.map(user => {
         const { password, socketId, birthDate, user: userInfo, ...rest } = user;
-        const { _id, email, firstName, lastName } = userInfo; // Ajustez ceci en fonction des champs que vous souhaitez conserver
+        const { _id, email, firstName, lastName } = userInfo;
         return {
             ...rest,
             user: {
@@ -63,7 +63,6 @@ function processScreenObj(screen, currentUserId) {
                 email,
                 firstName,
                 lastName,
-                // Incluez explicitement les champs que vous souhaitez conserver
                 role: user.role,
                 creation: user.creation,
             }
@@ -113,7 +112,10 @@ const hasPermission = async (userId, screenId, attribute) => {
     return user.permissions.includes(attribute);
 };
 
-router.post('/screens/update', verifyToken, upload.single('logo'), async (req, res) => {
+router.post('/screens/update', verifyToken, upload.fields([
+    { name: 'logo', maxCount: 1 },
+    { name: 'featured_image', maxCount: 1 }
+]), async (req, res) => {
     const screenId = req.selectedScreen;
     const userId = req.user.userId;
     try {
@@ -122,11 +124,12 @@ router.post('/screens/update', verifyToken, upload.single('logo'), async (req, r
             return res.status(404).send({ error: 'Écran non trouvé' });
         }
 
-        if (req.file && req.file.fieldname === 'logo') {
-            if (!await hasPermission(userId, screenId, "logo")) {
-                return res.status(403).send({ error: 'Permission refusée' });
-            }
-            screen.logo = `${req.file.path}`;
+        if (req.files && req.files['logo'] && await hasPermission(userId, screenId, "logo")) {
+            screen.logo = `${req.files['logo'][0].path}`;
+        }
+
+        if (req.files && req.files['featured_image'] && await hasPermission(userId, screenId, "featured_image")) {
+            screen.featured_image = `${req.files['featured_image'][0].path}`;
         }
 
         const { attribute, value } = req.body;
