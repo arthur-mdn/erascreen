@@ -8,12 +8,15 @@ import Loading from "./Loading.jsx";
 import {toast} from "react-toastify";
 import {FaTv} from "react-icons/fa6";
 import {Link} from "react-router-dom";
+import {useSocket} from "../SocketContext.jsx";
+
 function ScreenSelector({ onSelectScreen }) {
     const [cookies, setCookie] = useCookies(['selectedScreen']);
     const [screens, setScreens] = useState([]);
     const [addScreenModalIsOpen, setAddScreenModalIsOpen] = useState(false);
     const selectedScreenId = cookies.selectedScreen;
     const [isLoading, setIsLoading] = useState(false);
+    const socket = useSocket();
 
     useEffect(() => {
         setIsLoading(true);
@@ -30,6 +33,21 @@ function ScreenSelector({ onSelectScreen }) {
             });
     }, []);
 
+    useEffect(() => {
+        if (socket) {
+            socket.on('screen_status', (updatedScreen) => {
+                setScreens((prevScreens) =>
+                    prevScreens.map((screen) =>
+                        screen._id === updatedScreen.screenId ? { ...screen, status: updatedScreen.status } : screen
+                    )
+                );
+            });
+
+            return () => {
+                socket.off('screen_status');
+            };
+        }
+    }, [socket]);
 
     if (isLoading) return <Loading />;
 

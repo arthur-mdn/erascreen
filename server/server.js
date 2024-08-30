@@ -114,6 +114,15 @@ io.on('connection', (socket) => {
                     socketUtils.associateScreenSocket(screenId, socket.id);
                     await Screen.findByIdAndUpdate(screenId, { status: "online" });
                     socket.emit('config_updated', screen);
+                    screen.users.forEach(async (user) => {
+                        const socketId = activeAdminSockets[user.user._id];
+                        if (socketId) {
+                            const socket = io.sockets.sockets.get(socketId);
+                            if (socket) {
+                                socket.emit('screen_status', { screenId, status: "online" });
+                            }
+                        }
+                    });
                 } else {
                     socket.emit('error', 'Écran non trouvé dans la base de données');
                 }
@@ -128,6 +137,18 @@ io.on('connection', (socket) => {
             if (screenId) {
                 await Screen.findByIdAndUpdate(screenId, {status: "offline"});
                 console.log('Screen disconnected:', screenId);
+            }
+            const screen = await Screen.findById(screenId);
+            if (screen) {
+                screen.users.forEach(async (user) => {
+                    const socketId = activeAdminSockets[user.user._id];
+                    if (socketId) {
+                        const socket = io.sockets.sockets.get(socketId);
+                        if (socket) {
+                            socket.emit('screen_status', { screenId, status: "offline" });
+                        }
+                    }
+                });
             }
         });
 

@@ -25,6 +25,7 @@ import Loading from "./Loading.jsx";
 import axios from "axios";
 import config from "../config.js";
 import FeaturedImage from "./Settings/FeaturedImage.jsx";
+import { useSocket } from '../SocketContext.jsx';
 
 function Screen() {
     const { screenId } = useParams();
@@ -32,6 +33,7 @@ function Screen() {
     const [cookies, setCookie] = useCookies(['selectedScreen']);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const socket = useSocket();
 
     useEffect(() => {
         setCookie('selectedScreen', screenId, { path: '/', domain: config.cookieDomain });
@@ -67,6 +69,22 @@ function Screen() {
 
         loadScreenDetails();
     }, [screenId]);
+
+    useEffect(() => {
+        if (socket) {
+            console.log("Socket is connected");
+            socket.on('screen_status', (updatedScreen) => {
+                if (updatedScreen.screenId === screenId) {
+                    setScreen((prevScreen) => ({ ...prevScreen, status: updatedScreen.status }));
+                }
+            });
+
+            return () => {
+                socket.off('screen_status');
+            };
+        }
+    }, [socket, screenId]);
+
 
     const onScreenUpdate = (updatedScreen) => {
         setScreen(updatedScreen);
