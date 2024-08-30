@@ -16,12 +16,13 @@ const config = require('./others/config');
 const database = require('./others/database');
 const verifyToken = require("./others/verifyToken");
 const { updateWeatherData } = require("./utils/weatherUtils");
+const {verify} = require("jsonwebtoken");
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: config.clientUrl,
+        origin: [config.clientUrl, config.adminUrl],
         credentials: true
     },
     pingInterval: 10000,
@@ -64,71 +65,108 @@ Screen.updateMany({}, { status: "offline" })
 
 
 const activeSockets = {};
+const activeAdminSockets = {};
 
 io.on('connection', (socket) => {
-    console.log('Raspberry Pi connected:', socket.id);
+    const origin = socket.handshake.headers.origin;
+    const cookies = socket.handshake.headers.cookie || '';
+    const sessionToken = cookies.split('; ').find(row => row.startsWith('session_token='))?.split('=')[1];
 
-    socket.on('associate', async (data) => {
-        const { screenId } = data;
-        await Screen.findByIdAndUpdate(screenId, { status: "online" });
-        socketUtils.associateScreenSocket(screenId,socket.id);
-    });
+    if (origin === config.clientUrl) {
+        console.log('Raspberry Pi connected:', socket.id);
 
-    socket.on('request_code', () => {
-        const uniqueCode = uuid.v4();
-        activeSockets[uniqueCode] = socket.id;
-        socket.emit('receive_code', uniqueCode);
-        console.log('Unique code sent:', uniqueCode);
-    });
-
-    socket.on('update_weather', async (data) => {
-        const { screenId } = data;
-        const screen = await Screen.findById(screenId).populate('meteo');
-        if (screen) {
-            try {
-                console.log(screen)
-                const updatedScreen = await updateWeatherData(screenId, screen.meteo.weatherId);
-                await Screen.findByIdAndUpdate(screenId, { status: "online" });
-                socket.emit('config_updated', updatedScreen);
-            } catch (error) {
-                console.error('Erreur lors de la mise à jour de la météo:', error);
-            }
-        } else {
-            socket.emit('error', 'Écran non trouvé dans la base de données');
-        }
-    });
-
-    socket.on('update_config', async (data) => {
-        try {
+        socket.on('associate', async (data) => {
             const { screenId } = data;
+            await Screen.findByIdAndUpdate(screenId, { status: "online" });
+            socketUtils.associateScreenSocket(screenId,socket.id);
+        });
 
+        socket.on('request_code', () => {
+            const uniqueCode = uuid.v4();
+            activeSockets[uniqueCode] = socket.id;
+            socket.emit('receive_code', uniqueCode);
+            console.log('Unique code sent:', uniqueCode);
+        });
+
+        socket.on('update_weather', async (data) => {
+            const { screenId } = data;
             const screen = await Screen.findById(screenId).populate('meteo');
             if (screen) {
-                socketUtils.associateScreenSocket(screenId, socket.id);
-                await Screen.findByIdAndUpdate(screenId, { status: "online" });
-                socket.emit('config_updated', screen);
+                try {
+                    console.log(screen)
+                    const updatedScreen = await updateWeatherData(screenId, screen.meteo.weatherId);
+                    await Screen.findByIdAndUpdate(screenId, { status: "online" });
+                    socket.emit('config_updated', updatedScreen);
+                } catch (error) {
+                    console.error('Erreur lors de la mise à jour de la météo:', error);
+                }
             } else {
                 socket.emit('error', 'Écran non trouvé dans la base de données');
             }
-        } catch (error) {
-            console.error('Erreur lors de la récupération de la configuration:', error);
-            socket.emit('error', 'Erreur lors de la récupération de la configuration');
-        }
-    });
+        });
 
-    socket.on('disconnect', async () => {
-        const screenId = socketUtils.removeSocketId(socket.id);
-        if (screenId) {
-            await Screen.findByIdAndUpdate(screenId, {status: "offline"});
-        }
-    });
+        socket.on('update_config', async (data) => {
+            try {
+                const { screenId } = data;
 
-    socket.conn.on('pingTimeout', async () => {
-        const screenId = socketUtils.removeSocketId(socket.id);
-        if (screenId) {
-            await Screen.findByIdAndUpdate(screenId, {status: "offline"});
+                const screen = await Screen.findById(screenId).populate('meteo');
+                if (screen) {
+                    socketUtils.associateScreenSocket(screenId, socket.id);
+                    await Screen.findByIdAndUpdate(screenId, { status: "online" });
+                    socket.emit('config_updated', screen);
+                } else {
+                    socket.emit('error', 'Écran non trouvé dans la base de données');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la récupération de la configuration:', error);
+                socket.emit('error', 'Erreur lors de la récupération de la configuration');
+            }
+        });
+
+        socket.on('disconnect', async () => {
+            const screenId = socketUtils.removeSocketId(socket.id);
+            if (screenId) {
+                await Screen.findByIdAndUpdate(screenId, {status: "offline"});
+                console.log('Screen disconnected:', screenId);
+            }
+        });
+
+        socket.conn.on('pingTimeout', async () => {
+            const screenId = socketUtils.removeSocketId(socket.id);
+            if (screenId) {
+                await Screen.findByIdAndUpdate(screenId, {status: "offline"});
+            }
+        });
+
+    } else if (origin === config.adminUrl) {
+
+        if (!sessionToken) {
+            console.log('Session token not found, disconnecting');
+            socket.disconnect();
+            return;
         }
-    });
+
+        try {
+            const decoded = verify(sessionToken, config.secretKey);
+            const userId = decoded.userId;
+            console.log('Admin connected:', socket.id, userId);
+
+            activeAdminSockets[userId] = socket.id;
+
+            socket.on('disconnect', () => {
+                console.log(`Admin disconnected: ${userId}`);
+                delete activeAdminSockets[userId];
+            });
+
+        } catch (err) {
+            console.log('Invalid session token, disconnecting');
+            socket.disconnect();
+        }
+
+    } else {
+        console.log('Unknown origin:', origin);
+        socket.disconnect();
+    }
 });
 
 

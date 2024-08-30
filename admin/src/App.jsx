@@ -1,7 +1,9 @@
 // App.jsx
-import React from 'react';
+import React, {useEffect} from 'react';
+import config from './config';
 import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
 import {AuthProvider, useAuth} from './AuthContext';
+import {io} from 'socket.io-client';
 import Login from "./pages/Login.jsx";
 import Logout from "./pages/Logout.jsx";
 import Accueil from './pages/Accueil.jsx';
@@ -17,7 +19,19 @@ import Profil from "./pages/Profil.jsx";
 const AuthenticatedApp = () => {
     const {authStatus} = useAuth();
 
-    return (
+    useEffect(() => {
+        const socket = io(`${config.serverUrl}`, {
+            reconnectionAttempts: 1500,
+            reconnectionDelay: 1000,
+            withCredentials: true,
+        });
+
+        socket.on('connect', () => {
+            console.log('Socket connected');
+        });
+    });
+
+        return (
         <Router>
             {authStatus === "loading" ? (
                 <Loading/>
