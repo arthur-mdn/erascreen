@@ -134,7 +134,7 @@ function App() {
             if (data.command === 'getAvailableCommands') {
                 socket.emit('client_control_response', {commandId : data.commandId, response: availableCommands});
             } else if (data.command === 'refresh') {
-                socket.emit('client_control_response', {commandId : data.commandId, response: 'Rebooting...'});
+                socket.emit('client_control_response', {commandId : data.commandId, response: 'Refreshing...'});
                 window.location.reload();
             } else if (data.command === 'identify') {
                 socket.emit('client_control_response', {commandId : data.commandId, response: 'Identifying...'});
