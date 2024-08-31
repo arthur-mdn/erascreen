@@ -61,7 +61,7 @@ function DisplayIcons({ icons }) {
     } : {};
 
   return (
-    <div ref={containerRef} className={"icons-full-container card ai-fs jc-sb fc "} style={{flexDirection:'row', width:'40%', overflow:"hidden", position:"relative"}}>
+    <div ref={containerRef} className={"icons-full-container card ai-fs jc-sb fc "} style={{flexDirection:'row', maxWidth:'40%', overflow:"hidden", position:"relative"}}>
         {
             shouldScroll &&
             <style>
