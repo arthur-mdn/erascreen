@@ -13,6 +13,11 @@ export async function deleteDatabases() {
                 console.log('Database deletion blocked');
             },
         });
+        await deleteDB('IconCache', {
+            blocked() {
+                console.log('Database deletion blocked');
+            },
+        });
         console.log('Databases deleted successfully');
     } catch (error) {
         console.error('Failed to delete databases', error);

@@ -23,7 +23,7 @@ function App() {
     const identifyTimerRef = useRef(null);
 
     useEffect(() => {
-        const savedConfig = localStorage.getItem('screenConfig');
+        let savedConfig = localStorage.getItem('screenConfig');
         const socket = io(`${config.serverUrl}`, {
             reconnectionAttempts: 1500, reconnectionDelay: 1000,
         });
@@ -81,6 +81,7 @@ function App() {
         socket.on('screen_deleted', async () => {
             localStorage.removeItem('screenConfig');
             setConfigData(null);
+            savedConfig = null;
             setStatus('requesting_code');
             socket.emit('request_code');
             setShowUpdateIcon(true);
