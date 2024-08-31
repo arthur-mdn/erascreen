@@ -1,6 +1,7 @@
 #!/bin/bash
 
 USERNAME=${SUDO_USER:-$USER}
+APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
 
 # ask for the raspberry desktop
 echo "Which Desktop are you using ? lxde or wayland ?"
@@ -33,17 +34,32 @@ EOF
         echo "Installing for wayland"
         sudo apt-get update
         sudo apt-get install -y chromium-browser
-        cd /home/$USERNAME/.config
-        cat << 'EOF' > wayfire.ini
-        [autostart]
-        panel = wfrespawn wf-panel-pi
-        background = wfrespawn pcmanfm --desktop --profile LXDE-pi
-        xdg-autostart = lxsession-xdg-autostart
-        chromium = chromium-browser https://client.displayhub.fr --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized --autoplay-policy=no-user-gesture-required
-        switchtab = bash ~/switchtab.sh
-        screensaver = false
-        dpms = false
+        WAYFIRE_CONFIG="/home/$USERNAME/.config/wayfire.ini"
+
+        # Add sections only if they do not exist
+        if ! grep -q "\[autostart\]" "$WAYFIRE_CONFIG"; then
+            cat << 'EOF' >> $WAYFIRE_CONFIG
+
+[autostart]
+panel = wfrespawn wf-panel-pi
+background = wfrespawn pcmanfm --desktop --profile LXDE-pi
+xdg-autostart = lxsession-xdg-autostart
+chromium = chromium-browser https://client.displayhub.fr --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized --autoplay-policy=no-user-gesture-required
+switchtab = bash ~/switchtab.sh
+screensaver = false
+dpms = false
 EOF
+        fi
+
+        if ! grep -q "\[wf-background\]" "$WAYFIRE_CONFIG"; then
+            cat <<EOF >> $WAYFIRE_CONFIG
+
+[wf-background]
+image = $APP_DIR/public/elements/background.png
+color = #000000
+EOF
+        fi
+
         sudo apt install -y interception-tools interception-tools-compat
         sudo apt install -y cmake
         cd /home/$USERNAME
@@ -57,26 +73,20 @@ EOF
         wget https://raw.githubusercontent.com/ugotapi/wayland-pagepi/main/config.yaml
         sudo cp /home/$USERNAME/config.yaml /etc/interception/udevmon.d/config.yaml
         sudo systemctl restart udevmon
-
         ;;
     *)
         echo "Invalid option"
         ;;
 esac
 
-APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
-
 cd $APP_DIR
-
-sudo chown -R $USERNAME:$USERNAME $APP_DIR
 
 case $option in
     1)
         pcmanfm --set-wallpaper "$APP_DIR/DisplayHub/pi-server/background.png"
         ;;
     2)
-        gsettings set org.gnome.desktop.background picture-uri "$APP_DIR/public/elements/background.png"
-        gsettings set org.gnome.desktop.background picture-uri-dark "$APP_DIR/public/elements/background.png"
+        echo "image = $APP_DIR/public/elements/background.png" >> /home/$USERNAME/.config/wayfire.ini
         ;;
     *)
         echo "Invalid option"
@@ -86,8 +96,7 @@ esac
 sudo systemctl disable bluetooth
 sudo systemctl stop bluetooth
 
-
-sudo apt install -y nodejs npm
+sudo chown -R $USERNAME:$USERNAME $APP_DIR
 sudo -u $USERNAME npm install
 
 sudo -u $USERNAME cp .env.example .env
@@ -116,8 +125,8 @@ User=$USERNAME
 Environment=PATH=/usr/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 Environment=NODE_ENV=production
 Environment=PORT=3002
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=journal
+StandardError=journal
 SyslogIdentifier=pi-server
 
 [Install]
@@ -127,5 +136,3 @@ EOL"
 sudo systemctl daemon-reload
 sudo systemctl enable pi-server.service
 sudo systemctl start pi-server.service
-
-sudo reboot
