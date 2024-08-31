@@ -24,9 +24,7 @@ function Screen({configData}){
                 <TimeViewer/>
                 {
                     configData.icons && configData.icons.length > 0 && (
-                        <div className={"card fr ai-c g0-5"}>
-                            <DisplayIcons icons={configData.icons}/>
-                        </div>
+                        <DisplayIcons icons={configData.icons}/>
                     )
                 }
             </div>

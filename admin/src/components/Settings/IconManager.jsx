@@ -52,7 +52,6 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
     const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: {'image/*': ['.jpeg', '.jpg', '.png', '.gif']}, multiple: true });
 
     const handleDelete = async (iconName) => {
-        console.log(screenId)
         setIsLoading(true);
         try {
             const response = await axios.delete(`${config.serverUrl}/screens/icons`, {

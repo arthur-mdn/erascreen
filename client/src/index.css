@@ -1155,6 +1155,7 @@ width:2.5vw
   }
   .directions-and-photos .directions-full-container{
     width: 100%!important;
+    max-width: none;
     height: 40%;
     border-radius: 1vw;
 
