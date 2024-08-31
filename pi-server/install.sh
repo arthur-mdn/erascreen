@@ -96,13 +96,17 @@ Description=Pi Server
 After=network.target
 
 [Service]
-ExecStart=/usr/local/bin/node $APP_DIR/pi-server.js
+ExecStart=/usr/bin/node $APP_DIR/pi-server.js
 WorkingDirectory=$APP_DIR
-Restart=always
+Restart=on-failure
+RestartSec=10
 User=$USER
-Environment=PATH=/usr/local/bin:/usr/bin:/bin
+Environment=PATH=/usr/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 Environment=NODE_ENV=production
 Environment=PORT=3002
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=pi-server
 
 [Install]
 WantedBy=multi-user.target
