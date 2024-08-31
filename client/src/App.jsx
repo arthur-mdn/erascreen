@@ -147,6 +147,15 @@ function App() {
                     },
                     body: JSON.stringify({command: 'reboot'}),
                 });
+            } else if (data.command === 'shutdown' && availableCommands === "advanced") {
+                socket.emit('client_control_response', {commandId : data.commandId, response: 'Shutting down...'});
+                const response = await fetch('http://localhost:3002/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({command: 'shutdown'}),
+                });
             } else {
                 socket.emit('client_control_response', {commandId : data.commandId, error: 'Command not found'});
             }
