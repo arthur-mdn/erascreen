@@ -39,9 +39,13 @@ export async function cacheImages(photos) {
     const db = await initImagesDB();
 
     const promises = photos.map(async (photo) => {
-        const response = await fetch(`${config.serverUrl}/${photo}`);
-        const blob = await response.blob();
-        await db.put('images', blob, photo);
+        const cachedImage = await db.get('images', photo);
+        if (!cachedImage) {
+            console.log('Caching image:', photo);
+            const response = await fetch(`${config.serverUrl}/${photo}`);
+            const blob = await response.blob();
+            await db.put('images', blob, photo);
+        }
     });
 
     await Promise.all(promises);
@@ -67,10 +71,13 @@ export async function cacheLogo(logo) {
     if (!logo) return;
 
     const db = await initLogosDB();
-
-    const response = await fetch(`${config.serverUrl}/${logo}`);
-    const blob = await response.blob();
-    await db.put('logos', blob, logo);
+    const cachedLogo = await db.get('logos', logo);
+    if (!cachedLogo) {
+        console.log('Caching logo:', logo);
+        const response = await fetch(`${config.serverUrl}/${logo}`);
+        const blob = await response.blob();
+        await db.put('logos', blob, logo);
+    }
 }
 
 export async function getCachedLogo(logo) {
