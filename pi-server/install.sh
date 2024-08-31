@@ -125,3 +125,5 @@ EOL"
 sudo systemctl daemon-reload
 sudo systemctl enable pi-server.service
 sudo systemctl start pi-server.service
+
+sudo reboot
