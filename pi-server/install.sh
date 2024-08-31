@@ -68,6 +68,8 @@ APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
 
 cd $APP_DIR
 
+sudo chown -R $USERNAME:$USERNAME $APP_DIR
+
 case $option in
     1)
         pcmanfm --set-wallpaper "$APP_DIR/DisplayHub/pi-server/background.png"
@@ -86,9 +88,9 @@ sudo systemctl stop bluetooth
 
 
 sudo apt install -y nodejs npm
-npm install
+sudo -u $USERNAME npm install
 
-cp .env.example .env
+sudo -u $USERNAME cp .env.example .env
 NEW_CLIENT_URL="https://client.displayhub.fr"
 sed -i "s|^CLIENT_URL=.*|CLIENT_URL=${NEW_CLIENT_URL}|"  .env
 
