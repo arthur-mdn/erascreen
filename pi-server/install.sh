@@ -48,11 +48,11 @@ EOF
         cd hideaway
         cmake -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build
-        sudo cp /home/$USER/hideaway/build/hideaway /usr/bin
+        sudo cp /home/$USERNAME/hideaway/build/hideaway /usr/bin
         sudo chmod +x /usr/bin/hideaway
         cd ~
         wget https://raw.githubusercontent.com/ugotapi/wayland-pagepi/main/config.yaml
-        sudo cp /home/$USER/config.yaml /etc/interception/udevmon.d/config.yaml
+        sudo cp /home/$USERNAME/config.yaml /etc/interception/udevmon.d/config.yaml
         sudo systemctl restart udevmon
 
         ;;
@@ -79,14 +79,14 @@ esac
 sudo apt install -y nodejs npm
 npm install
 
-echo "Configuration du fichier sudoers pour $USER..."
+echo "Configuration du fichier sudoers pour $USERNAME..."
 
 sudo bash -c "cat <<EOL >> /etc/sudoers
-$USER ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot
+$USERNAME ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot
 EOL"
 
 echo "Création d'un service systemd..."
-APP_DIR="/home/$USER/DisplayHub/pi-server"
+APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
 
 sudo bash -c "cat <<EOL > /etc/systemd/system/pi-server.service
 [Unit]
@@ -98,7 +98,7 @@ ExecStart=/usr/bin/node $APP_DIR/pi-server.js
 WorkingDirectory=$APP_DIR
 Restart=on-failure
 RestartSec=10
-User=$USER
+User=$USERNAME
 Environment=PATH=/usr/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 Environment=NODE_ENV=production
 Environment=PORT=3002
