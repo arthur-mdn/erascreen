@@ -63,15 +63,17 @@ EOF
         ;;
 esac
 
+APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
+
+cd $APP_DIR
+
 case $option in
     1)
         pcmanfm --set-wallpaper ~/DisplayHub/pi-server/background.jpg
         ;;
     2)
-        cd ~
-        gsettings set org.gnome.desktop.background picture-uri 'DisplayHub/pi-server/public/elements/background.jpg'
-        gsettings set org.gnome.desktop.background picture-uri-dark 'DisplayHub/pi-server/public/elements/background.jpg'
-
+        gsettings set org.gnome.desktop.background picture-uri "$APP_DIR/public/elements/background.jpg"
+        gsettings set org.gnome.desktop.background picture-uri-dark "$APP_DIR/public/elements/background.jpg"
         ;;
     *)
         echo "Invalid option"
@@ -81,10 +83,6 @@ esac
 sudo systemctl disable bluetooth
 sudo systemctl stop bluetooth
 
-
-APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
-
-cd $APP_DIR
 
 sudo apt install -y nodejs npm
 npm install
