@@ -3,7 +3,6 @@
 USERNAME=${SUDO_USER:-$USER}
 APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
 
-# ask for the raspberry desktop
 echo "Which Desktop are you using ? lxde or wayland ?"
 echo "1) lxde"
 echo "2) wayland"
@@ -36,7 +35,6 @@ EOF
         sudo apt-get install -y chromium-browser
         WAYFIRE_CONFIG="/home/$USERNAME/.config/wayfire.ini"
 
-        # Add sections only if they do not exist
         if ! grep -q "\[autostart\]" "$WAYFIRE_CONFIG"; then
             cat << 'EOF' >> $WAYFIRE_CONFIG
 
@@ -73,19 +71,16 @@ EOF
         ;;
 esac
 
-cd $APP_DIR
+CONFIG_FILE="/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
 
-case $option in
-    1)
-        pcmanfm --set-wallpaper "$APP_DIR/DisplayHub/pi-server/background.png"
-        ;;
-    2)
-        echo "image = $APP_DIR/public/elements/background.png" >> /home/$USERNAME/.config/wayfire.ini
-        ;;
-    *)
-        echo "Invalid option"
-        ;;
-esac
+if [ -f "$CONFIG_FILE" ]; then
+    sudo sed -i 's/show_trash=1/show_trash=0/' "$CONFIG_FILE"
+    sudo sed -i 's/show_mounts=1/show_mounts=0/' "$CONFIG_FILE"
+else
+    echo "Le fichier $CONFIG_FILE n'existe pas."
+fi
+
+cd $APP_DIR
 
 sudo systemctl disable bluetooth
 sudo systemctl stop bluetooth
