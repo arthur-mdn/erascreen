@@ -84,7 +84,7 @@ sudo systemctl stop bluetooth
 
 APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
 
-cd APP_DIR
+cd $APP_DIR
 
 sudo apt install -y nodejs npm
 npm install
