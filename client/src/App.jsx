@@ -251,12 +251,12 @@ function App() {
                         <div className="outer-circle">
                             <div className="green-scanner"></div>
                         </div>
-                        <h1 style={{fontSize:"2.5rem"}} className={"fw-b"}>Identification de l'écran</h1>
+                        <h1 style={{fontSize:"2.5rem", color:"black"}} className={"fw-b"}>Identification de l'écran</h1>
                         <div className={"g1 fr p1 shadow bg-white br0-5"}>
                             <img src={`${config.serverUrl}/${configData.featured_image}`} style={{width: "6rem", borderRadius:'0.5rem'}}/>
                             <div className={"fc g0-5 ai-fs"}>
-                                <h2 style={{fontSize: "2rem"}} className={"fw-b"}>{configData.name}</h2>
-                                <p>{configData._id}</p>
+                                <h2 style={{fontSize: "2rem", color:"black"}} className={"fw-b"}>{configData.name}</h2>
+                                <p style={{color:"black"}}>{configData._id}</p>
                             </div>
                         </div>
                     </div>}
