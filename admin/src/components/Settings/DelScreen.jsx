@@ -58,8 +58,8 @@ function DelScreen( { onRemoveScreenSelected } ) {
                     <h3 style={{fontWeight:"bold"}}>Supprimer cet écran et toutes les données associées.</h3>
                     <p>Attention, toutes les données de l'écran seront supprimées. Cette action est irréversible.</p>
                     <div className={"fr g0-5 fw-w"}>
-                        <button onClick={handleScreenDelete} style={{backgroundColor:'red'}}>Supprimer l'écran</button>
-                        <button onClick={() => setIsOpenDelete(false)}>Annuler</button>
+                        <button type={"button"} onClick={handleScreenDelete} style={{backgroundColor:'red'}}>Supprimer l'écran</button>
+                        <button type={"button"} onClick={() => setIsOpenDelete(false)}>Annuler</button>
                     </div>
                 </div>
             </Modal>

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+USERNAME=${SUDO_USER:-$USER}
+
 # ask for the raspberry desktop
 echo "Which Desktop are you using ? lxde or wayland ?"
 echo "1) lxde"
@@ -75,6 +77,10 @@ case $option in
         echo "Invalid option"
         ;;
 esac
+
+sudo systemctl disable bluetooth
+sudo systemctl stop bluetooth
+
 
 APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
 
