@@ -61,17 +61,14 @@ EOF
         ;;
 esac
 
-
-sudo apt install -y git nodejs npm
-
 case $option in
     1)
         pcmanfm --set-wallpaper ~/DisplayHub/pi-server/background.jpg
         ;;
     2)
         cd ~
-        gsettings set org.gnome.desktop.background picture-uri 'DisplayHub/pi-server/background.jpg'
-        gsettings set org.gnome.desktop.background picture-uri-dark 'DisplayHub/pi-server/background.jpg'
+        gsettings set org.gnome.desktop.background picture-uri 'DisplayHub/pi-server/public/elements/background.jpg'
+        gsettings set org.gnome.desktop.background picture-uri-dark 'DisplayHub/pi-server/public/elements/background.jpg'
 
         ;;
     *)
@@ -79,6 +76,7 @@ case $option in
         ;;
 esac
 
+sudo apt install -y nodejs npm
 npm install
 
 echo "Configuration du fichier sudoers pour $USER..."
