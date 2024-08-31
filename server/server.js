@@ -17,6 +17,7 @@ const database = require('./others/database');
 const verifyToken = require("./others/verifyToken");
 const { updateWeatherData } = require("./utils/weatherUtils");
 const {verify} = require("jsonwebtoken");
+const {checkUserPermissionsOfThisScreen} = require("./others/checkUserPermissions");
 
 const app = express();
 const server = http.createServer(app);
@@ -93,7 +94,6 @@ io.on('connection', (socket) => {
             const screen = await Screen.findById(screenId).populate('meteo');
             if (screen) {
                 try {
-                    console.log(screen)
                     const updatedScreen = await updateWeatherData(screenId, screen.meteo.weatherId);
                     await Screen.findByIdAndUpdate(screenId, { status: "online" });
                     socket.emit('config_updated', updatedScreen);
@@ -129,6 +129,24 @@ io.on('connection', (socket) => {
             } catch (error) {
                 console.error('Erreur lors de la récupération de la configuration:', error);
                 socket.emit('error', 'Erreur lors de la récupération de la configuration');
+            }
+        });
+
+        socket.on('client_control_response', async (data) => {
+            const screenId = socketUtils.getScreenId(socket.id);
+            if (screenId) {
+                const screen = await Screen.findById(screenId);
+                if (screen) {
+                    screen.users.forEach(async (user) => {
+                        const socketId = activeAdminSockets[user.user._id];
+                        if (socketId) {
+                            const socket = io.sockets.sockets.get(socketId);
+                            if (socket) {
+                                socket.emit('server_forward_client_response_to_admin', data);
+                            }
+                        }
+                    });
+                }
             }
         });
 
@@ -173,6 +191,37 @@ io.on('connection', (socket) => {
             console.log('Admin connected:', socket.id, userId);
 
             activeAdminSockets[userId] = socket.id;
+
+            socket.on('admin_request_client_control', async (data) => {
+                console.log('admin_request_client_control', data);
+                const { screenId, command, commandId } = data;
+                const screen = await Screen.findById(screenId);
+
+                const permissionGranted = await checkUserPermissionsOfThisScreen("control", screenId, userId);
+
+                if(!permissionGranted) {
+                    socket.emit('server_forward_client_response_to_admin', {commandId, error: 'Permission refusée'});
+                    return;
+                }
+
+                if (screen) {
+                    const socketId = socketUtils.getSocketId(screenId);
+                    if (socketId) {
+                        const screenSocket = io.sockets.sockets.get(socketId);
+                        if (screenSocket) {
+                            screenSocket.emit('server_send_control_to_client', {command, commandId});
+                        } else {
+                            socket.emit('server_forward_client_response_to_admin', {commandId, error: 'Écran non connecté'});
+                        }
+                    } else {
+                        console.log('Screen not connected');
+                        socket.emit('server_forward_client_response_to_admin', {commandId, error: 'Écran non connecté'});
+                    }
+                } else {
+                    console.log('Screen not found');
+                    socket.emit('server_forward_client_response_to_admin', {commandId, error: 'Écran non trouvé'});
+                }
+            });
 
             socket.on('disconnect', () => {
                 console.log(`Admin disconnected: ${userId}`);

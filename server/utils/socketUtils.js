@@ -27,6 +27,15 @@ const getSocketId = (screenId) => {
     return screenSocketMap[screenId];
 };
 
+const getScreenId = (socketId) => {
+    for (const screenId in screenSocketMap) {
+        if (screenSocketMap[screenId] === socketId) {
+            return screenId;
+        }
+    }
+    return null;
+}
+
 const removeSocketId = (socketId) => {
     for (const screenId in screenSocketMap) {
         if (screenSocketMap[screenId] === socketId) {
@@ -38,4 +47,4 @@ const removeSocketId = (socketId) => {
 };
 
 
-module.exports = { setIo, emitConfigUpdate, associateScreenSocket, removeSocketId, emitScreenDeletion };
+module.exports = { setIo, emitConfigUpdate, associateScreenSocket, removeSocketId, getScreenId, getSocketId, emitScreenDeletion };

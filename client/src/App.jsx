@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 import {io} from 'socket.io-client';
 import './App.css';
 import config from './config';
@@ -7,7 +7,7 @@ import {FaArrowCircleDown, FaCloudDownloadAlt} from "react-icons/fa";
 import useDarkMode from './hooks/useDarkMode';
 import useTextSlides from './hooks/useTextSlides';
 import {QRCodeCanvas} from 'qrcode.react';
-import {FaArrowRotateLeft, FaKeyboard, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
+import {FaArrowRotateLeft, FaKeyboard, FaLocationDot, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
 import Pub from "./components/Pub.jsx";
 import { cacheImages, deleteDatabases } from "./utils/cacheUtils";
 
@@ -19,6 +19,8 @@ function App() {
     const isDarkModeActive = useDarkMode(configData);
     const textSlide = useTextSlides(configData);
     const [error, setError] = useState(null);
+    const [showIdentify, setShowIdentify] = useState(false);
+    const identifyTimerRef = useRef(null);
 
     useEffect(() => {
         const savedConfig = localStorage.getItem('screenConfig');
@@ -113,6 +115,42 @@ function App() {
             setStatus('error');
             setError(error);
         })
+
+        socket.on('server_send_control_to_client', async (data) => {
+            console.log('server_send_control_to_client', data.command);
+            let availableCommands = "basic";
+
+            try {
+                const response = await fetch('http://localhost:3002');
+                if (response.ok) {
+                    availableCommands = "advanced";
+                    console.log('Advanced commands available');
+                }
+            } catch (error) {
+                console.error('Error while fetching localhost:3002:', error);
+            }
+
+            if (data.command === 'getAvailableCommands') {
+                socket.emit('client_control_response', {commandId : data.commandId, response: availableCommands});
+            } else if (data.command === 'refresh') {
+                socket.emit('client_control_response', {commandId : data.commandId, response: 'Rebooting...'});
+                window.location.reload();
+            } else if (data.command === 'identify') {
+                socket.emit('client_control_response', {commandId : data.commandId, response: 'Identifying...'});
+                identify();
+            } else if (data.command === 'reboot' && availableCommands === "advanced") {
+                socket.emit('client_control_response', {commandId : data.commandId, response: 'Rebooting...'});
+                const response = await fetch('http://localhost:3002/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({command: 'reboot'}),
+                });
+            } else {
+                socket.emit('client_control_response', {commandId : data.commandId, error: 'Command not found'});
+            }
+        })
         return () => {
             if (intervalId) {
                 clearInterval(intervalId);
@@ -120,6 +158,21 @@ function App() {
             socket.disconnect();
         };
     }, []);
+
+    const identify = () => {
+        const audio = new Audio('/elements/sounds/find-sound.mp3');
+        audio.play().catch((err) => console.error('Audio play failed:', err));
+
+        if (identifyTimerRef.current) {
+            clearTimeout(identifyTimerRef.current);
+        }
+
+        setShowIdentify(true);
+
+        identifyTimerRef.current = setTimeout(() => {
+            setShowIdentify(false);
+        }, 11000);
+    };
 
     const renderContent = () => {
         console.log(status)
@@ -182,8 +235,24 @@ function App() {
                             <div style={{position: "absolute", top: 0, right: 0, margin: '1rem', zIndex: 9999}}>
                                 <FaCloudDownloadAlt size={'2rem'}/>
                             </div>}
-                        <Screen configData={configData}/>
-                        <Pub displayTime={12000} animationTime={2000} intervalTime={18000} />
+                    {showIdentify && <div className="fc g4 identify-overlay">
+                        <div className={"identify-progress"}>
+                            <div></div>
+                        </div>
+                        <div className="outer-circle">
+                            <div className="green-scanner"></div>
+                        </div>
+                        <h1 style={{fontSize:"2.5rem"}} className={"fw-b"}>Identification de l'écran</h1>
+                        <div className={"g1 fr p1 shadow bg-white br0-5"}>
+                            <img src={`${config.serverUrl}/${configData.featured_image}`} style={{width: "6rem", borderRadius:'0.5rem'}}/>
+                            <div className={"fc g0-5 ai-fs"}>
+                                <h2 style={{fontSize: "2rem"}} className={"fw-b"}>{configData.name}</h2>
+                                <p>{configData._id}</p>
+                            </div>
+                        </div>
+                    </div>}
+                    <Screen configData={configData}/>
+                    <Pub displayTime={12000} animationTime={2000} intervalTime={18000} />
                     </>);
             case 'disconnected':
                 return <p>Connexion perdue. Tentative de reconnexion...</p>;

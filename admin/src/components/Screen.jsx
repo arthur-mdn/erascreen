@@ -13,7 +13,7 @@ import {
     FaImages, FaSun, FaTextWidth,
     FaUmbrella, FaUsers
 } from "react-icons/fa6";
-import { FaCogs, FaSignOutAlt } from "react-icons/fa";
+import {FaCogs, FaGamepad} from "react-icons/fa";
 import ConfigManager from "./Settings/ConfigManager.jsx";
 import DarkModeManager from "./Settings/DarkModeManager.jsx";
 import TimeIndicator from "./TimeIndicator.jsx";
@@ -26,6 +26,7 @@ import axios from "axios";
 import config from "../config.js";
 import FeaturedImage from "./Settings/FeaturedImage.jsx";
 import { useSocket } from '../SocketContext.jsx';
+import Control from "./Settings/Control.jsx";
 
 function Screen() {
     const { screenId } = useParams();
@@ -100,6 +101,7 @@ function Screen() {
         { id: "dark_mode", label: "Mode sombre", icon: <FaSun /> },
         { id: "text_slides", label: "Textes défilants", icon: <FaTextWidth /> },
         { id: "allowed_users", label: "Utilisateurs autorisés", icon: <FaUsers /> },
+        { id: "control", label: "Contrôle", icon: <FaGamepad /> },
         { id: "avanced_settings", label: "Paramètres avancés", icon: <FaCogs /> }
     ];
 
@@ -194,6 +196,9 @@ function Screen() {
                     onConfigChange={(newConfig) => {
                         onScreenUpdate(newConfig)
                     }}
+                />} />
+                <Route path="/control" element={<Control
+                    screen={screen}
                 />} />
                 <Route path="/avanced_settings" element={<ConfigManager
                     screen={screen}
