@@ -91,7 +91,7 @@ npm install
 
 cp .env.example .env
 NEW_CLIENT_URL="https://client.displayhub.fr"
-sed -i "s|^CLIENT_URL=.*|CLIENT_URL=${NEW_CLIENT_URL}|"  APP_DIR/.env
+sed -i "s|^CLIENT_URL=.*|CLIENT_URL=${NEW_CLIENT_URL}|"  .env
 
 echo "Configuration du fichier sudoers pour $USERNAME..."
 
