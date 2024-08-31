@@ -3,33 +3,34 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import config from "../config.js";
-import {cacheImages, getCachedImage} from "../utils/cacheUtils.js";
+import {cacheIcons, cacheImages, getCachedImage} from "../utils/cacheUtils.js";
 
 function PhotoSlider({ photos, interval, hideDots, screen }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [cachedPhotos, setCachedPhotos] = useState([]);
 
-    useEffect(() => {
-        const loadImages = async () => {
-            const loadedPhotos = await Promise.all(photos.map(async (photo) => {
-                const cachedImage = await getCachedImage(photo);
-                if (cachedImage) {
-                    return URL.createObjectURL(cachedImage);
-                } else {
-                    return `${config.serverUrl}/${photo}`;
-                }
-            }));
-            setCachedPhotos(loadedPhotos);
-        };
-
-        loadImages();
-    }, [photos]);
+    const loadImages = async () => {
+        const loadedPhotos = await Promise.all(photos.map(async (photo) => {
+            const cachedImage = await getCachedImage(photo);
+            if (cachedImage) {
+                return URL.createObjectURL(cachedImage);
+            } else {
+                return `${config.serverUrl}/${photo}`;
+            }
+        }));
+        setCachedPhotos(loadedPhotos);
+    };
 
     useEffect(() => {
-        if(photos.length > 0){
-        cacheImages(photos);
+        async function cacheAndLoadImages() {
+            if (photos.length > 0) {
+                await cacheImages(photos);
+            }
+            loadImages();
         }
-    }, []);
+
+        cacheAndLoadImages();
+    }, [photos]);
 
     const settings = {
         dots: !hideDots,

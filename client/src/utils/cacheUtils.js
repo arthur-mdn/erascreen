@@ -89,9 +89,13 @@ export async function cacheIcons(icons) {
     const db = await initIconsDB();
 
     const promises = icons.map(async (icon) => {
-        const response = await fetch(`${config.serverUrl}/${icon}`);
-        const blob = await response.blob();
-        await db.put('icons', blob, icon);
+        const cachedIcon = await db.get('icons', icon);
+        if (!cachedIcon) {
+            console.log('Caching icon:', icon);
+            const response = await fetch(`${config.serverUrl}/${icon}`);
+            const blob = await response.blob();
+            await db.put('icons', blob, icon);
+        }
     });
 
     await Promise.all(promises);

@@ -99,9 +99,9 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
     return (
         <div className={"p1"}>
             <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="droppable-icons">
+                <Droppable droppableId="droppable-icons" direction="horizontal">
                     {(provided) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef} className={"fc g0-5"}>
+                        <div {...provided.droppableProps} ref={provided.innerRef} className={"fr g0-5"}>
                             {icons.map((icon, index) => (
                                 <Draggable key={icon} draggableId={icon} index={index}>
                                     {(provided) => (
