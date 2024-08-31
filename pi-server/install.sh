@@ -70,11 +70,11 @@ cd $APP_DIR
 
 case $option in
     1)
-        pcmanfm --set-wallpaper ~/DisplayHub/pi-server/background.jpg
+        pcmanfm --set-wallpaper "$APP_DIR/DisplayHub/pi-server/background.png"
         ;;
     2)
-        gsettings set org.gnome.desktop.background picture-uri "$APP_DIR/public/elements/background.jpg"
-        gsettings set org.gnome.desktop.background picture-uri-dark "$APP_DIR/public/elements/background.jpg"
+        gsettings set org.gnome.desktop.background picture-uri "$APP_DIR/public/elements/background.png"
+        gsettings set org.gnome.desktop.background picture-uri-dark "$APP_DIR/public/elements/background.png"
         ;;
     *)
         echo "Invalid option"
