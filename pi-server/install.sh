@@ -13,7 +13,7 @@ case $option in
         sudo apt-get update
         sudo apt-get install -y chromium-browser unclutter
 
-        cd .config
+        cd /home/$USERNAME/.config
         sudo mkdir -p lxsession/LXDE-pi
         cd lxsession/LXDE-pi
         cat << 'EOF' > autostart
@@ -33,6 +33,7 @@ EOF
         echo "Installing for wayland"
         sudo apt-get update
         sudo apt-get install -y chromium-browser
+        cd /home/$USERNAME/.config
         cat << 'EOF' > wayfire.ini
         [autostart]
         panel = wfrespawn wf-panel-pi
@@ -45,14 +46,14 @@ EOF
 EOF
         sudo apt install -y interception-tools interception-tools-compat
         sudo apt install -y cmake
-        cd ~
+        cd /home/$USERNAME
         git clone https://gitlab.com/interception/linux/plugins/hideaway.git
         cd hideaway
         cmake -B build -DCMAKE_BUILD_TYPE=Release
         cmake --build build
         sudo cp /home/$USERNAME/hideaway/build/hideaway /usr/bin
         sudo chmod +x /usr/bin/hideaway
-        cd ~
+        cd /home/$USERNAME
         wget https://raw.githubusercontent.com/ugotapi/wayland-pagepi/main/config.yaml
         sudo cp /home/$USERNAME/config.yaml /etc/interception/udevmon.d/config.yaml
         sudo systemctl restart udevmon
