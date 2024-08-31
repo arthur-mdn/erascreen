@@ -76,8 +76,16 @@ case $option in
         ;;
 esac
 
+APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
+
+cd APP_DIR
+
 sudo apt install -y nodejs npm
 npm install
+
+cp .env.example .env
+NEW_CLIENT_URL="https://client.displayhub.fr"
+sed -i "s|^CLIENT_URL=.*|CLIENT_URL=${NEW_CLIENT_URL}|"  APP_DIR/.env
 
 echo "Configuration du fichier sudoers pour $USERNAME..."
 
@@ -86,7 +94,6 @@ $USERNAME ALL=(ALL) NOPASSWD: /sbin/shutdown, /sbin/reboot
 EOL"
 
 echo "Création d'un service systemd..."
-APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
 
 sudo bash -c "cat <<EOL > /etc/systemd/system/pi-server.service
 [Unit]
