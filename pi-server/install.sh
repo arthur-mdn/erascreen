@@ -41,8 +41,8 @@ EOF
             cat << 'EOF' >> $WAYFIRE_CONFIG
 
 [autostart]
-panel = wfrespawn wf-panel-pi
-background = wfrespawn pcmanfm --desktop --profile LXDE-pi
+#panel = wfrespawn wf-panel-pi
+#background = wfrespawn pcmanfm --desktop --profile LXDE-pi
 xdg-autostart = lxsession-xdg-autostart
 chromium = chromium-browser https://client.displayhub.fr --kiosk --noerrdialogs --disable-infobars --no-first-run --ozone-platform=wayland --enable-features=OverlayScrollbar --start-maximized --autoplay-policy=no-user-gesture-required
 switchtab = bash ~/switchtab.sh
@@ -51,14 +51,8 @@ dpms = false
 EOF
         fi
 
-        if ! grep -q "\[wf-background\]" "$WAYFIRE_CONFIG"; then
-            cat <<EOF >> $WAYFIRE_CONFIG
-
-[wf-background]
-image = $APP_DIR/public/elements/background.png
-color = #000000
-EOF
-        fi
+        rm -f /usr/share/rpd-wallpaper/fisherman.jpg
+        cp $APP_DIR/public/elements/background.png /usr/share/rpd-wallpaper/fisherman.jpg
 
         sudo apt install -y interception-tools interception-tools-compat
         sudo apt install -y cmake
