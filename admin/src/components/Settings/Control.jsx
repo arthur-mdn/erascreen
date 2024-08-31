@@ -145,7 +145,7 @@ export default function Control({ screen }) {
                                 key={key}
                                 type={"button"}
                                 onClick={() => sendControlCommand(command.command)}
-                                disabled={buttonStates[key] || !isCommandAvailable(command.type)}
+                                disabled={buttonStates[key] || !isCommandAvailable(command.type) || actualScreenStatus !== 'online'}
                             >
                                 {command.icon}
                                 {command.title}
@@ -166,7 +166,7 @@ export default function Control({ screen }) {
                                 key={key}
                                 type={"button"}
                                 onClick={() => sendControlCommand(command.command)}
-                                disabled={buttonStates[key] || !isCommandAvailable(command.type)}
+                                disabled={buttonStates[key] || !isCommandAvailable(command.type) || actualScreenStatus !== 'online'}
                             >
                                 {command.icon}
                                 {command.title}
