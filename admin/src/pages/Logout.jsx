@@ -24,8 +24,6 @@ function Logout() {
         logout();
     }, []);
 
-    return <Navigate to="/login" />;
-
 }
 
 export default Logout;
