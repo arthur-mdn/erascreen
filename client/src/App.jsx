@@ -118,7 +118,7 @@ function App() {
         })
 
         socket.on('server_send_control_to_client', async (data) => {
-            console.log('server_send_control_to_client', data.command);
+            console.log('server_send_control_to_client', data);
             let availableCommands = [];
             let defaultValues = {};
             let appVersion = null;

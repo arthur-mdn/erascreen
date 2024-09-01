@@ -18,22 +18,41 @@ app.use(express.json());
 app.get('/', (req, res) => {
     let availableCommands = ['shutdown', 'reboot', 'update'];
     let defaultValues = {};
-    const exec = require('child_process').exec;
-    exec('ddcutil detect', (error, stdout, stderr) => {
-        if (!stdout.includes('Invalid display')) {
-            exec('ddcutil getvcp 0x10', (error, stdout, stderr) => {
+
+    const execPromise = (command) => {
+        return new Promise((resolve, reject) => {
+            exec(command, (error, stdout, stderr) => {
                 if (error) {
-                    console.error(`exec error: ${error}`);
+                    reject(error);
+                } else {
+                    resolve({ stdout, stderr });
                 }
-                console.log(`stdout: ${stdout}`);
-                console.error(`stderr: ${stderr}`);
-                const brightnessValue = stdout.match(/current value = (\d+)/);
-                defaultValues.brightness = parseInt(brightnessValue[1]);
-                availableCommands.push('brightness');
-            })
+            });
+        });
+    };
+
+    (async () => {
+        try {
+            const detectResult = await execPromise('ddcutil detect');
+            if (!detectResult.stdout.includes('Invalid display')) {
+                const brightnessResult = await execPromise('ddcutil getvcp 0x10');
+                console.log(`stdout: ${brightnessResult.stdout}`);
+                console.error(`stderr: ${brightnessResult.stderr}`);
+
+                const brightnessValue = brightnessResult.stdout.match(/current value\s*=\s*(\d+)/);
+                if (brightnessValue) {
+                    defaultValues.brightness = parseInt(brightnessValue[1]);
+                    availableCommands.push('brightness');
+                }
+            }
+
+            res.json({ appVersion: appVersion, availableCommands: availableCommands, defaultValues: defaultValues });
+
+        } catch (error) {
+            console.error('Error executing commands:', error);
+            res.status(500).json({ error: 'An error occurred while retrieving display information.' });
         }
-    });
-    res.json({ appVersion: appVersion, availableCommands: availableCommands, defaultValues: defaultValues });
+    })();
 });
 
 app.post('/execute', (req, res) => {
