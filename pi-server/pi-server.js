@@ -15,7 +15,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.json({ version: appVersion });
+    res.json({ appVersion: appVersion });
 });
 
 app.post('/execute', (req, res) => {
@@ -48,6 +48,28 @@ app.post('/execute', (req, res) => {
                 console.log(`stdout: ${stdout}`);
                 console.error(`stderr: ${stderr}`);
                 res.send('Rebooting...');
+            });
+            break;
+        case 'update':
+            exec('git pull', (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    return res.status(500).send('Error executing command.');
+                }
+                if(!stdout.includes('Already up to date.')) {
+                    exec('sudo reboot', (error, stdout, stderr) => {
+                        if (error) {
+                            console.error(`exec error: ${error}`);
+                            return res.status(500).send('Error executing command.');
+                        }
+                        console.log(`stdout: ${stdout}`);
+                        console.error(`stderr: ${stderr}`);
+                        res.send('Updating...');
+                    });
+                }
+                console.log(`stdout: ${stdout}`);
+                console.error(`stderr: ${stderr}`);
+                res.send('Updating...');
             });
             break;
         default:

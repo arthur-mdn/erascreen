@@ -359,6 +359,9 @@ button:focus-visible {
   color: var(--text-color);
 }
 
+.o0-5{
+  opacity: 0.5;
+}
 
 .over_modal {
   display: flex;
