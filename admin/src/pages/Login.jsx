@@ -63,9 +63,9 @@ function Login() {
                 />
             </div>
 
-            <Link to={"/mot-de-passe-oublie"} type={"button"} className={"forgot_password_button"}>Mot de passe oublié ?</Link>
-            <button type="submit" className={"main_button"}>Connexion</button>
-            <p>Vous n'avez pas de compte ?</p>
+            <Link to={"/mot-de-passe-oublie"} type={"button"} className={"w100 ta-r forgot_password_button"}>Mot de passe oublié ?</Link>
+            <button type="submit" className={"w100"}>Connexion</button>
+            <p className={"w100 ta-l"}>Vous n'avez pas de compte ?</p>
             <Link to={'/register'} className={"force_button_style sub_button"}>Créer un compte</Link>
         </form>
     );

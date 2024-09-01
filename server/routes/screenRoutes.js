@@ -51,10 +51,10 @@ function processScreenObj(screen, currentUserId) {
     // Filtrer l'utilisateur actuel de la liste des utilisateurs
     screenObj.users = screenObj.users.filter(user => user.user._id.toString() !== currentUserId);
 
-    // Supprimer les informations sensibles des comptes utilisateurs (password, socketId, birthDate)
+    // Supprimer les informations sensibles des comptes utilisateurs (password, socketId)
     // tout en conservant le "role" et "creation"
     screenObj.users = screenObj.users.map(user => {
-        const { password, socketId, birthDate, user: userInfo, ...rest } = user;
+        const { password, socketId, user: userInfo, ...rest } = user;
         const { _id, email, firstName, lastName } = userInfo;
         return {
             ...rest,

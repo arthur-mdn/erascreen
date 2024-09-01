@@ -98,8 +98,8 @@ function Register() {
                     style={{colorScheme:'light'}}
                 />
             </div>
-            <button type="submit" className={"main_button"}>Inscription</button>
-            <p>Vous avez déjà un compte ?</p>
+            <button type="submit" className={"w100"}>Inscription</button>
+            <p className={"w100 ta-l"}>Vous avez déjà un compte ?</p>
             <Link to={'/login'} className={"sub_button force_button_style"}>Se connecter</Link>
         </form>
     );

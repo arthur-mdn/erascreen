@@ -54,7 +54,9 @@ const AuthenticatedApp = () => {
                                    element={<Navigate to={authStatus === "unauthenticated" ? "/login" : "/"}/>}/>
                         </Routes>
                     </div>
-                    <div style={{minHeight: '100px', width: "100%"}} className={"hide-desktop"}></div>
+                    {authStatus === "authenticated" ??
+                        <div style={{minHeight: '100px', width: "100%"}} className={`hide-desktop`}></div>
+                    }
                 </>
             )}
         </Router>

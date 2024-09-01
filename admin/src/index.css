@@ -308,8 +308,6 @@ button[type=button].forgot_password_button{
   cursor: pointer;
   text-decoration: underline;
   padding: 0;
-  margin-left: auto;
-
 }
 button[type=button].forgot_password_button:hover{
   background-color: transparent;
@@ -427,6 +425,15 @@ button:focus-visible {
   z-index: 1;
 }
 
+.ta-l{
+    text-align: left;
+}
+.ta-c{
+    text-align: center;
+}
+.ta-r{
+    text-align: right;
+}
 
 .screen-detail {
   width: 100%;
