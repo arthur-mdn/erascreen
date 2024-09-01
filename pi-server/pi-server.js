@@ -4,7 +4,7 @@ const cors = require('cors');
 const app = express();
 const config = require('./others/config');
 
-const appVersion = 'pi-0.0.1';
+const appVersion = 'pi-0.0.2';
 
 app.use(cors({
     origin: config.clientUrl,
