@@ -86,6 +86,8 @@ sudo systemctl disable bluetooth
 sudo systemctl stop bluetooth
 
 sudo chown -R $USERNAME:$USERNAME $APP_DIR
+
+sudo apt-get install -y nodejs npm
 sudo -u $USERNAME npm install
 
 sudo -u $USERNAME cp .env.example .env
