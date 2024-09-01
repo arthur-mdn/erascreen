@@ -131,7 +131,7 @@ app.post('/execute', (req, res) => {
                         }
                         console.log(`stdout: ${stdout}`);
                         console.error(`stderr: ${stderr}`);
-                        const brightnessValue = stdout.match(/current value = (\d+)/);
+                        const brightnessValue = stdout.match(/current value\s*=\s*(\d+)/);
                         res.send(`Brightness set to ${brightnessValue[1]}.`);
                     })
                 });
