@@ -128,12 +128,6 @@ function App() {
                 if (response.ok) {
                     const data = await response.json();
                     availableCommands = data.availableCommands;
-                    if(!availableCommands.includes('refresh')){
-                        availableCommands.push('refresh');
-                    }
-                    if (!availableCommands.includes('identify')) {
-                        availableCommands.push('identify');
-                    }
                     defaultValues = data.defaultValues;
                     appVersion = data.appVersion;
 
@@ -147,6 +141,13 @@ function App() {
                 }
             } catch (error) {
                 console.error('Error while fetching localhost:3002:', error);
+            }
+
+            if(!availableCommands.includes('refresh')){
+                availableCommands.push('refresh');
+            }
+            if (!availableCommands.includes('identify')) {
+                availableCommands.push('identify');
             }
 
             if (data.command === 'getAvailableCommands') {
