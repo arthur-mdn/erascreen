@@ -59,16 +59,26 @@ router.post('/auth/register', async (req, res) => {
 });
 
 
-router.get('/auth/validate-session', (req, res) => {
+router.get('/auth/validate-session', async (req, res) => {
     const token = req.cookies['session_token'];
     if (!token) {
-        return res.json({ isAuthenticated: false });
+        return res.json({isAuthenticated: false});
     }
     try {
-        jwt.verify(token, config.secretKey);
-        res.json({ isAuthenticated: true });
+        const decoded = jwt.verify(token, config.secretKey);
+        const user = await User.findById(decoded.userId);
+
+        if (!user) {
+            return res.json({isAuthenticated: false, message: 'Utilisateur non trouvé'});
+        }
+
+        if (user.status && ['disabled', 'pending', 'blocked'].includes(user.status)) {
+            return res.json({isAuthenticated: false, message: 'Compte désactivé'});
+        }
+
+        res.json({isAuthenticated: true});
     } catch (err) {
-        res.json({ isAuthenticated: false });
+        res.json({isAuthenticated: false});
     }
 });
 
