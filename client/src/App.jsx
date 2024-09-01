@@ -120,26 +120,40 @@ function App() {
         socket.on('server_send_control_to_client', async (data) => {
             console.log('server_send_control_to_client', data.command);
             let availableCommands = "basic";
+            let appVersion = null;
 
             try {
                 const response = await fetch('http://localhost:3002');
                 if (response.ok) {
-                    availableCommands = "advanced";
-                    console.log('Advanced commands available');
+                    const data = await response.json();
+                    appVersion = data.appVersion;
+
+                    if (appVersion) {
+                        availableCommands = "advanced";
+                        console.log('Advanced commands available, app version:', appVersion);
+                    } else {
+                        console.log('App version not found, using basic commands');
+                    }
+                } else {
+                    console.error('Failed to fetch from localhost:3002, response status:', response.status);
                 }
             } catch (error) {
                 console.error('Error while fetching localhost:3002:', error);
             }
 
             if (data.command === 'getAvailableCommands') {
-                socket.emit('client_control_response', {commandId : data.commandId, response: availableCommands});
+                socket.emit('client_control_response', {commandId : data.commandId, response: availableCommands, appVersion});
             } else if (data.command === 'refresh') {
                 socket.emit('client_control_response', {commandId : data.commandId, response: 'Refreshing...'});
                 window.location.reload();
             } else if (data.command === 'identify') {
                 socket.emit('client_control_response', {commandId : data.commandId, response: 'Identifying...'});
                 identify();
-            } else if (data.command === 'reboot' && availableCommands === "advanced") {
+            } else if (data.command === 'reboot') {
+                if (availableCommands !== "advanced") {
+                    socket.emit('client_control_response', {commandId : data.commandId, error: 'Advanced commands not available'});
+                    return;
+                }
                 socket.emit('client_control_response', {commandId : data.commandId, response: 'Rebooting...'});
                 const response = await fetch('http://localhost:3002/execute', {
                     method: 'POST',
@@ -148,7 +162,11 @@ function App() {
                     },
                     body: JSON.stringify({command: 'reboot'}),
                 });
-            } else if (data.command === 'shutdown' && availableCommands === "advanced") {
+            } else if (data.command === 'shutdown') {
+                if (availableCommands !== "advanced") {
+                    socket.emit('client_control_response', {commandId : data.commandId, error: 'Advanced commands not available'});
+                    return;
+                }
                 socket.emit('client_control_response', {commandId : data.commandId, response: 'Shutting down...'});
                 const response = await fetch('http://localhost:3002/execute', {
                     method: 'POST',
@@ -156,6 +174,19 @@ function App() {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({command: 'shutdown'}),
+                });
+            } else if (data.command === 'update') {
+                if (availableCommands !== "advanced") {
+                    socket.emit('client_control_response', {commandId : data.commandId, error: 'Advanced commands not available'});
+                    return;
+                }
+                socket.emit('client_control_response', {commandId : data.commandId, response: 'Updating...'});
+                const response = await fetch('http://localhost:3002/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({command: 'update'}),
                 });
             } else {
                 socket.emit('client_control_response', {commandId : data.commandId, error: 'Command not found'});

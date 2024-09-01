@@ -10,6 +10,7 @@ export default function Control({ screen }) {
     const [buttonStates, setButtonStates] = useState({});
     const [availableCommands, setAvailableCommands] = useState(null);
     const [actualScreenStatus, setActualScreenStatus] = useState(screen.status);
+    const [appVersion, setAppVersion] = useState(null);
 
     const commands = {
         refresh: {
@@ -35,6 +36,12 @@ export default function Control({ screen }) {
             icon: <FaRotate />,
             command: "reboot",
             type: "advanced"
+        },
+        update: {
+            title: "Mettre à jour l'écran",
+            icon: <FaSatellite />,
+            command: "update",
+            type: "advanced"
         }
     };
 
@@ -50,8 +57,14 @@ export default function Control({ screen }) {
 
                     if (data.response) {
                         toast.success(`Command successful: ${data.response}`);
+                        if (data.appVersion) {
+                            setAppVersion(data.appVersion);
+                        }
                     } else if (data.error) {
                         toast.error(`Command failed: ${data.error}`);
+                        if(data.error === 'Advanced commands not available') {
+                            setAvailableCommands('basic');
+                        }
                     }
                 }
             });
@@ -156,8 +169,13 @@ export default function Control({ screen }) {
             <div className={"fc g0-5"}>
                 <h2>Contrôles avancés</h2>
                 {availableCommands === 'basic' && (
-                    <p style={{color:"red", fontWeight:'bold'}}>Les contrôles avancés ne sont pas disponibles pour cet écran.</p>
+                    <p style={{color: "red", fontWeight: 'bold'}}>Les contrôles avancés ne sont pas disponibles pour cet
+                        écran.</p>
                 )}
+                {availableCommands === 'advanced' && appVersion && (
+                    <p className={"o0-5"}>Version de l'application: {appVersion}</p>
+                )}
+
                 <div className={"fr g0-5"}>
                     {Object.entries(commands)
                         .filter(([key, command]) => command.type === 'advanced')
@@ -173,6 +191,7 @@ export default function Control({ screen }) {
                             </button>
                         ))}
                 </div>
+
             </div>
         </div>
     );
