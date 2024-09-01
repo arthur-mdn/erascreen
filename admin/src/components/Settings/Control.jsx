@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSocket } from "../../SocketContext.jsx";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import {FaPowerOff, FaSatellite, FaSatelliteDish} from "react-icons/fa";
-import {FaLocationDot, FaRotate, FaRotateLeft} from "react-icons/fa6";
+import { FaPowerOff, FaSatellite, FaSatelliteDish } from "react-icons/fa";
+import { FaLocationDot, FaRotate, FaRotateLeft } from "react-icons/fa6";
 
 export default function Control({ screen }) {
     const socket = useSocket();
@@ -11,6 +11,7 @@ export default function Control({ screen }) {
     const [availableCommands, setAvailableCommands] = useState([]);
     const [actualScreenStatus, setActualScreenStatus] = useState(screen.status);
     const [appVersion, setAppVersion] = useState(null);
+    const [sliderValue, setSliderValue] = useState(null);
 
     const commands = {
         refresh: {
@@ -90,8 +91,8 @@ export default function Control({ screen }) {
                         if (data.availableCommands) {
                             setAvailableCommands(data.availableCommands);
                         }
-                        if(data.defaultValues){
-                            data.defaultValues.forEach((value, key) => {
+                        if (data.defaultValues) {
+                            Object.entries(data.defaultValues).forEach(([key, value]) => {
                                 if (commands[key]) {
                                     commands[key].input.value = value;
                                 }
@@ -99,7 +100,7 @@ export default function Control({ screen }) {
                         }
                     } else if (data.error) {
                         toast.error(`Command failed: ${data.error}`);
-                        if(data.error === 'Advanced commands not available') {
+                        if (data.error === 'Advanced commands not available') {
                             setAvailableCommands('basic');
                         }
                     }
@@ -127,6 +128,14 @@ export default function Control({ screen }) {
         };
         console.log('admin_request_client_control', payload);
         socket.emit('admin_request_client_control', payload);
+    };
+
+    const handleSliderChange = (e, command) => {
+        setSliderValue(e.target.value);
+    };
+
+    const handleSliderMouseUp = (command) => {
+        sendControlCommand(command, sliderValue);
     };
 
     useEffect(() => {
@@ -170,7 +179,7 @@ export default function Control({ screen }) {
     return (
         <div className={"p1 fc g0-5"}>
             <div className={"fc g0-5 card ai-c"}>
-                <FaSatelliteDish size={30}/>
+                <FaSatelliteDish size={30} />
                 <div className={`fr g0-5 ai-c`}>
                     <div className={`${screen.status}`}>
                     </div>
@@ -187,17 +196,6 @@ export default function Control({ screen }) {
                         .filter(([key, command]) => command.type === 'basic')
                         .map(([key, command]) => (
                             <>
-                                {command.input.type === 'range' && (
-                                    <input
-                                        key={key}
-                                        type={command.input.type}
-                                        min={command.input.min}
-                                        max={command.input.max}
-                                        step={command.input.step}
-                                        onChange={(e) => sendControlCommand(command.command, e.target.value)}
-                                        disabled={!isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
-                                    />
-                                )}
                                 {command.input.type === 'button' && (
                                     <button
                                         key={key}
@@ -216,8 +214,7 @@ export default function Control({ screen }) {
             <div className={"fc g0-5"}>
                 <h2>Contrôles avancés</h2>
                 {availableCommands.length === 0 && (
-                    <p style={{color: "red", fontWeight: 'bold'}}>Les contrôles avancés ne sont pas disponibles pour cet
-                        écran.</p>
+                    <p style={{ color: "red", fontWeight: 'bold' }}>Les contrôles avancés ne sont pas disponibles pour cet écran.</p>
                 )}
                 {availableCommands.length > 0 && appVersion && screen.status === "online" && (
                     <p className={"o0-5"}>Version de l'application: {appVersion}</p>
@@ -237,12 +234,13 @@ export default function Control({ screen }) {
                                             min={command.input.min}
                                             max={command.input.max}
                                             step={command.input.step}
-                                            value={command.input.value}
-                                            onChange={(e) => sendControlCommand(command.command, e.target.value)}
-                                            disabled={!isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
+                                            value={sliderValue || command.input.value}
+                                            onChange={(e) => handleSliderChange(e, command.command)}
+                                            onMouseUp={() => handleSliderMouseUp(command.command)}
+                                            onTouchEnd={() => handleSliderMouseUp(command.command)}
+                                            disabled={buttonStates[key] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
                                         />
                                     </div>
-
                                 )}
                                 {command.input.type === 'button' && (
                                     <button
@@ -251,14 +249,13 @@ export default function Control({ screen }) {
                                         onClick={() => sendControlCommand(command.command)}
                                         disabled={buttonStates[key] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
                                     >
-                                    {command.icon}
+                                        {command.icon}
                                         {command.title}
                                     </button>
                                 )}
                             </>
                         ))}
                 </div>
-
             </div>
         </div>
     );
