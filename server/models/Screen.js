@@ -108,7 +108,7 @@ const screenSchema = new Schema({
     },
     logo: {
         type: String,
-        default: ""
+        default: "public/logo.svg"
     },
     featured_image: {
         type: String,
