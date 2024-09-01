@@ -109,32 +109,33 @@ app.post('/execute', (req, res) => {
                 res.send('Updating...');
             });
             break;
-            case 'brightness':
-                const brightness = req.body.brightness;
-                if (!brightness) {
-                    return res.status(400).send('No brightness provided.');
+        case 'brightness':
+            const brightness = req.body.brightness;
+            if (!brightness) {
+                return res.status(400).send('No brightness provided.');
+            }
+            if (isNaN(brightness)) {
+                return res.status(400).send('Invalid brightness value.');
+            }
+            exec(`ddcutil setvcp 10 ${brightness}`, (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    return res.status(500).send('Error executing command.');
                 }
-                if (isNaN(brightness)) {
-                    return res.status(400).send('Invalid brightness value.');
-                }
-                exec(`ddcutil setvcp 10 ${brightness}`, (error, stdout, stderr) => {
+                console.log(`stdout: ${stdout}`);
+                console.error(`stderr: ${stderr}`);
+                exec(`ddcutil getvcp 0x10`, (error, stdout, stderr) => {
                     if (error) {
                         console.error(`exec error: ${error}`);
                         return res.status(500).send('Error executing command.');
                     }
                     console.log(`stdout: ${stdout}`);
                     console.error(`stderr: ${stderr}`);
-                    exec(`ddcutil getvcp 0x10`, (error, stdout, stderr) => {
-                        if (error) {
-                            console.error(`exec error: ${error}`);
-                            return res.status(500).send('Error executing command.');
-                        }
-                        console.log(`stdout: ${stdout}`);
-                        console.error(`stderr: ${stderr}`);
-                        const brightnessValue = stdout.match(/current value\s*=\s*(\d+)/);
-                        res.send(`Brightness set to ${brightnessValue[1]}.`);
-                    })
-                });
+                    const brightnessValue = stdout.match(/current value\s*=\s*(\d+)/);
+                    res.send(`Brightness set to ${brightnessValue[1]}.`);
+                })
+            });
+            break;
         default:
             res.status(400).send('Invalid command.');
     }
