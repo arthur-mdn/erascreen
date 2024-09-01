@@ -15,7 +15,14 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.json({ appVersion: appVersion });
+    let availableCommands = ['shutdown', 'reboot', 'update'];
+    const exec = require('child_process').exec;
+    exec('ddcutil detect', (error, stdout, stderr) => {
+        if (!stdout.includes('Invalid display')) {
+            availableCommands.push('brightness');
+        }
+    });
+    res.json({ appVersion: appVersion, availableCommands: availableCommands });
 });
 
 app.post('/execute', (req, res) => {
@@ -72,6 +79,32 @@ app.post('/execute', (req, res) => {
                 res.send('Updating...');
             });
             break;
+            case 'brightness':
+                const brightness = req.body.brightness;
+                if (!brightness) {
+                    return res.status(400).send('No brightness provided.');
+                }
+                if (isNaN(brightness)) {
+                    return res.status(400).send('Invalid brightness value.');
+                }
+                exec(`ddcutil setvcp 10 ${brightness}`, (error, stdout, stderr) => {
+                    if (error) {
+                        console.error(`exec error: ${error}`);
+                        return res.status(500).send('Error executing command.');
+                    }
+                    console.log(`stdout: ${stdout}`);
+                    console.error(`stderr: ${stderr}`);
+                    exec(`ddcutil getvcp 0x10`, (error, stdout, stderr) => {
+                        if (error) {
+                            console.error(`exec error: ${error}`);
+                            return res.status(500).send('Error executing command.');
+                        }
+                        console.log(`stdout: ${stdout}`);
+                        console.error(`stderr: ${stderr}`);
+                        const brightnessValue = stdout.match(/current value = (\d+)/);
+                        res.send(`Brightness set to ${brightnessValue[1]}.`);
+                    })
+                });
         default:
             res.status(400).send('Invalid command.');
     }

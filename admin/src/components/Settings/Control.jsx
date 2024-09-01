@@ -8,7 +8,7 @@ import {FaLocationDot, FaRotate, FaRotateLeft} from "react-icons/fa6";
 export default function Control({ screen }) {
     const socket = useSocket();
     const [buttonStates, setButtonStates] = useState({});
-    const [availableCommands, setAvailableCommands] = useState(null);
+    const [availableCommands, setAvailableCommands] = useState([]);
     const [actualScreenStatus, setActualScreenStatus] = useState(screen.status);
     const [appVersion, setAppVersion] = useState(null);
 
@@ -17,31 +17,58 @@ export default function Control({ screen }) {
             title: "Recharger la page",
             icon: <FaRotateLeft />,
             command: "refresh",
-            type: "basic"
+            type: "basic",
+            input: {
+                type: "button"
+            }
         },
         identify: {
             title: "Identifier l'écran",
             icon: <FaLocationDot />,
             command: "identify",
-            type: "basic"
+            type: "basic",
+            input: {
+                type: "button"
+            }
         },
         shutdown: {
             title: "Éteindre l'écran",
             icon: <FaPowerOff />,
             command: "shutdown",
-            type: "advanced"
+            type: "advanced",
+            input: {
+                type: "button"
+            }
         },
         reboot: {
             title: "Redémarrer l'écran",
             icon: <FaRotate />,
             command: "reboot",
-            type: "advanced"
+            type: "advanced",
+            input: {
+                type: "button"
+            }
         },
         update: {
             title: "Mettre à jour l'écran",
             icon: <FaSatellite />,
             command: "update",
-            type: "advanced"
+            type: "advanced",
+            input: {
+                type: "button"
+            }
+        },
+        brightness: {
+            title: "Luminosité",
+            icon: <FaSatellite />,
+            command: "brightness",
+            type: "advanced",
+            input: {
+                type: "range",
+                min: 0,
+                max: 100,
+                step: 1
+            }
         }
     };
 
@@ -60,6 +87,9 @@ export default function Control({ screen }) {
                         if (data.appVersion) {
                             setAppVersion(data.appVersion);
                         }
+                        if (data.availableCommands) {
+                            setAvailableCommands(data.availableCommands);
+                        }
                     } else if (data.error) {
                         toast.error(`Command failed: ${data.error}`);
                         if(data.error === 'Advanced commands not available') {
@@ -75,7 +105,7 @@ export default function Control({ screen }) {
         }
     }, [socket]);
 
-    const sendControlCommand = (command) => {
+    const sendControlCommand = (command, value = null) => {
         const commandId = uuidv4();
         setButtonStates(prevState => ({
             ...prevState,
@@ -85,6 +115,7 @@ export default function Control({ screen }) {
         const payload = {
             screenId: screen._id,
             command,
+            value,
             commandId
         };
         console.log('admin_request_client_control', payload);
@@ -106,7 +137,7 @@ export default function Control({ screen }) {
 
         socket.on('server_forward_client_response_to_admin', (data) => {
             if (data.commandId === commandId) {
-                setAvailableCommands(data.response || 'basic');
+                setAvailableCommands(data.availableCommands || []);
                 setButtonStates(prevState => ({
                     ...prevState,
                     [commandId]: false
@@ -125,14 +156,8 @@ export default function Control({ screen }) {
         };
     }, [socket, screen._id]);
 
-    const isCommandAvailable = (commandType) => {
-        if (availableCommands === null) {
-            return false;
-        }
-        if (availableCommands === 'advanced') {
-            return true;
-        }
-        return commandType === 'basic';
+    const isCommandAvailable = (command) => {
+        return availableCommands.includes(command);
     };
 
     return (
@@ -143,8 +168,8 @@ export default function Control({ screen }) {
                     <div className={`${screen.status}`}>
                     </div>
                     <span className={`${screen.status}`}>
-                                        {screen.status === "online" ? "Connecté" : "Hors ligne"}
-                                    </span>
+                        {screen.status === "online" ? "Connecté" : "Hors ligne"}
+                    </span>
                 </div>
             </div>
 
@@ -154,41 +179,75 @@ export default function Control({ screen }) {
                     {Object.entries(commands)
                         .filter(([key, command]) => command.type === 'basic')
                         .map(([key, command]) => (
-                            <button
-                                key={key}
-                                type={"button"}
-                                onClick={() => sendControlCommand(command.command)}
-                                disabled={buttonStates[key] || !isCommandAvailable(command.type) || actualScreenStatus !== 'online'}
-                            >
-                                {command.icon}
-                                {command.title}
-                            </button>
+                            <>
+                                {command.input.type === 'range' && (
+                                    <input
+                                        key={key}
+                                        type={command.input.type}
+                                        min={command.input.min}
+                                        max={command.input.max}
+                                        step={command.input.step}
+                                        onChange={(e) => sendControlCommand(command.command, e.target.value)}
+                                        disabled={!isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
+                                    />
+                                )}
+                                {command.input.type === 'button' && (
+                                    <button
+                                        key={key}
+                                        type={"button"}
+                                        onClick={() => sendControlCommand(command.command)}
+                                        disabled={buttonStates[key] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
+                                    >
+                                        {command.icon}
+                                        {command.title}
+                                    </button>
+                                )}
+                            </>
                         ))}
                 </div>
             </div>
             <div className={"fc g0-5"}>
                 <h2>Contrôles avancés</h2>
-                {availableCommands === 'basic' && (
+                {availableCommands.length === 0 && (
                     <p style={{color: "red", fontWeight: 'bold'}}>Les contrôles avancés ne sont pas disponibles pour cet
                         écran.</p>
                 )}
-                {availableCommands === 'advanced' && appVersion && (
+                {availableCommands.length > 0 && appVersion && screen.status === "online" && (
                     <p className={"o0-5"}>Version de l'application: {appVersion}</p>
                 )}
 
-                <div className={"fr g0-5"}>
+                <div className={"fr g0-5 fw-w"}>
                     {Object.entries(commands)
                         .filter(([key, command]) => command.type === 'advanced')
                         .map(([key, command]) => (
-                            <button
-                                key={key}
-                                type={"button"}
-                                onClick={() => sendControlCommand(command.command)}
-                                disabled={buttonStates[key] || !isCommandAvailable(command.type) || actualScreenStatus !== 'online'}
-                            >
-                                {command.icon}
-                                {command.title}
-                            </button>
+                            <>
+                                {command.input.type === 'range' && (
+                                    <div className={"fc g0-5"}>
+                                        <label htmlFor={key}>{command.title}</label>
+                                        <input
+                                            key={key}
+                                            type={command.input.type}
+                                            min={command.input.min}
+                                            max={command.input.max}
+                                            step={command.input.step}
+                                            onChange={(e) => sendControlCommand(command.command, e.target.value)}
+                                            disabled={!isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
+                                        />
+                                    </div>
+
+                                )}
+                                {command.input.type === 'button' && (
+                                    <button
+                                        key={key}
+                                        type={"button"}
+                                        onClick={() => sendControlCommand(command.command)}
+                                        disabled={buttonStates[key] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
+                                    >
+                                    {command.icon}
+                                        {command.title}
+                                    </button>
+                                )}
+                            </>
                         ))}
                 </div>
 
