@@ -19,6 +19,9 @@ router.post('/auth/login', async (req, res) => {
             return res.status(401).json({ success: false, message: "Mot de passe incorrect" });
         }
 
+        user.lastLogin = Date.now();
+        await user.save();
+
         const token = jwt.sign({ userId: user._id }, config.secretKey, { expiresIn: '365d' });
         res.cookie('session_token', token, { httpOnly: true,  maxAge: 365 * 24 * 60 * 60 * 1000 });
         res.json({ message: 'Authentification réussie'});
@@ -30,7 +33,7 @@ router.post('/auth/login', async (req, res) => {
 
 router.post('/auth/register', async (req, res) => {
     try {
-        const { email, password, lastName, firstName, birthDate } = req.body;
+        const { email, password, lastName, firstName } = req.body;
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -42,7 +45,6 @@ router.post('/auth/register', async (req, res) => {
         const newUser = new User({
             lastName,
             firstName,
-            birthDate,
             email,
             password: hashedPassword,
         });
@@ -75,6 +77,9 @@ router.get('/auth/validate-session', async (req, res) => {
         if (user.status && ['disabled', 'pending', 'blocked'].includes(user.status)) {
             return res.json({isAuthenticated: false, message: 'Compte désactivé'});
         }
+
+        user.lastLogin = Date.now();
+        await user.save();
 
         res.json({isAuthenticated: true});
     } catch (err) {

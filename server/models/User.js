@@ -22,7 +22,7 @@ const userSchema = new Schema({
         required: true,
         default: 'Unknown'
     },
-    birthDate: {
+    lastLogin: {
         type: Date,
         required: true,
         default: Date.now

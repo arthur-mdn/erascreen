@@ -10,7 +10,6 @@ function Register() {
     const [password, setPassword] = useState('');
     const [lastName, setLastName] = useState('');
     const [firstName, setFirstName] = useState('');
-    const [birthDate, setBirthDate] = useState('');
     const [acceptConditions, setAcceptConditions] = useState(false);
     const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
@@ -20,8 +19,8 @@ function Register() {
         axios.post(`${config.serverUrl}/auth/register` , { email,
             password,
             lastName,
-            firstName,
-            birthDate }, { withCredentials: true })
+            firstName
+        }, { withCredentials: true })
             .then(response => {
                 setAuthStatus("authenticated");
                 navigate('/');
@@ -33,7 +32,6 @@ function Register() {
                     setErrorMessage('Erreur de connexion');
                 }
             });
-
     };
 
     return (
@@ -65,16 +63,6 @@ function Register() {
                     minLength={3}
                     maxLength={32}
                     pattern="[a-zA-Z\s-]+"
-                />
-            </div>
-            <div className={"input_container"}>
-                <label htmlFor="birthDate">Date de naissance</label>
-                <input
-                    type="date"
-                    placeholder="Date de naissance"
-                    value={birthDate}
-                    onChange={(e) => setBirthDate(e.target.value)}
-                    required
                 />
             </div>
             <div className={"input_container"}>
@@ -113,7 +101,6 @@ function Register() {
             <button type="submit" className={"main_button"}>Inscription</button>
             <p>Vous avez déjà un compte ?</p>
             <Link to={'/login'} className={"sub_button force_button_style"}>Se connecter</Link>
-
         </form>
     );
 
