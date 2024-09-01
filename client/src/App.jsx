@@ -120,6 +120,7 @@ function App() {
         socket.on('server_send_control_to_client', async (data) => {
             console.log('server_send_control_to_client', data.command);
             let availableCommands = [];
+            let defaultValues = {};
             let appVersion = null;
 
             try {
@@ -133,6 +134,7 @@ function App() {
                     if (!availableCommands.includes('identify')) {
                         availableCommands.push('identify');
                     }
+                    defaultValues = data.defaultValues;
                     appVersion = data.appVersion;
 
                     if (appVersion && availableCommands.length > 0) {
@@ -148,7 +150,7 @@ function App() {
             }
 
             if (data.command === 'getAvailableCommands') {
-                socket.emit('client_control_response', {commandId : data.commandId, response: "Advanced commands available", appVersion, availableCommands});
+                socket.emit('client_control_response', {commandId : data.commandId, response: "Advanced commands available", appVersion, availableCommands, defaultValues});
             } else if (data.command === 'refresh') {
                 socket.emit('client_control_response', {commandId : data.commandId, response: 'Refreshing...'});
                 window.location.reload();

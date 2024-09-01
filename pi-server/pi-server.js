@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const config = require('./others/config');
+const {exec} = require("child_process");
 
 const appVersion = 'pi-0.0.2';
 
@@ -16,13 +17,23 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
     let availableCommands = ['shutdown', 'reboot', 'update'];
+    let defaultValues = {};
     const exec = require('child_process').exec;
     exec('ddcutil detect', (error, stdout, stderr) => {
         if (!stdout.includes('Invalid display')) {
-            availableCommands.push('brightness');
+            exec('ddcutil getvcp 0x10', (error, stdout, stderr) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                }
+                console.log(`stdout: ${stdout}`);
+                console.error(`stderr: ${stderr}`);
+                const brightnessValue = stdout.match(/current value = (\d+)/);
+                defaultValues.brightness = parseInt(brightnessValue[1]);
+                availableCommands.push('brightness');
+            })
         }
     });
-    res.json({ appVersion: appVersion, availableCommands: availableCommands });
+    res.json({ appVersion: appVersion, availableCommands: availableCommands, defaultValues: defaultValues });
 });
 
 app.post('/execute', (req, res) => {

@@ -90,6 +90,13 @@ export default function Control({ screen }) {
                         if (data.availableCommands) {
                             setAvailableCommands(data.availableCommands);
                         }
+                        if(data.defaultValues){
+                            data.defaultValues.forEach((value, key) => {
+                                if (commands[key]) {
+                                    commands[key].input.value = value;
+                                }
+                            });
+                        }
                     } else if (data.error) {
                         toast.error(`Command failed: ${data.error}`);
                         if(data.error === 'Advanced commands not available') {
@@ -230,6 +237,7 @@ export default function Control({ screen }) {
                                             min={command.input.min}
                                             max={command.input.max}
                                             step={command.input.step}
+                                            value={command.input.value}
                                             onChange={(e) => sendControlCommand(command.command, e.target.value)}
                                             disabled={!isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
                                         />
