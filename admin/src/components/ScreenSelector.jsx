@@ -9,6 +9,7 @@ import {toast} from "react-toastify";
 import {FaTv} from "react-icons/fa6";
 import {Link} from "react-router-dom";
 import {useSocket} from "../SocketContext.jsx";
+import {MonitorSmartphone, MonitorX} from "lucide-react";
 
 function ScreenSelector({ onSelectScreen }) {
     const [cookies, setCookie] = useCookies(['selectedScreen']);
@@ -76,6 +77,15 @@ function ScreenSelector({ onSelectScreen }) {
 
                         </Link>
                     ))}
+                    {(screens.length === 0) && <div className={"fc jc-c ai-c g1"} style={{height:'100%'}}>
+                        <MonitorX size={86} style={{opacity:0.4}}/>
+                        <h2 style={{opacity:0.4}}>Aucun écran</h2>
+                        <br/>
+                        <Link to={"/screens/add"} className={`w100 setting-button fr g0-5 ai-c`}>
+                            <MonitorSmartphone size={24}/>
+                            <h4>Associer un nouvel écran</h4>
+                        </Link>
+                    </div>}
                 </div>
             </div>
         </>
