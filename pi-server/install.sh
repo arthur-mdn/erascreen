@@ -84,8 +84,8 @@ cd $APP_DIR
 
 sudo apt-get install -y nodejs npm ddcutil
 
-sudo systemctl disable bluetooth
-sudo systemctl stop bluetooth
+#sudo systemctl disable bluetooth
+#sudo systemctl stop bluetooth
 
 sudo chown -R $USERNAME:$USERNAME $APP_DIR
 
