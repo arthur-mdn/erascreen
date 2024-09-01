@@ -2,6 +2,7 @@ import ScreenSelector from "../components/ScreenSelector.jsx";
 import React, {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {useCookies} from "react-cookie";
+import Breadcrumbs from "../components/Breadcrumbs.jsx";
 
 function Accueil() {
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ function Accueil() {
     }, []);
     return (
         <>
-           Accueil
+            <Breadcrumbs/>
             <div>
                 <ScreenSelector onSelectScreen={(screen) => navigate(`/screens`)}/>
             </div>

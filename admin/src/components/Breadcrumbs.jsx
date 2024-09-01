@@ -26,6 +26,12 @@ const Breadcrumbs = () => {
             break;
         }
     }
+    if (breadcrumbItems.length === 0) {
+        breadcrumbItems.push({
+            to: '/',
+            displayName: 'Accueil'
+        });
+    }
 
     useEffect(() => {
         if (breadcrumbRef.current) {

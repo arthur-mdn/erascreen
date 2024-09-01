@@ -1,9 +1,12 @@
+import Breadcrumbs from "../components/Breadcrumbs.jsx";
+import React from "react";
+
 function Programmes() {
 
 
     return (
         <>
-           Programmes
+            <Breadcrumbs/>
         </>
     );
 
