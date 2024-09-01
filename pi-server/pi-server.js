@@ -4,6 +4,8 @@ const cors = require('cors');
 const app = express();
 const config = require('./others/config');
 
+const appVersion = 'pi-0.0.1';
+
 app.use(cors({
     origin: config.clientUrl,
     methods: ['GET', 'POST'],
@@ -13,7 +15,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Pi-server is running!');
+    res.json({ version: appVersion });
 });
 
 app.post('/execute', (req, res) => {

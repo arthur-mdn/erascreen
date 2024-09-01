@@ -120,19 +120,29 @@ function App() {
         socket.on('server_send_control_to_client', async (data) => {
             console.log('server_send_control_to_client', data.command);
             let availableCommands = "basic";
+            let appVersion = null;
 
             try {
                 const response = await fetch('http://localhost:3002');
                 if (response.ok) {
-                    availableCommands = "advanced";
-                    console.log('Advanced commands available');
+                    const data = await response.json();
+                    const appVersion = data.appVersion;
+
+                    if (appVersion) {
+                        availableCommands = "advanced";
+                        console.log('Advanced commands available, app version:', appVersion);
+                    } else {
+                        console.log('App version not found, using basic commands');
+                    }
+                } else {
+                    console.error('Failed to fetch from localhost:3002, response status:', response.status);
                 }
             } catch (error) {
                 console.error('Error while fetching localhost:3002:', error);
             }
 
             if (data.command === 'getAvailableCommands') {
-                socket.emit('client_control_response', {commandId : data.commandId, response: availableCommands});
+                socket.emit('client_control_response', {commandId : data.commandId, response: availableCommands, appVersion});
             } else if (data.command === 'refresh') {
                 socket.emit('client_control_response', {commandId : data.commandId, response: 'Refreshing...'});
                 window.location.reload();
