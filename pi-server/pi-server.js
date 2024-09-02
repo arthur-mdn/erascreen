@@ -57,21 +57,20 @@ app.post('/execute', async (req, res) => {
     }
 
     try {
-        let output;
         switch (command) {
             case 'shutdown':
-                output = await executeCommand('sudo shutdown now');
                 res.send('Shutting down...');
+                await executeCommand('sudo shutdown now');
                 break;
             case 'reboot':
-                output = await executeCommand('sudo reboot');
                 res.send('Rebooting...');
+                await executeCommand('sudo reboot');
                 break;
             case 'update':
-                output = await executeCommand('git pull');
+                const output = await executeCommand('git pull');
                 if (!output.stdout.includes('Already up to date.')) {
-                    await executeCommand('sudo reboot');
                     res.send('Updating and rebooting...');
+                    await executeCommand('sudo reboot');
                 } else {
                     res.send('Already up to date.');
                 }
