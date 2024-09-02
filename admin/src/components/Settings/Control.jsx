@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSocket } from "../../SocketContext.jsx";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import { FaPowerOff, FaSatellite, FaSatelliteDish } from "react-icons/fa";
-import { FaLocationDot, FaRotate, FaRotateLeft } from "react-icons/fa6";
+import {FaPowerOff, FaRegSun, FaSatellite, FaSatelliteDish} from "react-icons/fa";
+import {FaLocationDot, FaRotate, FaRotateLeft, FaSun} from "react-icons/fa6";
 
 export default function Control({ screen }) {
     const socket = useSocket();
@@ -252,19 +252,22 @@ export default function Control({ screen }) {
                             <div key={`e-${key}`}>
                                 {command.input.type === 'range' && (
                                     <div className={"fc g0-5"}>
-                                        <label htmlFor={key}>{command.title}</label>
-                                        <input
-                                            key={key}
-                                            type={command.input.type}
-                                            min={command.input.min}
-                                            max={command.input.max}
-                                            step={command.input.step}
-                                            value={brightnessSliderValue || command.input.value}
-                                            onChange={handleSliderChange}
-                                            onMouseUp={() => handleSliderMouseUp(command.command)}
-                                            onTouchEnd={() => handleSliderMouseUp(command.command)}
-                                            disabled={buttonStates[command.command] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
-                                        />
+                                        <div className={"slider-container"}>
+                                            <FaRegSun size={20}/>
+                                            <input
+                                                key={key}
+                                                type={command.input.type}
+                                                min={command.input.min}
+                                                max={command.input.max}
+                                                step={command.input.step}
+                                                value={brightnessSliderValue || command.input.value}
+                                                onChange={handleSliderChange}
+                                                onMouseUp={() => handleSliderMouseUp(command.command)}
+                                                onTouchEnd={() => handleSliderMouseUp(command.command)}
+                                                disabled={buttonStates[command.command] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
+                                            />
+                                            <FaSun size={20}/>
+                                        </div>
                                     </div>
                                 )}
                                 {command.input.type === 'button' && (
