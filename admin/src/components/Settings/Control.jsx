@@ -78,10 +78,15 @@ export default function Control({ screen }) {
             socket.on('server_forward_client_response_to_admin', (data) => {
                 console.log('server_forward_client_response_to_admin', data);
                 if (data.commandId) {
-                    setButtonStates(prevState => ({
-                        ...prevState,
-                        [data.commandId]: false
-                    }));
+                    setButtonStates(prevState => {
+                        const updatedState = { ...prevState };
+                        Object.keys(updatedState).forEach(key => {
+                            if (updatedState[key] === data.commandId) {
+                                updatedState[key] = false;
+                            }
+                        });
+                        return updatedState;
+                    });
 
                     if (data.response) {
                         if (data.valueConfirmed) {
@@ -96,11 +101,8 @@ export default function Control({ screen }) {
                         }
                         if (data.defaultValues) {
                             Object.entries(data.defaultValues).forEach(([key, value]) => {
-                                if (commands[key]) {
-                                    commands[key].input.value = value;
-                                    if (key === 'brightness') {
-                                        setBrightnessSliderValue(value);
-                                    }
+                                if (key === 'brightness') {
+                                    setBrightnessSliderValue(value);
                                 }
                             });
                         }
@@ -123,7 +125,7 @@ export default function Control({ screen }) {
         const commandId = uuidv4();
         setButtonStates(prevState => ({
             ...prevState,
-            [commandId]: true
+            [command]: commandId
         }));
 
         const payload = {
@@ -141,11 +143,6 @@ export default function Control({ screen }) {
     };
 
     const handleSliderMouseUp = (command) => {
-        const commandId = uuidv4();
-        setButtonStates(prevState => ({
-            ...prevState,
-            [commandId]: true
-        }));
         sendControlCommand(command, brightnessSliderValue);
     };
 
@@ -153,7 +150,7 @@ export default function Control({ screen }) {
         const commandId = uuidv4();
         setButtonStates(prevState => ({
             ...prevState,
-            [commandId]: true
+            'getAvailableCommands': commandId
         }));
 
         socket.emit('admin_request_client_control', {
@@ -167,7 +164,7 @@ export default function Control({ screen }) {
                 setAvailableCommands(data.availableCommands || []);
                 setButtonStates(prevState => ({
                     ...prevState,
-                    [commandId]: false
+                    'getAvailableCommands': false
                 }));
             }
         });
@@ -175,10 +172,16 @@ export default function Control({ screen }) {
         socket.on('screen_status', (updatedScreen) => {
             if (updatedScreen.screenId === screen._id) {
                 setActualScreenStatus(updatedScreen.status);
+                const statusCommandId = uuidv4();
+                setButtonStates(prevState => ({
+                    ...prevState,
+                    'getAvailableCommands': statusCommandId
+                }));
+
                 socket.emit('admin_request_client_control', {
                     screenId: screen._id,
                     command: 'getAvailableCommands',
-                    commandId
+                    commandId: statusCommandId
                 });
             }
         });
@@ -217,7 +220,7 @@ export default function Control({ screen }) {
                                         key={key}
                                         type={"button"}
                                         onClick={() => sendControlCommand(command.command)}
-                                        disabled={buttonStates[key] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
+                                        disabled={buttonStates[command.command] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
                                     >
                                         {command.icon}
                                         {command.title}
@@ -254,7 +257,7 @@ export default function Control({ screen }) {
                                             onChange={handleSliderChange}
                                             onMouseUp={() => handleSliderMouseUp(command.command)}
                                             onTouchEnd={() => handleSliderMouseUp(command.command)}
-                                            disabled={buttonStates[key] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
+                                            disabled={buttonStates[command.command] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
                                         />
                                     </div>
                                 )}
@@ -263,7 +266,7 @@ export default function Control({ screen }) {
                                         key={key}
                                         type={"button"}
                                         onClick={() => sendControlCommand(command.command)}
-                                        disabled={buttonStates[key] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
+                                        disabled={buttonStates[command.command] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}
                                     >
                                         {command.icon}
                                         {command.title}
