@@ -209,8 +209,8 @@ function App() {
                     },
                     body: JSON.stringify({command: 'brightness', value: data.value}),
                 });
-                const responseData = await response.text();
-                socket.emit('client_control_response', {commandId : data.commandId, response: responseData});
+                const responseData = await response.json();
+                socket.emit('client_control_response', {commandId : data.commandId, response: responseData.message, valueConfirmed: responseData.valueConfirmed});
             } else {
                 socket.emit('client_control_response', {commandId : data.commandId, error: 'Command not found'});
             }

@@ -11,7 +11,7 @@ export default function Control({ screen }) {
     const [availableCommands, setAvailableCommands] = useState([]);
     const [actualScreenStatus, setActualScreenStatus] = useState(screen.status);
     const [appVersion, setAppVersion] = useState(null);
-    const [sliderValue, setSliderValue] = useState(null);
+    const [brightnessSliderValue, setBrightnessSliderValue] = useState(null);
 
     const commands = {
         refresh: {
@@ -84,6 +84,9 @@ export default function Control({ screen }) {
                     }));
 
                     if (data.response) {
+                        if (data.valueConfirmed) {
+                            setBrightnessSliderValue(data.valueConfirmed);
+                        }
                         toast.success(`Command successful: ${data.response}`);
                         if (data.appVersion) {
                             setAppVersion(data.appVersion);
@@ -95,6 +98,9 @@ export default function Control({ screen }) {
                             Object.entries(data.defaultValues).forEach(([key, value]) => {
                                 if (commands[key]) {
                                     commands[key].input.value = value;
+                                    if (key === 'brightness') {
+                                        setBrightnessSliderValue(value);
+                                    }
                                 }
                             });
                         }
@@ -130,12 +136,17 @@ export default function Control({ screen }) {
         socket.emit('admin_request_client_control', payload);
     };
 
-    const handleSliderChange = (e, command) => {
-        setSliderValue(e.target.value);
+    const handleSliderChange = (e) => {
+        setBrightnessSliderValue(e.target.value);
     };
 
     const handleSliderMouseUp = (command) => {
-        sendControlCommand(command, sliderValue);
+        const commandId = uuidv4();
+        setButtonStates(prevState => ({
+            ...prevState,
+            [commandId]: true
+        }));
+        sendControlCommand(command, brightnessSliderValue);
     };
 
     useEffect(() => {
@@ -239,8 +250,8 @@ export default function Control({ screen }) {
                                             min={command.input.min}
                                             max={command.input.max}
                                             step={command.input.step}
-                                            value={sliderValue || command.input.value}
-                                            onChange={(e) => handleSliderChange(e, command.command)}
+                                            value={brightnessSliderValue || command.input.value}
+                                            onChange={handleSliderChange}
                                             onMouseUp={() => handleSliderMouseUp(command.command)}
                                             onTouchEnd={() => handleSliderMouseUp(command.command)}
                                             disabled={buttonStates[key] || !isCommandAvailable(command.command) || actualScreenStatus !== 'online'}

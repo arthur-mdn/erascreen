@@ -85,7 +85,7 @@ app.post('/execute', async (req, res) => {
                     const brightnessOutput = await executeCommand(`ddcutil getvcp 0x10`);
                     const brightnessValue = brightnessOutput.stdout.match(/current value\s*=\s*(\d+)/);
                     if (brightnessValue) {
-                        res.send(`Brightness set to ${brightnessValue[1]}.`);
+                        res.json({ message: `Brightness set to ${brightnessValue[1]}.`, valueConfirmed: parseInt(brightnessValue[1], 10) });
                     } else {
                         res.status(500).send('Failed to get current brightness value.');
                     }
