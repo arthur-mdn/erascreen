@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSocket } from "../../SocketContext.jsx";
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import {FaPowerOff, FaRegSun, FaSatellite, FaSatelliteDish} from "react-icons/fa";
-import {FaLocationDot, FaRotate, FaRotateLeft, FaSun} from "react-icons/fa6";
+import { FaPowerOff, FaRegSun, FaSatellite, FaSatelliteDish } from "react-icons/fa";
+import { FaLocationDot, FaRotate, FaRotateLeft, FaSun } from "react-icons/fa6";
 
 export default function Control({ screen }) {
     const socket = useSocket();
@@ -147,38 +147,15 @@ export default function Control({ screen }) {
     };
 
     useEffect(() => {
-        const commandId = uuidv4();
-        setButtonStates(prevState => ({
-            ...prevState,
-            'getAvailableCommands': commandId
-        }));
-
-        socket.emit('admin_request_client_control', {
-            screenId: screen._id,
-            command: 'getAvailableCommands',
-            commandId
-        });
-
-        socket.on('server_forward_client_response_to_admin', (data) => {
-            if (data.commandId === commandId) {
-                setAvailableCommands(data.availableCommands || []);
-                setButtonStates(prevState => ({
-                    ...prevState,
-                    'getAvailableCommands': false
-                }));
-            }
-        });
-
         socket.on('screen_status', (updatedScreen) => {
             if (updatedScreen.screenId === screen._id) {
                 setActualScreenStatus(updatedScreen.status);
-                const statusCommandId = uuidv4();
-                setButtonStates(prevState => ({
-                    ...prevState,
-                    'getAvailableCommands': statusCommandId
-                }));
-
                 if (updatedScreen.status === 'online') {
+                    const statusCommandId = uuidv4();
+                    setButtonStates(prevState => ({
+                        ...prevState,
+                        'getAvailableCommands': statusCommandId
+                    }));
                     socket.emit('admin_request_client_control', {
                         screenId: screen._id,
                         command: 'getAvailableCommands',
@@ -194,6 +171,8 @@ export default function Control({ screen }) {
 
         return () => {
             socket.off('server_forward_client_response_to_admin');
+            socket.off('screen_status');
+            socket.off('disconnect');
         };
     }, [socket, screen._id]);
 
