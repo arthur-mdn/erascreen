@@ -188,7 +188,7 @@ export default function Control({ screen }) {
             }
         });
 
-        socket.on.disconnect(() => {
+        socket.on('disconnect', () => {
             setActualScreenStatus('offline');
         });
 
