@@ -188,6 +188,10 @@ export default function Control({ screen }) {
             }
         });
 
+        socket.on.disconnect(() => {
+            setActualScreenStatus('offline');
+        });
+
         return () => {
             socket.off('server_forward_client_response_to_admin');
         };
