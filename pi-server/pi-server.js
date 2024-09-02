@@ -1,10 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const app = express();
+const { exec } = require('child_process');
 const config = require('./others/config');
-const {exec} = require("child_process");
 
+const app = express();
 const appVersion = 'pi-0.0.2';
 
 app.use(cors({
@@ -15,128 +15,91 @@ app.use(cors({
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
+const executeCommand = (command) => {
+    return new Promise((resolve, reject) => {
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                reject(`exec error: ${error}`);
+            } else {
+                resolve({ stdout, stderr });
+            }
+        });
+    });
+};
+
+app.get('/', async (req, res) => {
     let availableCommands = ['shutdown', 'reboot', 'update'];
     let defaultValues = {};
 
-    const execPromise = (command) => {
-        return new Promise((resolve, reject) => {
-            exec(command, (error, stdout, stderr) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve({ stdout, stderr });
-                }
-            });
-        });
-    };
-
-    (async () => {
-        try {
-            const detectResult = await execPromise('ddcutil detect');
-            if (!detectResult.stdout.includes('Invalid display')) {
-                const brightnessResult = await execPromise('ddcutil getvcp 0x10');
-                console.log(`stdout: ${brightnessResult.stdout}`);
-                console.error(`stderr: ${brightnessResult.stderr}`);
-
-                const brightnessValue = brightnessResult.stdout.match(/current value\s*=\s*(\d+)/);
-                if (brightnessValue) {
-                    defaultValues.brightness = parseInt(brightnessValue[1]);
-                    availableCommands.push('brightness');
-                }
+    try {
+        const detectOutput = await executeCommand('ddcutil detect');
+        if (!detectOutput.stdout.includes('Invalid display')) {
+            const brightnessOutput = await executeCommand('ddcutil getvcp 0x10');
+            const brightnessValue = brightnessOutput.stdout.match(/current value\s*=\s*(\d+)/);
+            if (brightnessValue) {
+                defaultValues.brightness = parseInt(brightnessValue[1], 10);
+                availableCommands.push('brightness');
             }
-
-        } catch (error) {
-            console.error('An error occurred while retrieving display information :', error);
-        } finally {
-            res.json({ appVersion: appVersion, availableCommands: availableCommands, defaultValues: defaultValues });
         }
-    })();
+        res.json({ appVersion, availableCommands, defaultValues });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error: ' + error);
+    }
 });
 
-app.post('/execute', (req, res) => {
+app.post('/execute', async (req, res) => {
     const command = req.body.command;
+    const value = req.body.value;
 
     if (!command) {
         return res.status(400).send('No command provided.');
     }
 
-    const exec = require('child_process').exec;
-
-    switch (command) {
-        case 'shutdown':
-            exec('sudo shutdown now', (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    return res.status(500).send('Error executing command.');
-                }
-                console.log(`stdout: ${stdout}`);
-                console.error(`stderr: ${stderr}`);
+    try {
+        let output;
+        switch (command) {
+            case 'shutdown':
+                output = await executeCommand('sudo shutdown now');
                 res.send('Shutting down...');
-            });
-            break;
-        case 'reboot':
-            exec('sudo reboot', (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    return res.status(500).send('Error executing command.');
-                }
-                console.log(`stdout: ${stdout}`);
-                console.error(`stderr: ${stderr}`);
+                break;
+            case 'reboot':
+                output = await executeCommand('sudo reboot');
                 res.send('Rebooting...');
-            });
-            break;
-        case 'update':
-            exec('git pull', (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    return res.status(500).send('Error executing command.');
+                break;
+            case 'update':
+                output = await executeCommand('git pull');
+                if (!output.stdout.includes('Already up to date.')) {
+                    await executeCommand('sudo reboot');
+                    res.send('Updating and rebooting...');
+                } else {
+                    res.send('Already up to date.');
                 }
-                if(!stdout.includes('Already up to date.')) {
-                    exec('sudo reboot', (error, stdout, stderr) => {
-                        if (error) {
-                            console.error(`exec error: ${error}`);
-                            return res.status(500).send('Error executing command.');
-                        }
-                        console.log(`stdout: ${stdout}`);
-                        console.error(`stderr: ${stderr}`);
-                        res.send('Updating...');
-                    });
+                break;
+            case 'brightness':
+                if (!value) {
+                    return res.status(400).send('No brightness provided.');
                 }
-                console.log(`stdout: ${stdout}`);
-                console.error(`stderr: ${stderr}`);
-                res.send('Updating...');
-            });
-            break;
-        case 'brightness':
-            const brightness = req.body.brightness;
-            if (!brightness) {
-                return res.status(400).send('No brightness provided.');
-            }
-            if (isNaN(brightness)) {
-                return res.status(400).send('Invalid brightness value.');
-            }
-            exec(`ddcutil setvcp 10 ${brightness}`, (error, stdout, stderr) => {
-                if (error) {
-                    console.error(`exec error: ${error}`);
-                    return res.status(500).send('Error executing command.');
-                }
-                console.log(`stdout: ${stdout}`);
-                console.error(`stderr: ${stderr}`);
-                exec(`ddcutil getvcp 0x10`, (error, stdout, stderr) => {
-                    if (error) {
-                        console.error(`exec error: ${error}`);
-                        return res.status(500).send('Error executing command.');
+                const detectOutput = await executeCommand('ddcutil detect');
+                if (!detectOutput.stdout.includes('Invalid display')) {
+                    await executeCommand(`ddcutil setvcp 10 ${value}`);
+                    const brightnessOutput = await executeCommand(`ddcutil getvcp 0x10`);
+                    const brightnessValue = brightnessOutput.stdout.match(/current value\s*=\s*(\d+)/);
+                    if (brightnessValue) {
+                        res.send(`Brightness set to ${brightnessValue[1]}.`);
+                    } else {
+                        res.status(500).send('Failed to get current brightness value.');
                     }
-                    console.log(`stdout: ${stdout}`);
-                    console.error(`stderr: ${stderr}`);
-                    const brightnessValue = stdout.match(/current value\s*=\s*(\d+)/);
-                    res.send(`Brightness set to ${brightnessValue[1]}.`);
-                })
-            });
-            break;
-        default:
-            res.status(400).send('Invalid command.');
+                } else {
+                    res.status(500).send('Monitor not supported.');
+                }
+                break;
+            default:
+                res.status(400).send('Invalid command.');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error: ' + error);
     }
 });
 
