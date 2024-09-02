@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+  echo "A lancer en root !"
+  exit
+fi
+
 USERNAME=${SUDO_USER:-$USER}
 APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
 
