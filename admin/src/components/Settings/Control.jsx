@@ -191,11 +191,11 @@ export default function Control({ screen }) {
 
             <div className={"fc g0-5"}>
                 <h2>Contrôles basiques</h2>
-                <div className={"fr g0-5"}>
+                <div className={"fr g0-5 fw-w"}>
                     {Object.entries(commands)
                         .filter(([key, command]) => command.type === 'basic')
                         .map(([key, command]) => (
-                            <>
+                            <div key={`e-${key}`}>
                                 {command.input.type === 'button' && (
                                     <button
                                         key={key}
@@ -207,13 +207,13 @@ export default function Control({ screen }) {
                                         {command.title}
                                     </button>
                                 )}
-                            </>
+                            </div>
                         ))}
                 </div>
             </div>
             <div className={"fc g0-5"}>
                 <h2>Contrôles avancés</h2>
-                {availableCommands.length === 0 && (
+                {availableCommands.filter(command => commands[command].type === 'advanced').length === 0 && (
                     <p style={{ color: "red", fontWeight: 'bold' }}>Les contrôles avancés ne sont pas disponibles pour cet écran.</p>
                 )}
                 {availableCommands.length > 0 && appVersion && screen.status === "online" && (
@@ -224,7 +224,7 @@ export default function Control({ screen }) {
                     {Object.entries(commands)
                         .filter(([key, command]) => command.type === 'advanced')
                         .map(([key, command]) => (
-                            <>
+                            <div key={`e-${key}`}>
                                 {command.input.type === 'range' && (
                                     <div className={"fc g0-5"}>
                                         <label htmlFor={key}>{command.title}</label>
@@ -253,7 +253,7 @@ export default function Control({ screen }) {
                                         {command.title}
                                     </button>
                                 )}
-                            </>
+                            </div>
                         ))}
                 </div>
             </div>
