@@ -207,7 +207,7 @@ function App() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({command: 'brightness', brightness: data.value}),
+                    body: JSON.stringify({command: 'brightness', value: data.value}),
                 });
                 const responseData = await response.text();
                 socket.emit('client_control_response', {commandId : data.commandId, response: responseData});
