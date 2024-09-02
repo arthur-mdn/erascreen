@@ -68,7 +68,7 @@ app.post('/execute', async (req, res) => {
                 break;
             case 'update':
                 const output = await executeCommand('git pull');
-                if (!output.stdout.includes('Already up to date.')) {
+                if (!output.stdout.includes('Already up to date.') && !output.stdout.includes('Déjà à jour.')) {
                     res.send('Updating and rebooting...');
                     await executeCommand('sudo reboot');
                 } else {
