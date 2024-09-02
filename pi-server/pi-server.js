@@ -46,12 +46,10 @@ app.get('/', (req, res) => {
                 }
             }
 
-            res.json({ appVersion: appVersion, availableCommands: availableCommands, defaultValues: defaultValues });
-
         } catch (error) {
-            console.error('Error executing commands:', error);
-            res.status(500).json({ error: 'An error occurred while retrieving display information.' });
+            console.error('An error occurred while retrieving display information :', error);
         }
+        res.json({ appVersion: appVersion, availableCommands: availableCommands, defaultValues: defaultValues });
     })();
 });
 
