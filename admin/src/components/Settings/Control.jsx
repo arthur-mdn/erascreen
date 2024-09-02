@@ -164,6 +164,11 @@ export default function Control({ screen }) {
         socket.on('screen_status', (updatedScreen) => {
             if (updatedScreen.screenId === screen._id) {
                 setActualScreenStatus(updatedScreen.status);
+                socket.emit('admin_request_client_control', {
+                    screenId: screen._id,
+                    command: 'getAvailableCommands',
+                    commandId
+                });
             }
         });
 
