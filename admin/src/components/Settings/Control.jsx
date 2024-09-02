@@ -178,11 +178,13 @@ export default function Control({ screen }) {
                     'getAvailableCommands': statusCommandId
                 }));
 
-                socket.emit('admin_request_client_control', {
-                    screenId: screen._id,
-                    command: 'getAvailableCommands',
-                    commandId: statusCommandId
-                });
+                if (updatedScreen.status === 'online') {
+                    socket.emit('admin_request_client_control', {
+                        screenId: screen._id,
+                        command: 'getAvailableCommands',
+                        commandId: statusCommandId
+                    });
+                }
             }
         });
 
