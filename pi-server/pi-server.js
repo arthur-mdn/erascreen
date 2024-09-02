@@ -69,10 +69,10 @@ app.post('/execute', async (req, res) => {
             case 'update':
                 const output = await executeCommand('git pull');
                 if (!output.stdout.includes('Already up to date.') && !output.stdout.includes('Déjà à jour.')) {
-                    res.send('Updating and rebooting...');
+                    res.json({ message: 'Updating and rebooting...'});
                     await executeCommand('sudo reboot');
                 } else {
-                    res.send('Already up to date.');
+                    res.json({ message: 'Already up to date.' });
                 }
                 break;
             case 'brightness':

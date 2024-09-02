@@ -189,7 +189,6 @@ function App() {
                     socket.emit('client_control_response', {commandId : data.commandId, error: 'Advanced commands not available'});
                     return;
                 }
-                socket.emit('client_control_response', {commandId : data.commandId, response: 'Updating...'});
                 const response = await fetch('http://localhost:3002/execute', {
                     method: 'POST',
                     headers: {
@@ -197,6 +196,8 @@ function App() {
                     },
                     body: JSON.stringify({command: 'update'}),
                 });
+                const responseData = await response.json();
+                socket.emit('client_control_response', {commandId : data.commandId, response: responseData.message});
             } else if (data.command === 'brightness') {
                 if (!availableCommands.includes('brightness')) {
                     socket.emit('client_control_response', {commandId : data.commandId, error: 'Brightness command not available'});
