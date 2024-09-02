@@ -151,7 +151,7 @@ function App() {
             }
 
             if (data.command === 'getAvailableCommands') {
-                socket.emit('client_control_response', {commandId : data.commandId, response: "Commands retrieved", appVersion, availableCommands, defaultValues});
+                socket.emit('client_control_response', {commandId : data.commandId, command: data.command, response: "Commands retrieved", appVersion, availableCommands, defaultValues});
             } else if (data.command === 'refresh') {
                 socket.emit('client_control_response', {commandId : data.commandId, response: 'Refreshing...'});
                 window.location.reload();

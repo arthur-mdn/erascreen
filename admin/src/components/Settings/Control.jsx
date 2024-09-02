@@ -92,7 +92,6 @@ export default function Control({ screen }) {
                         if (data.valueConfirmed) {
                             setBrightnessSliderValue(data.valueConfirmed);
                         }
-                        toast.success(`Command successful: ${data.response}`);
                         if (data.appVersion) {
                             setAppVersion(data.appVersion);
                         }
@@ -105,6 +104,9 @@ export default function Control({ screen }) {
                                     setBrightnessSliderValue(value);
                                 }
                             });
+                        }
+                        if (!data.command || data.command !== 'getAvailableCommands') {
+                            toast.success(`Command successful: ${data.response}`);
                         }
                     } else if (data.error) {
                         toast.error(`Command failed: ${data.error}`);
@@ -147,6 +149,18 @@ export default function Control({ screen }) {
     };
 
     useEffect(() => {
+        if (actualScreenStatus === 'online') {
+            const statusCommandId = uuidv4();
+            setButtonStates(prevState => ({
+                ...prevState,
+                'getAvailableCommands': statusCommandId
+            }));
+            socket.emit('admin_request_client_control', {
+                screenId: screen._id,
+                command: 'getAvailableCommands',
+                commandId: statusCommandId
+            });
+        }
         socket.on('screen_status', (updatedScreen) => {
             if (updatedScreen.screenId === screen._id) {
                 setActualScreenStatus(updatedScreen.status);
