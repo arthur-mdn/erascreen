@@ -194,7 +194,7 @@ io.on('connection', (socket) => {
 
             socket.on('admin_request_client_control', async (data) => {
                 console.log('admin_request_client_control', data);
-                const { screenId, command, commandId } = data;
+                const { screenId, command, commandId, value } = data;
                 const screen = await Screen.findById(screenId);
 
                 const permissionGranted = await checkUserPermissionsOfThisScreen("control", screenId, userId);
@@ -209,7 +209,7 @@ io.on('connection', (socket) => {
                     if (socketId) {
                         const screenSocket = io.sockets.sockets.get(socketId);
                         if (screenSocket) {
-                            screenSocket.emit('server_send_control_to_client', {command, commandId});
+                            screenSocket.emit('server_send_control_to_client', {command, commandId, value});
                         } else {
                             socket.emit('server_forward_client_response_to_admin', {commandId, error: 'Écran non connecté'});
                         }

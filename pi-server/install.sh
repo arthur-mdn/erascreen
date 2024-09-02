@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+  echo "A lancer en root !"
+  exit
+fi
+
 USERNAME=${SUDO_USER:-$USER}
 APP_DIR="/home/$USERNAME/DisplayHub/pi-server"
 
@@ -82,12 +87,14 @@ fi
 
 cd $APP_DIR
 
-sudo systemctl disable bluetooth
-sudo systemctl stop bluetooth
+sudo apt-get install -y nodejs npm ddcutil
+
+#sudo systemctl disable bluetooth
+#sudo systemctl stop bluetooth
 
 sudo chown -R $USERNAME:$USERNAME $APP_DIR
 
-sudo apt-get install -y nodejs npm
+
 sudo -u $USERNAME npm install
 
 sudo -u $USERNAME cp .env.example .env
