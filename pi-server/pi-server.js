@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 const config = require('./others/config');
 
 const app = express();
-const appVersion = 'pi-0.0.3';
+const appVersion = 'pi-0.0.4';
 
 app.use(cors({
     origin: config.clientUrl,
@@ -41,10 +41,10 @@ app.get('/', async (req, res) => {
                 availableCommands.push('brightness');
             }
         }
-        res.json({ appVersion, availableCommands, defaultValues });
     } catch (error) {
         console.error(error);
-        res.status(500).send('Server error: ' + error);
+    } finally {
+        res.json({ appVersion, availableCommands, defaultValues });
     }
 });
 
