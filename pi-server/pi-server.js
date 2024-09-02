@@ -48,8 +48,9 @@ app.get('/', (req, res) => {
 
         } catch (error) {
             console.error('An error occurred while retrieving display information :', error);
+        } finally {
+            res.json({ appVersion: appVersion, availableCommands: availableCommands, defaultValues: defaultValues });
         }
-        res.json({ appVersion: appVersion, availableCommands: availableCommands, defaultValues: defaultValues });
     })();
 });
 
