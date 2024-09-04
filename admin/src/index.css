@@ -436,11 +436,19 @@ button:focus-visible {
   position: relative;
 }
 
-.screen img{
+.screen .img-container{
     width: 100px;
     height: 100px;
     border-radius: 0.5rem;
-    background-color: lightgray;
+    background-color: rgba(130, 130, 130, 0.2);
+    border: 0;
+}
+.screen .img-container img{
+    width: 100px;
+    height: 100px;
+    border-radius: 0.5rem;
+    border: 0;
+    animation: from-skeleton-to-real 0.5s;
 }
 .screen:after{
   content:"\203A";
@@ -547,6 +555,14 @@ button:focus-visible {
   }
 }
 
+@keyframes from-skeleton-to-real {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
 
 .ta-l{
     text-align: left;
