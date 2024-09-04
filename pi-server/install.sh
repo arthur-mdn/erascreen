@@ -52,9 +52,6 @@ dpms = false
 EOF
         fi
 
-        rm -f /usr/share/rpd-wallpaper/fisherman.jpg
-        cp $APP_DIR/public/elements/background.png /usr/share/rpd-wallpaper/fisherman.jpg
-
         sudo apt install -y interception-tools interception-tools-compat
         sudo apt install -y cmake
         cd /home/$USERNAME
@@ -73,6 +70,9 @@ EOF
         echo "Invalid option"
         ;;
 esac
+
+rm -f /usr/share/rpd-wallpaper/fisherman.jpg
+cp $APP_DIR/public/elements/background.png /usr/share/rpd-wallpaper/fisherman.jpg
 
 CONFIG_FILE="/etc/xdg/pcmanfm/LXDE-pi/desktop-items-0.conf"
 
