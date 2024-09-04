@@ -203,6 +203,9 @@ input[type=checkbox]{
 .g0-25{
   gap: 0.25rem;
 }
+.g0-75{
+  gap: 0.75rem;
+}
 .g1{
   gap: 1rem;
 }
@@ -448,7 +451,7 @@ button:focus-visible {
     height: 100px;
     border-radius: 0.5rem;
     border: 0;
-    animation: from-skeleton-to-real 0.5s;
+    animation: fadeIn 0.5s;
 }
 .screen:after{
   content:"\203A";
@@ -457,6 +460,57 @@ button:focus-visible {
   right: 1rem;
   font-size: 2rem;
   z-index: 1;
+}
+
+.screen h3, .screen span, .screen p{
+  line-height: 1.3rem;
+}
+
+.screen h3:before{
+    content:'';
+  position: absolute;
+  width: 100%;
+  max-width: 200px;
+    display: inline-block;
+  border-radius: 50px;
+  height: 1rem;
+  background-color: #E6E6E6;
+  opacity: 0;
+  animation: fadeOut 0.5s;
+}
+.screen span:before{
+    content:'';
+  position: absolute;
+  width: 4.5rem;
+    display: inline-block;
+  border-radius: 50px;
+  height: 1rem;
+  background-color: #E6E6E6;
+  opacity: 0;
+  animation: fadeOut 0.5s;
+}
+.screen p:before{
+    content:'';
+  position: absolute;
+  width: 100%;
+  max-width: 210px;
+    display: inline-block;
+  border-radius: 50px;
+  height: 1rem;
+  background-color: #E6E6E6;
+  opacity: 0;
+  animation: fadeOut 0.5s;
+}
+.screen .status-bubble:before{
+    content:'';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+    display: inline-block;
+  border-radius: 50px;
+  background-color: #E6E6E6;
+  opacity: 0;
+  animation: fadeOut 0.5s;
 }
 
 .skeleton-screen{
@@ -513,7 +567,7 @@ button:focus-visible {
 
 }
 .skeleton-screen-status-bar{
-    width: 4rem;
+    width: 4.5rem;
     height: 1rem;
     background-color: lightgray;
     border-radius: 0.5rem;
@@ -555,7 +609,7 @@ button:focus-visible {
   }
 }
 
-@keyframes from-skeleton-to-real {
+@keyframes fadeIn {
   0% {
     opacity: 0;
   }
@@ -563,6 +617,16 @@ button:focus-visible {
     opacity: 1;
   }
 }
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 
 .ta-l{
     text-align: left;

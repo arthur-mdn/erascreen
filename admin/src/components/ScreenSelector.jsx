@@ -50,7 +50,7 @@ function ScreenSelector({ onSelectScreen }) {
             {[1, 2, 3].map((i) => (
                 <div key={i} className={"skeleton-screen"}>
                     <div className={"skeleton-screen-img"}/>
-                    <div className={"fc ai-fs g1 h100 w100"}>
+                    <div className={"fc ai-fs g0-75 h100 w100"}>
                         <div className={"skeleton-screen-title"}></div>
                         <div className={`fr g0-5 ai-c w100`}>
                             <div className={`skeleton-screen-status-bubble`}></div>
@@ -72,12 +72,12 @@ function ScreenSelector({ onSelectScreen }) {
                             <div className={"img-container"}>
                                 <img src={`${config.serverUrl}/${screen.featured_image}`}/>
                             </div>
-                            <div className={"fc ai-fs g0-25 h100"}>
+                            <div className={"fc ai-fs g0-5 h100"}>
                                 <h3 className={"fw-b"}>
                                     {screen.name}
                                 </h3>
                                 <div className={`fr g0-5 ai-c`}>
-                                    <div className={`${screen.status}`}>
+                                    <div className={`${screen.status} status-bubble`}>
                                     </div>
                                     <span className={`${screen.status}`}>
                                         {screen.status === "online" ? "En ligne" : "Hors ligne"}
