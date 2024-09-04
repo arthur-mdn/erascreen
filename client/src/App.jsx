@@ -3,7 +3,7 @@ import {io} from 'socket.io-client';
 import './App.css';
 import config from './config';
 import Screen from './components/Screen';
-import {FaArrowCircleDown, FaCloudDownloadAlt} from "react-icons/fa";
+import {FaArrowCircleDown, FaCloud, FaCloudDownloadAlt, FaSlash} from "react-icons/fa";
 import useDarkMode from './hooks/useDarkMode';
 import useTextSlides from './hooks/useTextSlides';
 import {QRCodeCanvas} from 'qrcode.react';
@@ -16,6 +16,7 @@ function App() {
     const [status, setStatus] = useState('connecting');
     const [configData, setConfigData] = useState(null);
     const [showUpdateIcon, setShowUpdateIcon] = useState(false);
+    const [showOffline, setShowOffline] = useState(false);
     const isDarkModeActive = useDarkMode(configData);
     const textSlide = useTextSlides(configData);
     const [error, setError] = useState(null);
@@ -31,6 +32,7 @@ function App() {
         let intervalId;
 
         socket.on('connect', () => {
+            setShowOffline(false);
             if (savedConfig) {
                 const parsedConfig = JSON.parse(savedConfig);
                 setStatus('updating_config');
@@ -93,8 +95,8 @@ function App() {
             if (savedConfig) {
                 setConfigData(JSON.parse(savedConfig));
                 setStatus('configured');
-                setShowUpdateIcon(true);
-                setTimeout(() => setShowUpdateIcon(false), 5000);
+                console.log('Disconnected, but using saved config');
+                setShowOffline(true);
             } else {
                 setStatus('disconnected');
             }
@@ -102,10 +104,12 @@ function App() {
 
         socket.on('connect_error', () => {
             if (savedConfig) {
-                setConfigData(JSON.parse(savedConfig));
-                setStatus('configured');
-                setShowUpdateIcon(true);
-                setTimeout(() => setShowUpdateIcon(false), 5000);
+                if(!configData){
+                    setConfigData(JSON.parse(savedConfig));
+                    setStatus('configured');
+                }
+                console.log('Connect error, but using saved config');
+                setShowOffline(true);
             } else {
                 setStatus('connection_failed');
             }
@@ -240,7 +244,7 @@ function App() {
     };
 
     const renderContent = () => {
-        console.log(status)
+        console.log("render", status)
         switch (status) {
             case 'connecting':
                 return <div className={"fc ai-c g1"}>
@@ -296,10 +300,37 @@ function App() {
                 </div>);
             case 'configured':
                 return (<>
-                        {showUpdateIcon &&
-                            <div style={{position: "absolute", top: 0, right: 0, margin: '1rem', zIndex: 9999}}>
+                    {showUpdateIcon &&
+                        <div className={"iconIndicator p0-5 br0-5 of-h"} style={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            margin: '1rem',
+                            zIndex: 9999,
+                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            backdropFilter: 'blur(5px)'
+                        }}>
+                            <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
                                 <FaCloudDownloadAlt size={'2rem'}/>
-                            </div>}
+                            </div>
+                        </div>
+                    }
+                    {showOffline &&
+                        <div className={"p0-5 br0-5 of-h"} style={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            margin: '1rem',
+                            zIndex: 9999,
+                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            backdropFilter: 'blur(5px)'
+                        }}>
+                            <div className={""} style={{position:"relative", width:"32px", height:"32px"}}>
+                                <FaCloud size={'2rem'} style={{color: "#d8d8d8"}}/>
+                                <FaSlash size={'2rem'} style={{color: "white", position: "absolute", top: 0, right: 0}}/>
+                            </div>
+                        </div>
+                    }
                     {showIdentify && <div className="fc g4 identify-overlay">
                         <div className={"identify-progress"}>
                             <div></div>

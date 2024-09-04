@@ -193,6 +193,12 @@ input[type=checkbox]{
 .p1{
   padding: 1rem;
 }
+.p0-5{
+  padding: 0.5rem;
+}
+.of-h{
+  overflow: hidden;
+}
 .p2{
   padding: 2rem;
 }
@@ -1306,4 +1312,8 @@ width:2.5vw
   100% {
     width: 100%;
   }
+}
+
+.iconIndicator{
+
 }
