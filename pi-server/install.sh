@@ -21,16 +21,14 @@ case $option in
         cd /home/$USERNAME/.config
         sudo mkdir -p lxsession/LXDE-pi
         cd lxsession/LXDE-pi
-        cat << 'EOF' > autostart
+        sudo tee autostart > /dev/null << 'EOF'
         @lxpanel --profile LXDE-pi
         @pcmanfm --desktop --profile LXDE-pi
         @xscreensaver -no-splash
         @xset s off
         @xset -dpms
         @xset s noblank
-
         @unclutter -idle 0.1 -root
-
         @chromium-browser --start-fullscreen --kiosk --autoplay-policy=no-user-gesture-required --app=http://client.displayhub.fr
 EOF
         ;;

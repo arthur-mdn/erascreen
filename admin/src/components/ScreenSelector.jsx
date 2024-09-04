@@ -47,8 +47,8 @@ function ScreenSelector({ onSelectScreen }) {
 
     if (isLoading) return <div style={{padding: "1rem", height: '100%'}} className={"fc jc-sb"}>
         <div className={"fc g0-5 w100"}>
-            {screens.map(screen => (
-                <div className={"skeleton-screen"}>
+            {[1, 2, 3].map((i) => (
+                <div key={i} className={"skeleton-screen"}>
                     <div className={"skeleton-screen-img"}/>
                     <div className={"fc ai-fs g1 h100 w100"}>
                         <div className={"skeleton-screen-title"}></div>
