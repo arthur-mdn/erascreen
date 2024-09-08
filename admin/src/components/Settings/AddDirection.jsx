@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import config from '../../config';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -7,7 +7,7 @@ import Modal from "../Modal.jsx";
 import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
 
-function AddDirection({ arrowImages, screenId, onDirectionAdd }) {
+function AddDirection({ arrowImages, screenId, onDirectionAdd, onDirectionEdit, direction }) {
     const [isLoading, setIsLoading] = useState(false);
     const [newDirection, setNewDirection] = useState({
         arrow: { style: 'arrow.png', orientation: '0' },
@@ -35,6 +35,32 @@ function AddDirection({ arrowImages, screenId, onDirectionAdd }) {
         }
     };
 
+    const updateDirection = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.put(`${config.serverUrl}/screens/directions/${direction._id}`, newDirection, {
+                withCredentials: true
+            });
+            if (response.data.success) {
+                onDirectionEdit(response.data.screenObj);
+                toast.success("Direction modifiée avec succès !");
+            } else {
+                toast.error("Erreur lors de la modification de la direction");
+            }
+        } catch (error) {
+            console.error('Erreur lors de la modification d\'une direction:', error);
+            toast.error("Erreur lors de la modification de la direction");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        if (direction) {
+            setNewDirection(direction);
+        }
+    }, [direction]);
+
     if (isLoading) return (
         <Loading/>
     );
@@ -60,11 +86,16 @@ function AddDirection({ arrowImages, screenId, onDirectionAdd }) {
                 <label>Couleur du titre:</label>
                 <input type="color" value={newDirection.title.color} onChange={(e) => setNewDirection({ ...newDirection, title: { ...newDirection.title, color: e.target.value }})} />
             </div>
+            <div>
+                <label>Description :</label>
+                <textarea style={{minHeight: '60px', resize: "vertical", maxHeight: '140px'}} required
+                          value={newDirection.description}
+                          onChange={(e) => setNewDirection({...newDirection, description: e.target.value})}></textarea>
+            </div>
 
-            <label>Description :</label>
-            <textarea style={{minHeight:'60px', resize:"vertical", maxHeight:'140px'}} required value={newDirection.description} onChange={(e) => setNewDirection({ ...newDirection, description: e.target.value })}></textarea>
-
-            <button onClick={() => addDirection(newDirection)}>Ajouter la direction</button>
+            <button type={"button"} onClick={() => {
+                direction ? updateDirection(direction) : addDirection(newDirection)
+            }}>{direction ? "Modifier" : "Ajouter"}</button>
         </>
     );
 }

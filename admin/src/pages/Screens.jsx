@@ -62,7 +62,7 @@ function Home() {
                     </Link>
                 </div>
             </div>
-            <div className={"w100 br-l-1 bg-white bs"}>
+            <div className={"w100 br-l-1 bg-white bs ofy-s"}>
                 <Breadcrumbs/>
                 <Routes>
                     <>

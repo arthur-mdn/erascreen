@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import config from '../../config';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import {FaTrash} from "react-icons/fa6";
+import {FaPencil, FaTrash} from "react-icons/fa6";
 import Modal from "../Modal.jsx";
 import AddDirection from "./AddDirection.jsx";
 import Loading from "../Loading.jsx";
@@ -10,6 +10,7 @@ import {toast} from "react-toastify";
 
 function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) {
     const [newDirectionOpen, setNewDirectionOpen] = useState(false);
+    const [editDirection, setEditDirection] = useState(null);
     const [directions, setDirections] = useState(initialDirections || []);
 
     const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +21,11 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
         setNewDirectionOpen(false);
     };
 
+    const handleEditDirection = (editedConfig) => {
+        setDirections(editedConfig.directions);
+        onDirectionsChange(editedConfig);
+        setEditDirection(null);
+    }
     const onDragEnd = async (result) => {
         if (!result.destination) return;
 
@@ -63,7 +69,7 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
     );
 
     return (
-        <div className={"p1"}>
+        <div className={"p1 fc g1"}>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable-directions">
                     {(provided) => (
@@ -96,8 +102,15 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
                                                         </p>
                                                     </div>
                                                 </div>
+                                                <div className={"fr g0-5"}>
+                                                    <button type={"button"} className={"actionButton"} onClick={() => setEditDirection(direction)}>
+                                                        <FaPencil/>
+                                                    </button>
+                                                    <button type={"button"} className={"actionButton"} onClick={() => deleteDirection(direction._id)}>
+                                                        <FaTrash/>
+                                                    </button>
+                                                </div>
 
-                                                <button onClick={() => deleteDirection(index)}><FaTrash/></button>
                                             </div>
                                         </div>
                                     )}
@@ -118,6 +131,16 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
                     onDirectionAdd={(newConfig) => {handleAddDirection(newConfig)}}
                 />
             </Modal>
+
+            <Modal isOpen={editDirection !== null} title={"Modifier une direction"} onClose={()=> {setEditDirection(null)}}>
+                <AddDirection
+                    screenId={screenId}
+                    arrowImages={arrowImages}
+                    direction={editDirection}
+                    onDirectionEdit={(editedConfig) => {handleEditDirection(editedConfig)}}
+                />
+            </Modal>
+
         </div>
     );
 }

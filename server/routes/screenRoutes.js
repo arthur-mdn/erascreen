@@ -296,7 +296,7 @@ router.post('/screens/directions', verifyToken, checkUserPermissions(["direction
     }
 });
 
-router.delete('/screens/directions/:directionIndex', verifyToken, checkUserPermissions(["directions"]), async (req, res) => {
+router.delete('/screens/directions/:directionId', verifyToken, checkUserPermissions(["directions"]), async (req, res) => {
     const screenId = req.selectedScreen;
     const screen = await Screen.findOne({ _id: screenId, "users.user": req.user.userId }).populate('meteo');
 
@@ -304,13 +304,39 @@ router.delete('/screens/directions/:directionIndex', verifyToken, checkUserPermi
         return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
     }
     try {
-        screen.directions.splice(req.params.directionIndex, 1);
+        const { directionId } = req.params;
+        screen.directions = screen.directions.filter(direction => direction._id.toString() !== directionId);
         await screen.save();
         socketUtils.emitConfigUpdate(screenId, screen);
         const screenObj = processScreenObj(screen, req.user.userId);
         res.send({ success: true, screenObj });
     } catch (error) {
         console.error('Erreur lors de la suppression d\'une direction:', error);
+        res.status(500).send({ error: 'Erreur serveur' });
+    }
+});
+
+router.put('/screens/directions/:directionId', verifyToken, checkUserPermissions(["directions"]), async (req, res) => {
+    const screenId = req.selectedScreen;
+    const screen = await Screen.findOne({ _id: screenId, "users.user": req.user.userId }).populate('meteo');
+
+    if (!screen) {
+        return res.status(404).send({ error: 'Écran non trouvé ou non autorisé' });
+    }
+    try {
+        const { directionId } = req.params;
+        const updatedDirection = req.body;
+        const directionIndex = screen.directions.findIndex(direction => direction._id.toString() === directionId);
+        if (directionIndex === -1) {
+            return res.status(404).send({ error: 'Direction non trouvée' });
+        }
+        screen.directions[directionIndex] = updatedDirection;
+        await screen.save();
+        socketUtils.emitConfigUpdate(screenId, screen);
+        const screenObj = processScreenObj(screen, req.user.userId);
+        res.send({ success: true, screenObj });
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour d\'une direction:', error);
         res.status(500).send({ error: 'Erreur serveur' });
     }
 });
