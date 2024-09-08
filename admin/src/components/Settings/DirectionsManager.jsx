@@ -62,7 +62,7 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
         }
     };
 
-    const arrowImages = ['arrow.png', 'arrow_bold.png', 'left-turn.png', 'turn.png'];
+    const arrowImages = ['arrow.png', 'arrow_bold.png', 'left-turn.png', 'turn.png', 'location-pin.png'];
 
     if (isLoading) return (
         <Loading/>
