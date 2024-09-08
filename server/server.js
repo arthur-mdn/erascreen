@@ -68,7 +68,7 @@ Screen.updateMany({}, { status: "offline" })
 const activeSockets = {};
 const activeAdminSockets = {};
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     const origin = socket.handshake.headers.origin;
     const cookies = socket.handshake.headers.cookie || '';
     const sessionToken = cookies.split('; ').find(row => row.startsWith('session_token='))?.split('=')[1];
@@ -77,9 +77,9 @@ io.on('connection', (socket) => {
         console.log('Raspberry Pi connected:', socket.id);
 
         socket.on('associate', async (data) => {
-            const { screenId } = data;
-            await Screen.findByIdAndUpdate(screenId, { status: "online" });
-            socketUtils.associateScreenSocket(screenId,socket.id);
+            const {screenId} = data;
+            await Screen.findByIdAndUpdate(screenId, {status: "online"});
+            socketUtils.associateScreenSocket(screenId, socket.id);
         });
 
         socket.on('request_code', () => {
@@ -90,12 +90,12 @@ io.on('connection', (socket) => {
         });
 
         socket.on('update_weather', async (data) => {
-            const { screenId } = data;
+            const {screenId} = data;
             const screen = await Screen.findById(screenId).populate('meteo');
             if (screen) {
                 try {
                     const updatedScreen = await updateWeatherData(screenId, screen.meteo.weatherId);
-                    await Screen.findByIdAndUpdate(screenId, { status: "online" });
+                    await Screen.findByIdAndUpdate(screenId, {status: "online"});
                     socket.emit('config_updated', updatedScreen);
                 } catch (error) {
                     console.error('Erreur lors de la mise à jour de la météo:', error);
@@ -107,19 +107,19 @@ io.on('connection', (socket) => {
 
         socket.on('update_config', async (data) => {
             try {
-                const { screenId } = data;
+                const {screenId} = data;
 
                 const screen = await Screen.findById(screenId).populate('meteo');
                 if (screen) {
                     socketUtils.associateScreenSocket(screenId, socket.id);
-                    await Screen.findByIdAndUpdate(screenId, { status: "online" });
+                    await Screen.findByIdAndUpdate(screenId, {status: "online"});
                     socket.emit('config_updated', screen);
                     screen.users.forEach(async (user) => {
                         const socketId = activeAdminSockets[user.user._id];
                         if (socketId) {
                             const socket = io.sockets.sockets.get(socketId);
                             if (socket) {
-                                socket.emit('screen_status', { screenId, status: "online" });
+                                socket.emit('screen_status', {screenId, status: "online"});
                             }
                         }
                     });
@@ -163,7 +163,7 @@ io.on('connection', (socket) => {
                     if (socketId) {
                         const socket = io.sockets.sockets.get(socketId);
                         if (socket) {
-                            socket.emit('screen_status', { screenId, status: "offline" });
+                            socket.emit('screen_status', {screenId, status: "offline"});
                         }
                     }
                 });
@@ -192,14 +192,19 @@ io.on('connection', (socket) => {
 
             activeAdminSockets[userId] = socket.id;
 
+            const screens = await Screen.find();
+            screens.forEach(screen => {
+                socket.emit('screen_status', {screenId: screen._id, status: screen.status});
+            });
+
             socket.on('admin_request_client_control', async (data) => {
                 console.log('admin_request_client_control', data);
-                const { screenId, command, commandId, value } = data;
+                const {screenId, command, commandId, value} = data;
                 const screen = await Screen.findById(screenId);
 
                 const permissionGranted = await checkUserPermissionsOfThisScreen("control", screenId, userId);
 
-                if(!permissionGranted) {
+                if (!permissionGranted) {
                     socket.emit('server_forward_client_response_to_admin', {commandId, error: 'Permission refusée'});
                     return;
                 }
@@ -211,11 +216,17 @@ io.on('connection', (socket) => {
                         if (screenSocket) {
                             screenSocket.emit('server_send_control_to_client', {command, commandId, value});
                         } else {
-                            socket.emit('server_forward_client_response_to_admin', {commandId, error: 'Écran non connecté'});
+                            socket.emit('server_forward_client_response_to_admin', {
+                                commandId,
+                                error: 'Écran non connecté'
+                            });
                         }
                     } else {
                         console.log('Screen not connected');
-                        socket.emit('server_forward_client_response_to_admin', {commandId, error: 'Écran non connecté'});
+                        socket.emit('server_forward_client_response_to_admin', {
+                            commandId,
+                            error: 'Écran non connecté'
+                        });
                     }
                 } else {
                     console.log('Screen not found');

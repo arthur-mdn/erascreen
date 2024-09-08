@@ -199,10 +199,10 @@ export default function Control({ screen }) {
             <div className={"fc g0-5 card ai-c"}>
                 <FaSatelliteDish size={30} />
                 <div className={`fr g0-5 ai-c`}>
-                    <div className={`${screen.status}`}>
+                    <div className={`${actualScreenStatus}`}>
                     </div>
-                    <span className={`${screen.status}`}>
-                        {screen.status === "online" ? "Connecté" : "Hors ligne"}
+                    <span className={`${actualScreenStatus}`}>
+                        {actualScreenStatus === "online" ? "Connecté" : "Hors ligne"}
                     </span>
                 </div>
             </div>

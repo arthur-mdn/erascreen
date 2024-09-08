@@ -39,6 +39,14 @@ function ScreenSelector({ onSelectScreen }) {
                 );
             });
 
+            socket.on('disconnect', () => {
+                setScreens((prevScreens) =>
+                    prevScreens.map((screen) =>
+                        screen.status === "online" ? { ...screen, status: "offline" } : screen
+                    )
+                );
+            });
+
             return () => {
                 socket.off('screen_status');
             };

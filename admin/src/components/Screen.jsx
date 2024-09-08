@@ -80,6 +80,10 @@ function Screen() {
                 }
             });
 
+            socket.on('disconnect', () => {
+                setScreen((prevScreen) => ({ ...prevScreen, status: "offline" }));
+            });
+
             return () => {
                 socket.off('screen_status');
             };
