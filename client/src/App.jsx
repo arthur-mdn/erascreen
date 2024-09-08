@@ -348,7 +348,7 @@ function App() {
                             </div>
                         </div>
                     </div>}
-                    <Screen configData={configData}/>
+                    <Screen configData={configData} isDarkModeActive={isDarkModeActive}/>
                     <Pub displayTime={12000} animationTime={2000} intervalTime={18000} />
                     </>);
             case 'disconnected':

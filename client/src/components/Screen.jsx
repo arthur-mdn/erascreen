@@ -8,14 +8,14 @@ import DisplayLogo from "./DisplayLogo.jsx";
 import {Helmet} from "react-helmet";
 import DisplayIcons from "./DisplayIcons.jsx";
 
-function Screen({configData}){
+function Screen({configData, isDarkModeActive}){
     return (
         <div>
             <Helmet>
                 <title>{configData.name}</title>
             </Helmet>
             <div className={"fr jc-sb ai-c"}>
-                <DisplayLogo logo={configData.logo}/>
+                <DisplayLogo logo={configData.logo} isDarkModeActive={isDarkModeActive}/>
                 {
                     configData.meteo && (
                         <MeteoViewer screen={configData}/>
