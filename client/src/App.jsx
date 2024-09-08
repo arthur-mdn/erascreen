@@ -317,7 +317,7 @@ function App() {
                         </div>
                     }
                     {showOffline &&
-                        <div className={"p0-5 br0-5 of-h"} style={{
+                        <div className={"iconIndicator p0-5 br0-5 of-h"} style={{
                             position: "absolute",
                             top: 0,
                             right: 0,

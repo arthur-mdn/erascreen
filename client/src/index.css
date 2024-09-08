@@ -1315,5 +1315,16 @@ width:2.5vw
 }
 
 .iconIndicator{
-
+animation: opacity 3s infinite ease-in-out;
+}
+@keyframes opacity {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
