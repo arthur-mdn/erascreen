@@ -6,7 +6,6 @@ import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
 
 function TextSlidesManager({ screenId, initialTextSlides, onConfigChange }) {
-    console.log(initialTextSlides?.ranges)
     const [textSlidesRanges, setTextSlidesRanges] = useState(initialTextSlides?.ranges || []);
     const [isLoading, setIsLoading] = useState(false);
 

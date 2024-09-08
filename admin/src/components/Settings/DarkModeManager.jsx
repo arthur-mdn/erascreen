@@ -8,7 +8,6 @@ import {toast} from "react-toastify";
 function DarkModeManager({ screenId, initialDarkMode, onConfigChange }) {
     const [darkModeRanges, setDarkModeRanges] = useState(initialDarkMode?.ranges || []);
     const [isLoading, setIsLoading] = useState(false);
-    console.log(darkModeRanges)
     const saveDarkModeConfig = () => {
         setIsLoading(true);
         const updatedDarkModeConfig = darkModeRanges.map(range => ({
