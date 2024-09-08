@@ -439,6 +439,10 @@ button:focus-visible {
   position: relative;
 }
 
+.screen.screen-detail{
+  cursor: default;
+}
+
 .screen .img-container{
     width: 100px;
     height: 100px;
@@ -460,6 +464,9 @@ button:focus-visible {
   right: 1rem;
   font-size: 2rem;
   z-index: 1;
+}
+.screen.screen-detail:after{
+ content:"";
 }
 
 .screen h3, .screen span, .screen p{
@@ -769,6 +776,9 @@ button:focus-visible {
   opacity: 1;
 }
 
+.cna{
+  cursor: not-allowed;
+}
 
 
 

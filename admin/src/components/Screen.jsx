@@ -128,7 +128,7 @@ function Screen() {
                 </div>
             </div>
             {buttons.map((button) => (
-                <div key={button.id} className={"setting_element g1 ai-c jc-c"}>
+                <div key={button.id} className={"setting_element g1 ai-c jc-c cna"}>
                     <div className={"skeleton-screen-status-bubble"}></div>
                     <div className={"skeleton-screen-status-bar"}></div>
                     <div className={"h1-5"}></div>
