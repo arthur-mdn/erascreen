@@ -38,7 +38,7 @@ function DirectionsViewer({ screen }) {
     } : {};
 
     return (
-        <div ref={containerRef} className={"directions-full-container card ai-fs jc-sb fc "} style={{flexDirection:'column', width:'40%', overflow:"hidden", position:"relative"}}>
+        <div ref={containerRef} className={"directions-full-container card ai-fs jc-sb fc "} style={{flexDirection:'column', overflow:"hidden", position:"relative",width: screen.photos.length > 0 ? '40%' : '100%'}}>
             {
                 shouldScroll &&
                 <style>
