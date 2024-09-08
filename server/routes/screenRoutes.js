@@ -422,7 +422,7 @@ router.post('/screens/photos/reorder', verifyToken, checkUserPermissions(["photo
 
 
 
-router.post('/screens/updateConfig', verifyToken, checkUserPermissions(["config"]), async (req, res) => {
+router.post('/screens/updateConfig', verifyToken, checkUserPermissions(["avanced_settings"]), async (req, res) => {
     const screenId = req.selectedScreen;
     const configUpdates = req.body;
     let screen = await Screen.findOne({ _id: screenId, "users.user": req.user.userId }).populate('meteo');

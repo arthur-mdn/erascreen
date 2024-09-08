@@ -70,6 +70,9 @@ body, html{
 .bs{
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
+.shadow{
+  box-shadow: 0 0 0.5rem 0.1rem rgba(0, 0, 0, 0.1);
+}
 
 .fw-b{
     font-weight: bold;
@@ -184,9 +187,20 @@ input[type=text], input[type=number], input[type=url], input[type=email], input[
   background-color: white;
   color-scheme: light;
 }
+input[type=text]::placeholder, input[type=number]::placeholder, input[type=url]::placeholder, input[type=email]::placeholder, input[type=tel]::placeholder, input[type=password]::placeholder, input[type=datetime-local]::placeholder, input[type=time]::placeholder, input[type=date]::placeholder, textarea::placeholder, select::placeholder, .inputs::placeholder {
+  color: var(--placeholder-text-color);
+}
 
 input[type=checkbox]{
   background-color: white;
+}
+
+textarea {
+  resize: vertical;
+  padding: 0.5em 1em;
+  height: 5rem;
+  min-height: 2.5rem;
+  max-height: 10rem;
 }
 
 .fc{
