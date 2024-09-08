@@ -6,6 +6,7 @@ import {FaTrash} from "react-icons/fa6";
 import { useDropzone } from 'react-dropzone';
 import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
+import {FaTimes} from "react-icons/fa";
 
 function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
     const [photos, setPhotos] = useState(initialPhotos);
@@ -102,20 +103,22 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
     return (
         <div className={"p1"}>
             <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="droppable-photos">
+                <Droppable droppableId="droppable-photos" direction="horizontal">
                     {(provided) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef} className={"fc g0-5"}>
-                            {photos.map((icon, index) => (
-                                <Draggable key={icon} draggableId={icon} index={index}>
+                        <div {...provided.droppableProps} ref={provided.innerRef} className={"fr g0-5 ofy-s"}>
+                            {photos.map((photo, index) => (
+                                <Draggable key={photo} draggableId={photo} index={index}>
                                     {(provided) => (
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
-                                            className={"fr ai-c g1"}
+                                            className={"fr ai-c g1 pr"}
                                         >
-                                            <img src={`${config.serverUrl}/${icon}`} alt={`Icon ${index}`} style={{width:'150px'}} />
-                                            <button onClick={() => handleDelete(icon)}><FaTrash/></button>
+                                            <img src={`${config.serverUrl}/${photo}`} alt={`Photo ${index}`}
+                                                 style={{width: '150px'}}/>
+                                            <button type={"button"} className={"actionButton quickDel"}
+                                                    onClick={() => handleDelete(photo)}><FaTimes size={12}/></button>
                                         </div>
                                     )}
                                 </Draggable>

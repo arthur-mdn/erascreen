@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import config from '../../config';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import {FaTrash} from "react-icons/fa6";
+import {FaCross, FaTrash} from "react-icons/fa6";
 import { useDropzone } from 'react-dropzone';
 import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
+import {FaTimes} from "react-icons/fa";
 
 function IconManager({ screenId, initialIcons, onIconsChange }) {
     const [icons, setIcons] = useState(initialIcons);
@@ -96,11 +97,11 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
         <Loading/>
     );
     return (
-        <div className={"p1"}>
+        <div className={"fc g1 p1"}>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId="droppable-icons" direction="horizontal">
                     {(provided) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef} className={"fr g0-5"}>
+                        <div {...provided.droppableProps} ref={provided.innerRef} className={"fr g0-5 ofy-s"}>
                             {icons.map((icon, index) => (
                                 <Draggable key={icon} draggableId={icon} index={index}>
                                     {(provided) => (
@@ -108,10 +109,12 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
-                                            className={"fr g0-5 ai-c"}
+                                            className={"fr g0-5 ai-c pr "}
                                         >
-                                            <img src={`${config.serverUrl}/${icon}`} alt={`Icon ${index}`} style={{width:'50px'}} />
-                                            <button onClick={() => handleDelete(icon)}><FaTrash/></button>
+                                            <img src={`${config.serverUrl}/${icon}`} alt={`Icon ${index}`} style={{width:'4rem'}} />
+                                            <button type={"button"} className={"actionButton quickDel"} onClick={() => handleDelete(icon)}>
+                                                <FaTimes size={12}/>
+                                            </button>
                                         </div>
                                     )}
                                 </Draggable>

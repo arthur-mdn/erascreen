@@ -1017,6 +1017,13 @@ nav.bread {
     opacity: 0.5;
 }
 
+.pr{
+  position: relative
+}
+.wfc{
+  width: fit-content;
+}
+
 button.actionButton{
   background-color: white;
   color: black;
@@ -1026,6 +1033,14 @@ button.actionButton{
   font-size: 1rem;
   line-height: 0.8rem;
 }
+
+button.quickDel{
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.3rem;
+  border-radius: 4rem;
+}
 button.actionButton:hover{
   background-color: #bab9b9;
   color: #000000;
@@ -1033,6 +1048,9 @@ button.actionButton:hover{
 
 .ofy-s{
   overflow-y: scroll;
+}
+.ofy-h{
+  overflow-y: hidden;
 }
 .h1-5{
   height: 1.5rem;

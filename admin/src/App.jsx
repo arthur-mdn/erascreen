@@ -27,7 +27,7 @@ const AuthenticatedApp = () => {
                 <>
                     <NavBar hidden={authStatus === "unauthenticated"}/>
                     <ToastContainer pauseOnFocusLoss={false} closeOnClick={true}/>
-                    <div className={`fc w100 h100 content ${authStatus === "unauthenticated" ? "logged-out" : ""}`}>
+                    <div className={`fc w100 h100 content ofy-h ${authStatus === "unauthenticated" ? "logged-out" : ""}`}>
                         <Routes>
                             {authStatus === "unauthenticated" ? (
                                 <>

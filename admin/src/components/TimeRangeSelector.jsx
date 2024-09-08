@@ -151,9 +151,9 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
                             ))
                         }
                         <div className={"fr g0-5"}>
-                            <button onClick={() => openEditModal(index)}><FaPen/></button>
-                            <button onClick={() => duplicateRange(range)}><FaCopy/></button>
-                            <button onClick={() => removeRange(index)}><FaTrash/></button>
+                            <button type={"button"} className={"actionButton"} onClick={() => openEditModal(index)}><FaPen/></button>
+                            <button type={"button"} className={"actionButton"} onClick={() => duplicateRange(range)}><FaCopy/></button>
+                            <button type={"button"} className={"actionButton"} onClick={() => removeRange(index)}><FaTrash/></button>
                         </div>
                     </div>
                 ))}
@@ -165,7 +165,7 @@ function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", a
 
 
 
-                    <button onClick={()=>{setIsAddOpen(true)}} className={"fr ai-c g0-5 jc-c"}><FaPlus/> Ajouter</button>
+                    <button type={"button"} onClick={()=>{setIsAddOpen(true)}} className={"fr ai-c g0-5 jc-c actionButton"}><FaPlus/> Ajouter</button>
 
                 <br/>
             </div>

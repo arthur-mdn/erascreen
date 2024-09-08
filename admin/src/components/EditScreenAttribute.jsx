@@ -5,6 +5,8 @@ import {useDropzone} from "react-dropzone";
 import Loading from "./Loading.jsx";
 import { toast } from 'react-toastify';
 import {FaLocationDot, FaLocationPin, FaMapPin} from "react-icons/fa6";
+import {FaTimes} from "react-icons/fa";
+import MeteoViewer from "./MeteoViewer.jsx";
 
 function EditScreenAttribute({ screen, screenId, attribute, value, onSave, inputType = "text" }) {
     const [isLoading, setIsLoading] = useState(false);
@@ -162,48 +164,52 @@ function EditScreenAttribute({ screen, screenId, attribute, value, onSave, input
 
     if ( attribute === 'meteo.city' ) {
         return (
-            <div className={"p1"}>
+            <div className={"p1 fc g1"}>
                 {
                     infosAboutAttribute[attribute].label
                 }
                 {screen.meteo && (
-                    <button type={"button"} onClick={resetMeteo}>Supprimer la météo</button>
+                    <>
+                        <MeteoViewer screen={screen} onResetMeteo={()=>{resetMeteo()}}/>
+                    </>
                 )}
-                <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Recherchez une ville..."
-                />
-                {suggestions.length > 0 && (
-                    <div className={"city-suggestions"}>
-                        {suggestions.map((suggestion, index) => (
-                            <div key={index} onClick={() => selectCity(suggestion.id)} className={"city-suggestion"}>
-                                <FaLocationDot/> <div>{suggestion.name}, {suggestion.country}</div>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                <div className={"fc"}>
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        placeholder="Recherchez une ville..."
+                    />
+                    {suggestions.length > 0 && (
+                        <div className={"city-suggestions"}>
+                            {suggestions.map((suggestion, index) => (
+                                <div key={index} onClick={() => selectCity(suggestion.id)} className={"city-suggestion"}>
+                                    <FaLocationDot/> <div>{suggestion.name}, {suggestion.country}</div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
             </div>
         );
     }
     if (attribute === 'logo') {
         return (
-            <div className={"p1"}>
+            <div className={"p1 fc g1"}>
                 <label>
                     { infosAboutAttribute[attribute].label }
                 </label>
                 {
                     value && (
-                        <div>
-                            <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{width:'150px'}} />
+                        <div className={"pr wfc"}>
+                            <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{height:'4rem'}} />
+                            <button type={"button"} className={"actionButton quickDel"} onClick={resetLogo}><FaTimes size={12}/></button>
                         </div>
                     )
                 }
 
-                {value && (
-                    <button type={"button"} onClick={resetLogo}>Supprimer le logo</button>
-                )}
+
                 <div {...getRootProps()} style={{ border: '2px dashed #ccc', padding: '10px', textAlign: 'center' }}>
                     <input {...getInputProps()} />
                     Glissez et déposez le logo ici, ou cliquez pour sélectionner un fichier

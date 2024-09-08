@@ -168,7 +168,6 @@ function Screen() {
                     }}
                 />} />
                 <Route path="/meteo" element={<>
-                    <MeteoViewer screen={screen} />
                     <EditScreenAttribute
                         screen={screen}
                         screenId={screen._id}
