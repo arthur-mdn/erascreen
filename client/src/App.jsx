@@ -57,6 +57,7 @@ function App() {
         socket.on('config_updated', async (updatedConfig) => {
             localStorage.setItem('screenConfig', JSON.stringify(updatedConfig));
             setConfigData(updatedConfig);
+            savedConfig = JSON.stringify(updatedConfig);
             console.log('Config updated:', updatedConfig)
             setStatus('configured');
             setShowUpdateIcon(true);
