@@ -302,6 +302,12 @@ textarea {
   background-color: #b0b0b0;
 }
 
+@media screen and (max-width: 768px) {
+  .om-w100{
+    width: 100%;
+  }
+
+}
 
 input[type=button], input[type=submit], button[type=submit], button[type=button], .force_button_style {
   background-color: var(--activated-color);

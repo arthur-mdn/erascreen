@@ -213,9 +213,10 @@ export default function Control({ screen }) {
                     {Object.entries(commands)
                         .filter(([key, command]) => command.type === 'basic')
                         .map(([key, command]) => (
-                            <div key={`e-${key}`}>
+                            <div key={`e-${key}`} className={"om-w100"}>
                                 {command.input.type === 'button' && (
                                     <button
+                                        className={"om-w100"}
                                         key={key}
                                         type={"button"}
                                         onClick={() => sendControlCommand(command.command)}
@@ -242,7 +243,7 @@ export default function Control({ screen }) {
                     {Object.entries(commands)
                         .filter(([key, command]) => command.type === 'advanced')
                         .map(([key, command]) => (
-                            <div key={`e-${key}`}>
+                            <div key={`e-${key}`} className={"om-w100"}>
                                 {command.input.type === 'range' && (
                                     <div className={"fc g0-5"}>
                                         <div className={"slider-container"}>
@@ -265,6 +266,7 @@ export default function Control({ screen }) {
                                 )}
                                 {command.input.type === 'button' && (
                                     <button
+                                        className={"om-w100"}
                                         key={key}
                                         type={"button"}
                                         onClick={() => sendControlCommand(command.command)}
