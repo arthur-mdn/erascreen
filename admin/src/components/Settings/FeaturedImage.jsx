@@ -2,6 +2,7 @@ import config from "../../config.js";
 import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {toast} from "react-toastify";
+import {FaTimes} from "react-icons/fa";
 
 export default function FeaturedImage({featured_image, permissions, onSave}) {
     const [allowedToEdit, setAllowedToEdit] = useState(false);
@@ -27,12 +28,30 @@ export default function FeaturedImage({featured_image, permissions, onSave}) {
 
                 onSave(response.data.screenObj);
                 toast.success("Image en avant mise à jour avec succès !");
+                fileInputRef.current.value = '';
             } catch (error) {
                 console.error('Erreur lors de la modification :', error);
                 toast.error("Erreur lors de la mise à jour de l'image en avant");
             }
         }
     };
+
+    const handleImageDelete = async () => {
+        try {
+            const response = await axios.post(`${config.serverUrl}/screens/update`, {
+                featured_image: "DELETE-FEATURED-IMAGE"
+            }, {
+                withCredentials: true
+            });
+
+            onSave(response.data.screenObj);
+            toast.success("Image en avant supprimée avec succès !");
+            fileInputRef.current.value = '';
+        } catch (error) {
+            console.error('Erreur lors de la suppression :', error);
+            toast.error("Erreur lors de la suppression de l'image en avant");
+        }
+    }
 
     useEffect(() => {
         if (permissions && permissions.length > 0) {
@@ -43,28 +62,32 @@ export default function FeaturedImage({featured_image, permissions, onSave}) {
     return (
         <>
             {allowedToEdit ?
-            <>
-                <img
-                    src={`${config.serverUrl}/${featured_image}`}
-                    alt="Screen"
-                    onClick={handleImageClick}
-                    className={"edit-avilable"}
-                />
-                <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{display: 'none'}}
-                    onChange={handleFileChange}
-                    accept="image/*"
-                />
-            </> :
+                <div className={"pr"}>
+                    <img
+                        src={`${config.serverUrl}/${featured_image}`}
+                        alt="Screen"
+                        onClick={handleImageClick}
+                        className={"edit-avilable"}
+                    />
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{display: 'none'}}
+                        onChange={handleFileChange}
+                        accept="image/*"
+                    />
+                    {
+                        featured_image !== "public/template-screen-image.png" &&
+                        <button type={"button"} className={"actionButton quickDel"} onClick={handleImageDelete}>
+                            <FaTimes size={12}/>
+                        </button>
+                    }
+                </div> :
 
-            <>
-                <img
-                    src={`${config.serverUrl}/${featured_image}`}
-                    alt="Screen"
-                />
-            </>
+                <>
+                    <img src={`${config.serverUrl}/${featured_image}`} alt="Screen"
+                    />
+                </>
             }
         </>
     )

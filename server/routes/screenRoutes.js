@@ -128,6 +128,10 @@ router.post('/screens/update', verifyToken, upload.fields([
             screen.logo = `${req.files['logo'][0].path}`;
         }
 
+        if(req.body['featured_image'] && req.body['featured_image'] === "DELETE-FEATURED-IMAGE" && await hasPermission(userId, screenId, "featured_image")) {
+            screen.featured_image = "public/template-screen-image.png";
+        }
+
         if (req.files && req.files['featured_image'] && await hasPermission(userId, screenId, "featured_image")) {
             screen.featured_image = `${req.files['featured_image'][0].path}`;
         }
