@@ -308,11 +308,11 @@ function App() {
                             right: 0,
                             margin: '1rem',
                             zIndex: 9999,
-                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            backgroundColor: 'rgba(255,255,255,0.3)',
                             backdropFilter: 'blur(5px)'
                         }}>
                             <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
-                                <FaCloudDownloadAlt size={'2rem'}/>
+                                <FaCloudDownloadAlt size={'2rem'} style={{color: "#a1a1a1"}}/>
                             </div>
                         </div>
                     }
@@ -323,12 +323,12 @@ function App() {
                             right: 0,
                             margin: '1rem',
                             zIndex: 9999,
-                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            backgroundColor: 'rgba(255,255,255,0.3)',
                             backdropFilter: 'blur(5px)'
                         }}>
                             <div className={""} style={{position:"relative", width:"32px", height:"32px"}}>
-                                <FaCloud size={'2rem'} style={{color: "#d8d8d8"}}/>
-                                <FaSlash size={'2rem'} style={{color: "white", position: "absolute", top: 0, right: 0}}/>
+                                <FaCloud size={'2rem'} style={{color: "#a1a1a1"}}/>
+                                <FaSlash size={'2rem'} style={{color: "#a1a1a1", position: "absolute", top: 0, right: 0}}/>
                             </div>
                         </div>
                     }
