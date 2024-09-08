@@ -8,6 +8,10 @@ import DelScreen from "./DelScreen.jsx";
 function ConfigManager({ screen, initialConfig, onConfigChange, onRemoveScreenSelected }) {
     const [currentConfig, setCurrentConfig] = useState(initialConfig);
     const [isLoading, setIsLoading] = useState(false);
+    const configToText = {
+        "photos_interval": "Intervalle de changement des photos",
+        "hide_slider_dots": "Masquer les points de navigation du slider",
+    }
 
     const handleInputChange = (key, value) => {
         const updatedConfig = { ...currentConfig, [key]: value };
@@ -36,14 +40,14 @@ function ConfigManager({ screen, initialConfig, onConfigChange, onRemoveScreenSe
 
     return (
         <div className={"p1"}>
-            <div>
+            <div className={"fc g0-5"}>
                 {Object.keys(currentConfig).map((key) => {
                     const value = currentConfig[key];
 
                     if (key === 'photos_interval') {
                         return (
                             <div key={key}>
-                                <label htmlFor={key}>{key} (1-60)</label>
+                                <label htmlFor={key}>{configToText[key]} (1-60)</label>
                                 <input
                                     type="range"
                                     id={key}
@@ -60,20 +64,29 @@ function ConfigManager({ screen, initialConfig, onConfigChange, onRemoveScreenSe
                     }
 
                     return (
-                        <div key={key}>
-                            <label>{key}</label>
+                        <div key={key} className={typeof value === 'boolean' ? "fr g0-5" : "fc g0-5"}>
                             {typeof value === 'boolean' ? (
-                                <input
-                                    type="checkbox"
-                                    checked={value}
-                                    onChange={(e) => handleInputChange(key, e.target.checked)}
-                                />
+                                <>
+                                    <input
+                                        id={key}
+                                        type="checkbox"
+                                        checked={value}
+                                        onChange={(e) => handleInputChange(key, e.target.checked)}
+                                    />
+                                    <label htmlFor={key}>{configToText[key] || key}</label>
+                                </>
+
                             ) : (
-                                <input
-                                    type="text"
-                                    value={value}
-                                    onChange={(e) => handleInputChange(key, e.target.value)}
-                                />
+                                <>
+                                    <label htmlFor={key}>{configToText[key] || key}</label>
+                                    <input
+                                        id={key}
+                                        type="text"
+                                        value={value}
+                                        onChange={(e) => handleInputChange(key, e.target.value)}
+                                    />
+                                </>
+
                             )}
                         </div>
                     );
