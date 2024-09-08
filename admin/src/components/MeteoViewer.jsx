@@ -28,7 +28,7 @@ function MeteoViewer({ screen }) {
                         screen.meteo.data && (
                             <div>
                                 <h3 style={{fontSize:'1.3rem', fontWeight:"bold", lineHeight:'1.5rem'}}>{screen.meteo.data.name}</h3>
-                                <p  style={{fontSize:'1rem', fontWeight:"bold", lineHeight:'1rem'}}>{screen.meteo.data.main.temp}°C</p>
+                                <p  style={{fontSize:'1rem', fontWeight:"bold", lineHeight:'1rem'}}>{screen.meteo.data.main.temp.toFixed(1)}°C</p>
                                 <p style={{textTransform:"capitalize",fontSize:'1rem', fontWeight:"bold", lineHeight:'1rem'}}>{screen.meteo.data.weather[0].description}</p>
                             </div>
                         )
