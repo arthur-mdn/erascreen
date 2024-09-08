@@ -308,7 +308,7 @@ function App() {
                             right: 0,
                             margin: '1rem',
                             zIndex: 9999,
-                            backgroundColor: 'rgba(255,255,255,0.3)',
+                            backgroundColor: 'rgba(255,255,255,0.8)',
                             backdropFilter: 'blur(5px)'
                         }}>
                             <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
@@ -323,7 +323,7 @@ function App() {
                             right: 0,
                             margin: '1rem',
                             zIndex: 9999,
-                            backgroundColor: 'rgba(255,255,255,0.3)',
+                            backgroundColor: 'rgba(255,255,255,0.8)',
                             backdropFilter: 'blur(5px)'
                         }}>
                             <div className={""} style={{position:"relative", width:"32px", height:"32px"}}>
