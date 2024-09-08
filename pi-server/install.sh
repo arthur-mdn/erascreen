@@ -65,6 +65,21 @@ EOF
         wget https://raw.githubusercontent.com/ugotapi/wayland-pagepi/main/config.yaml
         sudo cp /home/$USERNAME/config.yaml /etc/interception/udevmon.d/config.yaml
         sudo systemctl restart udevmon
+
+        echo "Création d'un service systemd pour cacher le curseur..."
+
+        sudo bash -c "cat <<EOL > /etc/systemd/system/restart-udevmon.service
+[Unit]
+Description=Restart udevmon after boot
+After=multi-user.target
+
+[Service]
+ExecStart=/bin/bash -c 'sleep 10 && systemctl restart udevmon'
+
+[Install]
+WantedBy=multi-user.target
+EOL"
+        sudo systemctl enable restart-udevmon.service
         ;;
     *)
         echo "Invalid option"

@@ -5,7 +5,7 @@ const { exec } = require('child_process');
 const config = require('./others/config');
 
 const app = express();
-const appVersion = 'pi-0.0.4';
+const appVersion = 'pi-0.0.41';
 
 app.use(cors({
     origin: config.clientUrl,
