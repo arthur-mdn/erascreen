@@ -89,6 +89,7 @@ function DirectionsManager({ screenId, initialDirections, onDirectionsChange }) 
                                                 backgroundColor:'white',
                                                 marginBottom:'1rem'
                                             }}
+                                            className={"shadow"}
                                         >
                                             <div className={"fr ai-c jc-sb"}>
                                                 <div className={"fr ai-c g1"}>
