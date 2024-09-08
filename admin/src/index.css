@@ -478,7 +478,7 @@ button:focus-visible {
   opacity: 0;
   animation: fadeOut 0.5s;
 }
-.screen span:before{
+.screen span:before, .skeleton-title:before{
     content:'';
   position: absolute;
   width: 4.5rem;
@@ -501,7 +501,7 @@ button:focus-visible {
   opacity: 0;
   animation: fadeOut 0.5s;
 }
-.screen .status-bubble:before{
+.screen .status-bubble:before, .skeleton-status-bubble:before{
     content:'';
   position: absolute;
   width: 15px;
@@ -526,6 +526,10 @@ button:focus-visible {
     color:black;
     border: 1px solid lightgray;
     position: relative;
+}
+
+.b0{
+  border:0;
 }
 
 .skeleton-screen-img{
@@ -748,7 +752,7 @@ button:focus-visible {
 }
 
 
-a.setting_element {
+.setting_element {
   display: flex;
   padding: 0.8rem 1rem;
   border-bottom: 1px solid lightgrey;
@@ -757,9 +761,9 @@ a.setting_element {
   background-color: transparent;
   color: black;
   justify-content: flex-start;
-  gap: 1.5rem
+  align-items: center;
 }
-a.setting_element:hover {
+.setting_element:hover {
   background-color: rgba(0, 0, 0, 0.05);
   color: black;
   opacity: 1;
@@ -1019,4 +1023,7 @@ button.actionButton:hover{
 
 .ofy-s{
   overflow-y: scroll;
+}
+.h1-5{
+  height: 1.5rem;
 }

@@ -115,7 +115,26 @@ function Screen() {
     }
 
     if (isLoading) {
-        return <Loading />;
+        return <div className={"fc"}>
+            <div className={"skeleton-screen b0"}>
+                <div className={"skeleton-screen-img"}/>
+                <div className={"fc ai-fs g0-75 h100 w100"}>
+                    <div className={"skeleton-screen-title"}></div>
+                    <div className={`fr g0-5 ai-c w100`}>
+                        <div className={`skeleton-screen-status-bubble`}></div>
+                        <div className={`skeleton-screen-status-bar`}></div>
+                    </div>
+                    <div className={"skeleton-screen-id"}></div>
+                </div>
+            </div>
+            {buttons.map((button) => (
+                <div key={button.id} className={"setting_element g1 ai-c jc-c"}>
+                    <div className={"skeleton-screen-status-bubble"}></div>
+                    <div className={"skeleton-screen-status-bar"}></div>
+                    <div className={"h1-5"}></div>
+                </div>
+            ))}
+        </div>
     }
 
     if (error) {
@@ -131,7 +150,7 @@ function Screen() {
                     onSave={(screenObj) => {
                         onScreenUpdate(screenObj)
                     }}
-                />} />
+                />}/>
                 <Route path="/logo" element={<EditScreenAttribute
                     screenId={screen._id}
                     attribute="logo"
@@ -215,10 +234,13 @@ function Screen() {
                     }}
                 />} />
                 <Route path="*" element={<>
-                    <div className={"screen-detail"}>
-                        <FeaturedImage permissions={screen.permissions} featured_image={screen.featured_image} onSave={(screenObj) => {
-                            onScreenUpdate(screenObj)
-                        }} />
+                    <div className={"screen-detail screen b0"}>
+                        <div className={"img-container"}>
+                            <FeaturedImage permissions={screen.permissions} featured_image={screen.featured_image}
+                                           onSave={(screenObj) => {
+                                               onScreenUpdate(screenObj)
+                                           }}/>
+                        </div>
                         <div className={"fc ai-fs g0-25 h100"}>
                             <h3 className={"fw-b"}>
                                 {screen.name}
@@ -245,8 +267,12 @@ function Screen() {
                                     className={"setting_element"}
                                 >
                                     <div className={"fr g1 ai-c"} style={{ textAlign: "left" }}>
-                                        {button.icon}
-                                        {button.label}
+                                        <div className={"skeleton-status-bubble fr ai-c"}>
+                                            {button.icon}
+                                        </div>
+                                        <div className={"skeleton-title fr ai-c"}>
+                                            {button.label}
+                                        </div>
                                     </div>
                                     <FaChevronRight style={{ marginLeft: "auto" }} />
                                 </Link>
