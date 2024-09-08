@@ -6,26 +6,31 @@ function DirectionsViewer({ screen }) {
     const [hiddenContentHeight, setHiddenContentHeight] = useState(0);
     const [shouldScroll, setShouldScroll] = useState(false);
 
-    useLayoutEffect(() => {
-        const updateHeight = () => {
-            if (directionsRef.current && containerRef.current) {
-                const contentHeight = directionsRef.current.scrollHeight;
-                const containerHeight = containerRef.current.clientHeight;
-                const calculatedHiddenHeight = contentHeight - containerHeight;
-                if (calculatedHiddenHeight > 0) {
-                    setHiddenContentHeight(calculatedHiddenHeight);
-                    setShouldScroll(true);
-                } else {
-                    setShouldScroll(false);
-                }
+    const updateHeight = () => {
+        if (directionsRef.current && containerRef.current) {
+            const contentHeight = directionsRef.current.scrollHeight;
+            const containerHeight = containerRef.current.clientHeight;
+            const calculatedHiddenHeight = contentHeight - containerHeight;
+            if (calculatedHiddenHeight > 0) {
+                setHiddenContentHeight(calculatedHiddenHeight);
+                setShouldScroll(true);
+            } else {
+                setShouldScroll(false);
             }
-        };
-        updateHeight();
+        }
+    };
+
+    useLayoutEffect(() => {
+        const timer = setTimeout(updateHeight, 1000);
+        return () => clearTimeout(timer);
+    }, [screen]);
+
+    useLayoutEffect(() => {
         window.addEventListener('resize', updateHeight);
         return () => {
             window.removeEventListener('resize', updateHeight);
         };
-    }, [screen]);
+    }, []);
 
     const animationStyle = shouldScroll ? {
         animation: `scroll-directions 20s linear infinite`,
@@ -44,7 +49,7 @@ function DirectionsViewer({ screen }) {
                 </style>
             }
 
-            <div className={"directions-container fc"} ref={directionsRef} style={{...animationStyle, position:"absolute",gap:'0.5vw', top: 0, padding:'0.5vw 0', minHeight:'100%', justifyContent:"space-around"}}>
+            <div className={"directions-container fc"} ref={directionsRef} style={{...animationStyle, position:"absolute",gap:'1.5vw', top: 0, padding:'0.5vw 0', minHeight:'100%', justifyContent:"space-around"}}>
                 {screen.directions.map((direction, index) => (
                     <div className={"fr ai-c g1"} key={index}>
                         <img src={`/elements/arrows/${direction.arrow.style}`} alt="Flèche" style={{ transform: `rotate(${direction.arrow.orientation}deg)`}} className={"direction-arrow"} />

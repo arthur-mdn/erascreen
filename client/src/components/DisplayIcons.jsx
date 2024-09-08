@@ -33,22 +33,26 @@ function DisplayIcons({ icons }) {
         cacheAndLoadIcons();
     }, [icons]);
 
+    const updateWidth = () => {
+        if (iconsRef.current && containerRef.current) {
+            const contentWidth = iconsRef.current.scrollWidth;
+            const containerWidth = containerRef.current.clientWidth;
+            const calculatedHiddenWidth = (contentWidth - containerWidth) + 20; // +20 for padding
+            if (calculatedHiddenWidth > 0) {
+                setHiddenContentWidth(calculatedHiddenWidth);
+                setShouldScroll(true);
+            } else {
+                setShouldScroll(false);
+            }
+        }
+    };
 
     useLayoutEffect(() => {
-        const updateWidth = () => {
-            if (iconsRef.current && containerRef.current) {
-                const contentWidth = iconsRef.current.scrollWidth;
-                const containerWidth = containerRef.current.clientWidth;
-                const calculatedHiddenWidth = (contentWidth - containerWidth) + 20; // +20 for padding
-                if (calculatedHiddenWidth > 0) {
-                    setHiddenContentWidth(calculatedHiddenWidth);
-                    setShouldScroll(true);
-                } else {
-                    setShouldScroll(false);
-                }
-            }
-        };
-        updateWidth();
+        const timer = setTimeout(updateWidth, 1000);
+        return () => clearTimeout(timer);
+    }, [screen]);
+
+    useLayoutEffect(() => {
         window.addEventListener('resize', updateWidth);
         return () => {
             window.removeEventListener('resize', updateWidth);
