@@ -257,7 +257,7 @@ function Screen() {
                         </div>
                     </div>
 
-                    <div style={{height: '100%'}} className={"fc jc-sb"}>
+                    <div className={"fc jc-sb"}>
                         <div>
                             {allowedButtons.map((button) => (
                                 <Link
