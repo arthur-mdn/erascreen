@@ -7,6 +7,7 @@ import { useDropzone } from 'react-dropzone';
 import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
 import {FaTimes} from "react-icons/fa";
+import DisplayImage from "../DisplayImage.jsx";
 
 function IconManager({ screenId, initialIcons, onIconsChange }) {
     const [icons, setIcons] = useState(initialIcons);
@@ -52,11 +53,11 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: {'image/*': ['.jpeg', '.jpg', '.png', '.gif']}, multiple: true });
 
-    const handleDelete = async (iconName) => {
+    const handleDelete = async (iconId) => {
         setIsLoading(true);
         try {
             const response = await axios.delete(`${config.serverUrl}/screens/icons`, {
-                data: { iconName },
+                data: { iconId },
                 withCredentials: true
             });
             setIcons(response.data.screenObj.icons);
@@ -103,7 +104,7 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef} className={"fr g0-5 ofy-s"}>
                             {icons.map((icon, index) => (
-                                <Draggable key={icon} draggableId={icon} index={index}>
+                                <Draggable key={icon._id} draggableId={icon._id} index={index}>
                                     {(provided) => (
                                         <div
                                             ref={provided.innerRef}
@@ -111,8 +112,8 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
                                             {...provided.dragHandleProps}
                                             className={"fr g0-5 ai-c pr "}
                                         >
-                                            <img src={`${config.serverUrl}/${icon}`} alt={`Icon ${index}`} style={{width:'4rem'}} />
-                                            <button type={"button"} className={"actionButton quickDel"} onClick={() => handleDelete(icon)}>
+                                            <DisplayImage image={icon} alt={`Icon ${index}`} width={'4rem'}/>
+                                            <button type={"button"} className={"actionButton quickDel"} onClick={() => handleDelete(icon._id)}>
                                                 <FaTimes size={12}/>
                                             </button>
                                         </div>

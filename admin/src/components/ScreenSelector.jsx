@@ -5,7 +5,8 @@ import {useCookies} from "react-cookie";
 import {toast} from "react-toastify";
 import {Link} from "react-router-dom";
 import {useSocket} from "../SocketContext.jsx";
-import {MonitorSmartphone, MonitorX} from "lucide-react";
+import {Image, MonitorSmartphone, MonitorX} from "lucide-react";
+import DisplayImage from "./DisplayImage.jsx";
 
 function ScreenSelector({ onSelectScreen }) {
     const [cookies, setCookie] = useCookies(['selectedScreen']);
@@ -78,7 +79,7 @@ function ScreenSelector({ onSelectScreen }) {
                     {screens.map(screen => (
                         <Link to={`/screens/list/${screen._id}`} key={screen._id} className={"screen"}>
                             <div className={"img-container"}>
-                                <img src={`${config.serverUrl}/${screen.featured_image}`}/>
+                                <DisplayImage image={screen.featured_image} />
                             </div>
                             <div className={"fc ai-fs g0-5 h100"}>
                                 <h3 className={"fw-b"}>

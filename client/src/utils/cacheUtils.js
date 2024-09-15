@@ -39,12 +39,12 @@ export async function cacheImages(photos) {
     const db = await initImagesDB();
 
     const promises = photos.map(async (photo) => {
-        const cachedImage = await db.get('images', photo);
+        const cachedImage = await db.get('images', photo._id);
         if (!cachedImage) {
             console.log('Caching image:', photo);
-            const response = await fetch(`${config.serverUrl}/${photo}`);
+            const response = await fetch(`${(photo.where === "server" ? config.serverUrl : "") + "/" + photo.value}`);
             const blob = await response.blob();
-            await db.put('images', blob, photo);
+            await db.put('images', blob, photo._id);
         }
     });
 
@@ -71,12 +71,12 @@ export async function cacheLogo(logo) {
     if (!logo) return;
 
     const db = await initLogosDB();
-    const cachedLogo = await db.get('logos', logo);
+    const cachedLogo = await db.get('logos', logo._id);
     if (!cachedLogo) {
         console.log('Caching logo:', logo);
-        const response = await fetch(`${config.serverUrl}/${logo}`);
+        const response = await fetch(`${(logo.where === "server" ? config.serverUrl : "") + "/" + logo.value}`);
         const blob = await response.blob();
-        await db.put('logos', blob, logo);
+        await db.put('logos', blob, logo._id);
     }
 }
 
@@ -101,12 +101,12 @@ export async function cacheIcons(icons) {
     const db = await initIconsDB();
 
     const promises = icons.map(async (icon) => {
-        const cachedIcon = await db.get('icons', icon);
+        const cachedIcon = await db.get('icons', icon._id);
         if (!cachedIcon) {
             console.log('Caching icon:', icon);
-            const response = await fetch(`${config.serverUrl}/${icon}`);
+            const response = await fetch(`${(icon.where === "server" ? config.serverUrl : "") + "/" + icon.value}`);
             const blob = await response.blob();
-            await db.put('icons', blob, icon);
+            await db.put('icons', blob, icon._id);
         }
     });
 

@@ -41,7 +41,7 @@ async function updateWeatherData(screenId, cityId) {
             await meteo.save();
         }
 
-        const screen = await Screen.findByIdAndUpdate(screenId, { meteo: meteo._id }, { new: true }).populate('meteo');
+        const screen = await Screen.findByIdAndUpdate(screenId, { meteo: meteo._id }, { new: true });
         if (!screen) {
             throw new Error('Écran non trouvé');
         }

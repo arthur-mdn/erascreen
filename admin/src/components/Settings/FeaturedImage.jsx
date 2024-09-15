@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import {toast} from "react-toastify";
 import {FaTimes} from "react-icons/fa";
+import DisplayImage from "../DisplayImage.jsx";
 
 export default function FeaturedImage({featured_image, permissions, onSave}) {
     const [allowedToEdit, setAllowedToEdit] = useState(false);
@@ -58,17 +59,13 @@ export default function FeaturedImage({featured_image, permissions, onSave}) {
             setAllowedToEdit(permissions.includes("featured_image") || permissions.includes("creator"));
         }
     }, [permissions]);
-
     return (
         <>
             {allowedToEdit ?
                 <div className={"pr"}>
-                    <img
-                        src={`${config.serverUrl}/${featured_image}`}
-                        alt="Screen"
-                        onClick={handleImageClick}
-                        className={"edit-avilable"}
-                    />
+                    <div onClick={handleImageClick} className={"edit-avilable"}>
+                        <DisplayImage image={featured_image} />
+                    </div>
                     <input
                         type="file"
                         ref={fileInputRef}
@@ -77,7 +74,7 @@ export default function FeaturedImage({featured_image, permissions, onSave}) {
                         accept="image/*"
                     />
                     {
-                        featured_image !== "public/template-screen-image.png" &&
+                        featured_image.system !== "default-featured-image" &&
                         <button type={"button"} className={"actionButton quickDel"} onClick={handleImageDelete}>
                             <FaTimes size={12}/>
                         </button>
@@ -85,8 +82,7 @@ export default function FeaturedImage({featured_image, permissions, onSave}) {
                 </div> :
 
                 <>
-                    <img src={`${config.serverUrl}/${featured_image}`} alt="Screen"
-                    />
+                    <DisplayImage image={featured_image} />
                 </>
             }
         </>

@@ -10,6 +10,7 @@ const cityList = require('./datas/villesFR_NoDoubles.json');
 const socketUtils = require('./utils/socketUtils');
 
 const Screen = require('./models/Screen');
+const Image = require('./models/Image');
 const authRoutes = require('./routes/authRoutes');
 const screenRoutes = require('./routes/screenRoutes');
 const config = require('./others/config');
@@ -18,6 +19,7 @@ const verifyToken = require("./others/verifyToken");
 const { updateWeatherData } = require("./utils/weatherUtils");
 const {verify} = require("jsonwebtoken");
 const {checkUserPermissionsOfThisScreen} = require("./others/checkUserPermissions");
+const initDatabase = require("./others/initDatabase");
 
 const app = express();
 const server = http.createServer(app);
@@ -52,6 +54,7 @@ app.use(cookieParser({
 }));
 
 database.connect();
+initDatabase();
 
 app.use(authRoutes);
 app.use(screenRoutes);
@@ -91,7 +94,7 @@ io.on('connection', async (socket) => {
 
         socket.on('update_weather', async (data) => {
             const {screenId} = data;
-            const screen = await Screen.findById(screenId).populate('meteo');
+            const screen = await Screen.findById(screenId);
             if (screen) {
                 try {
                     const updatedScreen = await updateWeatherData(screenId, screen.meteo.weatherId);
@@ -109,7 +112,7 @@ io.on('connection', async (socket) => {
             try {
                 const {screenId} = data;
 
-                const screen = await Screen.findById(screenId).populate('meteo');
+                const screen = await Screen.findById(screenId);
                 if (screen) {
                     socketUtils.associateScreenSocket(screenId, socket.id);
                     await Screen.findByIdAndUpdate(screenId, {status: "online"});
@@ -265,7 +268,8 @@ app.post('/associate-screen', verifyToken, async (req, res) => {
         if (socketId) {
             const socket = io.sockets.sockets.get(socketId);
             if (socket) {
-                const newScreen = new Screen({ code, users: [{ user: req.user.userId, role: "creator" }] });
+                const defaultLogo = await Image.findOne({ system: 'default-logo' });
+                const newScreen = new Screen({ code, users: [{ user: req.user.userId, role: "creator" }], logo: defaultLogo._id });
                 await newScreen.save();
 
                 // Associer l'écran et émettre l'événement

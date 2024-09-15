@@ -11,11 +11,11 @@ function PhotoSlider({ photos, interval, hideDots, screen }) {
 
     const loadImages = async () => {
         const loadedPhotos = await Promise.all(photos.map(async (photo) => {
-            const cachedImage = await getCachedImage(photo);
+            const cachedImage = await getCachedImage(photo._id);
             if (cachedImage) {
                 return URL.createObjectURL(cachedImage);
             } else {
-                return `${config.serverUrl}/${photo}`;
+                return `${(photo.where === "server" ? config.serverUrl : "") + "/" + photo.value}`;
             }
         }));
         setCachedPhotos(loadedPhotos);

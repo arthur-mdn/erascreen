@@ -12,11 +12,11 @@ function DisplayIcons({ icons }) {
 
     const loadIcons = async () => {
         const loadedIcons = await Promise.all(icons.map(async (icon) => {
-            const cachedIcon = await getCachedIcon(icon);
+            const cachedIcon = await getCachedIcon(icon._id);
             if (cachedIcon) {
                 return URL.createObjectURL(cachedIcon);
             } else {
-                return `${icon}`;
+                return `${(icon.where === "server" ? config.serverUrl : "") + "/" + icon.value}`;
             }
         }));
         setCachedIcons(loadedIcons);

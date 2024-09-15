@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import {FaLocationDot, FaLocationPin, FaMapPin} from "react-icons/fa6";
 import {FaTimes} from "react-icons/fa";
 import MeteoViewer from "./MeteoViewer.jsx";
+import DisplayImage from "./DisplayImage.jsx";
 
 function EditScreenAttribute({ screen, screenId, attribute, value, onSave, inputType = "text" }) {
     const [isLoading, setIsLoading] = useState(false);
@@ -203,7 +204,7 @@ function EditScreenAttribute({ screen, screenId, attribute, value, onSave, input
                 {
                     value && (
                         <div className={"pr wfc"}>
-                            <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{height:'4rem'}} />
+                            <DisplayImage image={value} alt="Image actuelle" height='4rem' />
                             <button type={"button"} className={"actionButton quickDel"} onClick={resetLogo}><FaTimes size={12}/></button>
                         </div>
                     )
@@ -228,7 +229,7 @@ function EditScreenAttribute({ screen, screenId, attribute, value, onSave, input
                     {
                         value && (
                             <div>
-                                <img src={`${config.serverUrl}/${value}`} alt="Image actuelle" style={{width:'150px'}} />
+                                <DisplayImage image={value} alt="Image actuelle" width='150px' />
                             </div>
                         )
                     }

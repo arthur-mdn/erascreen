@@ -8,7 +8,7 @@ export default function displayLogo({logo, isDarkModeActive}) {
     useEffect(() => {
         const loadLogo = async () => {
             if (logo) {
-                const cachedLogoData = await getCachedLogo(logo);
+                const cachedLogoData = await getCachedLogo(logo._id);
                 if (cachedLogoData) {
                     if (cachedLogoData.type === "image/svg+xml" && isDarkModeActive) {
                         const reader = new FileReader();
@@ -29,7 +29,7 @@ export default function displayLogo({logo, isDarkModeActive}) {
                         setCachedLogo(URL.createObjectURL(cachedLogoData));
                     }
                 } else {
-                    setCachedLogo(`${config.serverUrl}/${logo}`);
+                    setCachedLogo(`${(logo.where === "server" ? config.serverUrl : "") + "/" + logo.value}`);
                 }
             }
         };
