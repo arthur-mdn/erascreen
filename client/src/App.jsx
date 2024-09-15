@@ -3,13 +3,13 @@ import {io} from 'socket.io-client';
 import './App.css';
 import config from './config';
 import Screen from './components/Screen';
-import {FaArrowCircleDown, FaCloud, FaCloudDownloadAlt, FaSlash} from "react-icons/fa";
+import {FaCloud, FaCloudDownloadAlt, FaSlash} from "react-icons/fa";
 import useDarkMode from './hooks/useDarkMode';
 import useTextSlides from './hooks/useTextSlides';
 import {QRCodeCanvas} from 'qrcode.react';
-import {FaArrowRotateLeft, FaKeyboard, FaLocationDot, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
+import {FaArrowRotateLeft, FaKeyboard, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
 import Pub from "./components/Pub.jsx";
-import { cacheImages, deleteDatabases } from "./utils/cacheUtils";
+import {deleteDatabases} from "./utils/cacheUtils";
 import DisplayImage from "./components/DisplayImage.jsx";
 
 function App() {

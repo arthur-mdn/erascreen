@@ -1,17 +1,20 @@
 // Screen.jsx
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import EditScreenAttribute from "./EditScreenAttribute.jsx";
 import IconManager from "./Settings/IconManager.jsx";
-import MeteoViewer from "./MeteoViewer.jsx";
 import DirectionsManager from "./Settings/DirectionsManager.jsx";
 import PhotosManager from "./Settings/PhotosManager.jsx";
 import {
-    FaArrowRightArrowLeft, FaChevronRight, FaCircleHalfStroke,
+    FaArrowRightArrowLeft,
+    FaChevronRight,
     FaCopyright,
     FaHeading,
     FaIcons,
-    FaImages, FaSun, FaTextWidth,
-    FaUmbrella, FaUsers
+    FaImages,
+    FaSun,
+    FaTextWidth,
+    FaUmbrella,
+    FaUsers
 } from "react-icons/fa6";
 import {FaCogs, FaGamepad} from "react-icons/fa";
 import ConfigManager from "./Settings/ConfigManager.jsx";
@@ -19,13 +22,12 @@ import DarkModeManager from "./Settings/DarkModeManager.jsx";
 import TimeIndicator from "./TimeIndicator.jsx";
 import TextSlidesManager from "./Settings/TextSlidesManager.jsx";
 import AllowedUsersManager from "./Settings/AllowedUsersManager.jsx";
-import { Route, Routes, useParams, Link } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import Loading from "./Loading.jsx";
+import {Link, Route, Routes, useParams} from "react-router-dom";
+import {useCookies} from "react-cookie";
 import axios from "axios";
 import config from "../config.js";
 import FeaturedImage from "./Settings/FeaturedImage.jsx";
-import { useSocket } from '../SocketContext.jsx';
+import {useSocket} from '../SocketContext.jsx';
 import Control from "./Settings/Control.jsx";
 
 function Screen() {

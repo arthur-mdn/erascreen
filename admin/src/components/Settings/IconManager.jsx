@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import config from '../../config';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import {FaCross, FaTrash} from "react-icons/fa6";
-import { useDropzone } from 'react-dropzone';
+import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
+import {useDropzone} from 'react-dropzone';
 import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
 import {FaTimes} from "react-icons/fa";

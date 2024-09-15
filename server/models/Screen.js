@@ -236,7 +236,6 @@ screenSchema.pre(/^find/, function(next) {
 
 
 screenSchema.methods.populateFields = async function() {
-    // Populate multiple fields in one call
     await this.populate([
         { path: 'logo' },
         { path: 'featured_image' },
@@ -244,8 +243,7 @@ screenSchema.methods.populateFields = async function() {
         { path: 'icons' },
         { path: 'meteo' }
     ]);
-
-    return this; // Return the fully populated document
+    return this;
 };
 
 module.exports = mongoose.model('Screen', screenSchema);

@@ -80,7 +80,6 @@ export default function FeaturedImage({featured_image, permissions, onSave}) {
                         </button>
                     }
                 </div> :
-
                 <>
                     <DisplayImage image={featured_image} />
                 </>

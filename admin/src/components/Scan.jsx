@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import {Html5QrcodeScanner} from 'html5-qrcode';
 import {FaBolt} from "react-icons/fa6";
 import Modal from "./Modal.jsx";
 import {FaBackspace} from "react-icons/fa";

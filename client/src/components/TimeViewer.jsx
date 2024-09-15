@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 
 function TimeViewer() {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -7,7 +7,6 @@ function TimeViewer() {
         const timerId = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
-
         return () => clearInterval(timerId);
     }, []);
 

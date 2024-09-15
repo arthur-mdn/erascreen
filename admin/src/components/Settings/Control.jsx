@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useSocket } from "../../SocketContext.jsx";
-import { v4 as uuidv4 } from 'uuid';
-import { toast } from 'react-toastify';
-import { FaPowerOff, FaRegSun, FaSatellite, FaSatelliteDish } from "react-icons/fa";
-import { FaLocationDot, FaRotate, FaRotateLeft, FaSun } from "react-icons/fa6";
+import React, {useEffect, useState} from "react";
+import {useSocket} from "../../SocketContext.jsx";
+import {v4 as uuidv4} from 'uuid';
+import {toast} from 'react-toastify';
+import {FaPowerOff, FaRegSun, FaSatellite, FaSatelliteDish} from "react-icons/fa";
+import {FaLocationDot, FaRotate, FaRotateLeft, FaSun} from "react-icons/fa6";
 
 export default function Control({ screen }) {
     const socket = useSocket();

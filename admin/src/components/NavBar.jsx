@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Clock, Monitor, Home, Cog } from 'lucide-react';
+import {Link, useLocation} from 'react-router-dom';
+import {Clock, Cog, Home, Monitor} from 'lucide-react';
 
 function NavBar({hidden}) {
     const location = useLocation();

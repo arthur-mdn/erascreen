@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 
 function Pub({ displayTime, animationTime, intervalTime }) {
     const [isVisible, setIsVisible] = useState(false);
@@ -23,7 +23,6 @@ function Pub({ displayTime, animationTime, intervalTime }) {
 
         const intervalId = setInterval(animate, displayTime + animationTime * 2 + intervalTime);
         animate();
-
         return () => clearInterval(intervalId);
     }, [displayTime, animationTime, intervalTime]);
 

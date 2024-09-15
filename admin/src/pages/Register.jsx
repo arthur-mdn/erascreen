@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import {Link} from 'react-router-dom';
+import React, {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import {useAuth} from "../AuthContext.jsx";
-import { useNavigate } from 'react-router-dom';
 import config from "../config.js";
+
 function Register() {
     const { setAuthStatus } = useAuth();
     const [email, setEmail] = useState('');

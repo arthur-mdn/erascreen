@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import config from '../../config';
 import Loading from "../Loading.jsx";
@@ -86,7 +86,6 @@ function ConfigManager({ screen, initialConfig, onConfigChange, onRemoveScreenSe
                                         onChange={(e) => handleInputChange(key, e.target.value)}
                                     />
                                 </>
-
                             )}
                         </div>
                     );

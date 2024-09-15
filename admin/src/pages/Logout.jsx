@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { Navigate} from 'react-router-dom';
+import {useEffect} from 'react';
 import axios from 'axios';
 import {useAuth} from "../AuthContext.jsx";
 import config from "../config.js";

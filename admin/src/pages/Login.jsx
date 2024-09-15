@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import {BrowserRouter as Router, Routes, Route, Navigate, Link, useParams} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link, useParams} from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../AuthContext';
+import {useAuth} from '../AuthContext';
 import config from '../config';
 import {useCookies} from "react-cookie";
 

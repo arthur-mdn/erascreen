@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import config from "../config.js";
-import {cacheIcons, cacheImages, getCachedImage} from "../utils/cacheUtils.js";
+import {cacheImages, getCachedImage} from "../utils/cacheUtils.js";
 
 function PhotoSlider({ photos, interval, hideDots, screen }) {
     const [currentIndex, setCurrentIndex] = useState(0);
