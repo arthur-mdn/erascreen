@@ -1,6 +1,7 @@
 // models/Screen.js
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
+const Image = require("./Image");
 
 const timeRangeSchema = new mongoose.Schema({
     start: {
@@ -107,17 +108,20 @@ const screenSchema = new Schema({
         default: "Écran"
     },
     logo: {
-        type: String,
-        default: "public/logo.svg"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Image',
+        required: false
     },
     featured_image: {
-        type: String,
-        default: "public/template-screen-image.png"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Image',
+        required: false
     },
-    icons: {
-        type: Array,
-        default: []
-    },
+    icons: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Image',
+        required: false
+    }],
     meteo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Meteo'
@@ -150,10 +154,11 @@ const screenSchema = new Schema({
             }
         }
     ],
-    photos: {
-        type: Array,
-        default: []
-    },
+    photos: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Image',
+        required: false
+    }],
     text_slides: {
         type: textSlidesSchema,
         default: () => ({
@@ -198,5 +203,49 @@ const screenSchema = new Schema({
         default: Date.now()
     }
 });
+
+screenSchema.pre('save', async function (next) {
+    if(!this.featured_image) {
+        const defaultFeaturedImage = await Image.findOne({ system: 'default-featured-image' });
+        if (defaultFeaturedImage) {
+            this.featured_image = defaultFeaturedImage._id;
+        } else {
+            const newFeaturedImage = new Image({
+                type: 'featured_image',
+                screen: null,
+                value: 'public/template-screen-image.png',
+                where: 'server',
+                system: 'default-featured-image'
+            });
+            await newFeaturedImage.save();
+            this.featured_image = newFeaturedImage._id;
+        }
+    }
+    next();
+});
+
+
+screenSchema.pre(/^find/, function(next) {
+    this.populate('logo')
+        .populate('featured_image')
+        .populate('photos')
+        .populate('icons')
+        .populate('meteo');
+    next();
+});
+
+
+screenSchema.methods.populateFields = async function() {
+    // Populate multiple fields in one call
+    await this.populate([
+        { path: 'logo' },
+        { path: 'featured_image' },
+        { path: 'photos' },
+        { path: 'icons' },
+        { path: 'meteo' }
+    ]);
+
+    return this; // Return the fully populated document
+};
 
 module.exports = mongoose.model('Screen', screenSchema);
