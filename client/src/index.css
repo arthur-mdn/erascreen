@@ -1121,7 +1121,7 @@ body.dark-mode img[alt="Flèche"]{
   position: absolute;
   margin-left: 1rem;
   bottom: 6.5rem;
-  left: -100%;
+  right: -100%;
   width: fit-content;
   background-color: white;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
