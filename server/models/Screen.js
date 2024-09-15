@@ -205,8 +205,8 @@ const screenSchema = new Schema({
 });
 
 screenSchema.pre('save', async function (next) {
-    if(!this.featured_image) {
-        const defaultFeaturedImage = await Image.findOne({ system: 'default-featured-image' });
+    if (!this.featured_image) {
+        const defaultFeaturedImage = await Image.findOne({system: 'default-featured-image'});
         if (defaultFeaturedImage) {
             this.featured_image = defaultFeaturedImage._id;
         } else {
@@ -225,23 +225,27 @@ screenSchema.pre('save', async function (next) {
 });
 
 
-screenSchema.pre(/^find/, function(next) {
+screenSchema.pre(/^find/, function (next) {
     this.populate('logo')
         .populate('featured_image')
         .populate('photos')
         .populate('icons')
-        .populate('meteo');
+        .populate('meteo')
+        .populate('text_slides')
+        .populate('dark_mode');
     next();
 });
 
 
-screenSchema.methods.populateFields = async function() {
+screenSchema.methods.populateFields = async function () {
     await this.populate([
-        { path: 'logo' },
-        { path: 'featured_image' },
-        { path: 'photos' },
-        { path: 'icons' },
-        { path: 'meteo' }
+        {path: 'logo'},
+        {path: 'featured_image'},
+        {path: 'photos'},
+        {path: 'icons'},
+        {path: 'meteo'},
+        {path: 'text_slides'},
+        {path: 'dark_mode'}
     ]);
     return this;
 };

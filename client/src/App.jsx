@@ -10,7 +10,6 @@ import {QRCodeCanvas} from 'qrcode.react';
 import {FaArrowRotateLeft, FaKeyboard, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
 import Pub from "./components/Pub.jsx";
 import {deleteDatabases} from "./utils/cacheUtils";
-import DisplayImage from "./components/DisplayImage.jsx";
 
 function App() {
     const [code, setCode] = useState('');
@@ -40,7 +39,7 @@ function App() {
                 console.log('Updating config...')
                 socket.emit('update_config', {screenId: parsedConfig._id});
                 // if meteo weatherId is set, update weather data
-                if (parsedConfig.meteo && parsedConfig.meteo.weatherId){
+                if (parsedConfig.meteo && parsedConfig.meteo.weatherId) {
                     socket.emit('update_weather', {screenId: parsedConfig._id});
                     if (!intervalId) {
                         intervalId = setInterval(() => {
@@ -106,7 +105,7 @@ function App() {
 
         socket.on('connect_error', () => {
             if (savedConfig) {
-                if(!configData){
+                if (!configData) {
                     setConfigData(JSON.parse(savedConfig));
                     setStatus('configured');
                 }
@@ -149,7 +148,7 @@ function App() {
                 console.error('Error while fetching localhost:3002:', error);
             }
 
-            if(!availableCommands.includes('refresh')){
+            if (!availableCommands.includes('refresh')) {
                 availableCommands.push('refresh');
             }
             if (!availableCommands.includes('identify')) {
@@ -157,19 +156,29 @@ function App() {
             }
 
             if (data.command === 'getAvailableCommands') {
-                socket.emit('client_control_response', {commandId : data.commandId, command: data.command, response: "Commands retrieved", appVersion, availableCommands, defaultValues});
+                socket.emit('client_control_response', {
+                    commandId: data.commandId,
+                    command: data.command,
+                    response: "Commands retrieved",
+                    appVersion,
+                    availableCommands,
+                    defaultValues
+                });
             } else if (data.command === 'refresh') {
-                socket.emit('client_control_response', {commandId : data.commandId, response: 'Refreshing...'});
+                socket.emit('client_control_response', {commandId: data.commandId, response: 'Refreshing...'});
                 window.location.reload();
             } else if (data.command === 'identify') {
-                socket.emit('client_control_response', {commandId : data.commandId, response: 'Identifying...'});
+                socket.emit('client_control_response', {commandId: data.commandId, response: 'Identifying...'});
                 identify();
             } else if (data.command === 'reboot') {
                 if (!availableCommands.includes('reboot')) {
-                    socket.emit('client_control_response', {commandId : data.commandId, error: 'Advanced commands not available'});
+                    socket.emit('client_control_response', {
+                        commandId: data.commandId,
+                        error: 'Advanced commands not available'
+                    });
                     return;
                 }
-                socket.emit('client_control_response', {commandId : data.commandId, response: 'Rebooting...'});
+                socket.emit('client_control_response', {commandId: data.commandId, response: 'Rebooting...'});
                 const response = await fetch('http://localhost:3002/execute', {
                     method: 'POST',
                     headers: {
@@ -179,10 +188,13 @@ function App() {
                 });
             } else if (data.command === 'shutdown') {
                 if (!availableCommands.includes('shutdown')) {
-                    socket.emit('client_control_response', {commandId : data.commandId, error: 'Advanced commands not available'});
+                    socket.emit('client_control_response', {
+                        commandId: data.commandId,
+                        error: 'Advanced commands not available'
+                    });
                     return;
                 }
-                socket.emit('client_control_response', {commandId : data.commandId, response: 'Shutting down...'});
+                socket.emit('client_control_response', {commandId: data.commandId, response: 'Shutting down...'});
                 const response = await fetch('http://localhost:3002/execute', {
                     method: 'POST',
                     headers: {
@@ -192,7 +204,10 @@ function App() {
                 });
             } else if (data.command === 'update') {
                 if (!availableCommands.includes('update')) {
-                    socket.emit('client_control_response', {commandId : data.commandId, error: 'Advanced commands not available'});
+                    socket.emit('client_control_response', {
+                        commandId: data.commandId,
+                        error: 'Advanced commands not available'
+                    });
                     return;
                 }
                 const response = await fetch('http://localhost:3002/execute', {
@@ -203,10 +218,13 @@ function App() {
                     body: JSON.stringify({command: 'update'}),
                 });
                 const responseData = await response.json();
-                socket.emit('client_control_response', {commandId : data.commandId, response: responseData.message});
+                socket.emit('client_control_response', {commandId: data.commandId, response: responseData.message});
             } else if (data.command === 'brightness') {
                 if (!availableCommands.includes('brightness')) {
-                    socket.emit('client_control_response', {commandId : data.commandId, error: 'Brightness command not available'});
+                    socket.emit('client_control_response', {
+                        commandId: data.commandId,
+                        error: 'Brightness command not available'
+                    });
                     return;
                 }
                 const response = await fetch('http://localhost:3002/execute', {
@@ -217,9 +235,13 @@ function App() {
                     body: JSON.stringify({command: 'brightness', value: data.value}),
                 });
                 const responseData = await response.json();
-                socket.emit('client_control_response', {commandId : data.commandId, response: responseData.message, valueConfirmed: responseData.valueConfirmed});
+                socket.emit('client_control_response', {
+                    commandId: data.commandId,
+                    response: responseData.message,
+                    valueConfirmed: responseData.valueConfirmed
+                });
             } else {
-                socket.emit('client_control_response', {commandId : data.commandId, error: 'Command not found'});
+                socket.emit('client_control_response', {commandId: data.commandId, error: 'Command not found'});
             }
         })
         return () => {
@@ -255,7 +277,7 @@ function App() {
                 </div>;
             case 'connection_failed':
                 return <div className={"fc ai-c g1"}>
-                    <img src={"/elements/icons/wifi-error.svg"} style={{width:"8rem"}}/>
+                    <img src={"/elements/icons/wifi-error.svg"} style={{width: "8rem"}}/>
                     <p>Impossible de se connecter au serveur. Veuillez vérifier votre connexion.</p>
                     <button type={"button"} onClick={() => {
                         window.location.reload();
@@ -269,10 +291,12 @@ function App() {
             case 'code_received':
                 return (<div className={"fc g0-5 ai-c jc-c p1"}>
 
-                <img src={"/elements/logo.svg"} style={{height: "4rem", marginBottom:"1rem", marginRight:"auto"}}/>
+                    <img src={"/elements/logo.svg"}
+                         style={{height: "4rem", marginBottom: "1rem", marginRight: "auto"}}/>
 
                     <div className={"fc ai-c g1"}>
-                        <QRCodeCanvas value={`${config.adminUrl}/screens/add/${code}`} size={512} style={{maxWidth:"100%", height:'auto', width:'35vh'}}/>
+                        <QRCodeCanvas value={`${config.adminUrl}/screens/add/${code}`} size={512}
+                                      style={{maxWidth: "100%", height: 'auto', width: '35vh'}}/>
                         <h1 style={{fontWeight: "bold", userSelect: "all"}}>{code}</h1>
                     </div>
 
@@ -280,7 +304,8 @@ function App() {
                         <div className={" fr ai-c g1 bg-white p1 br0-5 ta-l"}>
                             <FaMobileScreenButton size={'2rem'} style={{flexShrink: 0}}/>
                             <div>
-                                Scannez le QRCode avec votre appareil mobile pour associer cet écran à votre compte DisplayHub.
+                                Scannez le QRCode avec votre appareil mobile pour associer cet écran à votre compte
+                                DisplayHub.
                             </div>
                         </div>
                         Ou
@@ -294,7 +319,8 @@ function App() {
                         <div className={"fr ai-c g1 bg-white p1 br0-5 ta-l"}>
                             <FaKeyboard size={'2rem'} style={{flexShrink: 0}}/>
                             <div>
-                                Cliquez sur Choisir un écran, ensuite sur Ajouter un écran, et saisissez manuellement le code pour associer cet écran à votre compte DisplayHub.
+                                Cliquez sur Choisir un écran, ensuite sur Ajouter un écran, et saisissez manuellement le
+                                code pour associer cet écran à votre compte DisplayHub.
                             </div>
                         </div>
                     </div>
@@ -327,9 +353,10 @@ function App() {
                             backgroundColor: 'rgba(255,255,255,0.8)',
                             backdropFilter: 'blur(5px)'
                         }}>
-                            <div className={""} style={{position:"relative", width:"32px", height:"32px"}}>
+                            <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
                                 <FaCloud size={'2rem'} style={{color: "#a1a1a1"}}/>
-                                <FaSlash size={'2rem'} style={{color: "#a1a1a1", position: "absolute", top: 0, right: 0}}/>
+                                <FaSlash size={'2rem'}
+                                         style={{color: "#a1a1a1", position: "absolute", top: 0, right: 0}}/>
                             </div>
                         </div>
                     }
@@ -340,18 +367,20 @@ function App() {
                         <div className="outer-circle">
                             <div className="green-scanner"></div>
                         </div>
-                        <h1 style={{fontSize:"2.5rem", color:"black"}} className={"fw-b"}>Identification de l'écran</h1>
+                        <h1 style={{fontSize: "2.5rem", color: "black"}} className={"fw-b"}>Identification de
+                            l'écran</h1>
                         <div className={"g1 fr p1 shadow bg-white br0-5"}>
-                            <DisplayImage image={configData.featured_image} alt="Image en avant" width={'6rem'} height={'6rem'} borderRadius={'0.5rem'}/>
+                            <img src={`${config.serverUrl}/${configData.featured_image}`}
+                                 style={{width: "6rem", borderRadius: '0.5rem'}}/>
                             <div className={"fc g0-5 ai-fs"}>
-                                <h2 style={{fontSize: "2rem", color:"black"}} className={"fw-b"}>{configData.name}</h2>
-                                <p style={{color:"black"}}>{configData._id}</p>
+                                <h2 style={{fontSize: "2rem", color: "black"}} className={"fw-b"}>{configData.name}</h2>
+                                <p style={{color: "black"}}>{configData._id}</p>
                             </div>
                         </div>
                     </div>}
                     <Screen configData={configData} isDarkModeActive={isDarkModeActive}/>
-                    <Pub displayTime={12000} animationTime={2000} intervalTime={18000} />
-                    </>);
+                    <Pub displayTime={12000} animationTime={2000} intervalTime={18000}/>
+                </>);
             case 'disconnected':
                 return <p>Connexion perdue. Tentative de reconnexion...</p>;
             case 'error':
@@ -369,8 +398,8 @@ function App() {
     }
 
     return (<div className={`App`}>
-            {(configData && isDarkModeActive) && <style>
-                {`
+        {(configData && isDarkModeActive) && <style>
+            {`
                 body, html, #root{
                   color: white;
                   background-color: rgb(32, 35, 37);
@@ -383,27 +412,27 @@ function App() {
                   filter: invert(1);
                 }
               `}
-            </style>}
-            {renderContent()}
+        </style>}
+        {renderContent()}
 
-            {(configData && textSlide) && (<div className="messagedefilant"
-                                                style={{
-                                                    backgroundColor: textSlide.backgroundColor,
-                                                    color: textSlide.textColor
-                                                }}>
-                    <div>
-                        {textSlide.text + " " + textSlide.text} {/* Duplication du texte */}
-                    </div>
-                    <style>
-                        {`
+        {(configData && textSlide) && (<div className="messagedefilant"
+                                            style={{
+                                                backgroundColor: textSlide.backgroundColor,
+                                                color: textSlide.textColor
+                                            }}>
+            <div>
+                {textSlide.text + " " + textSlide.text} {/* Duplication du texte */}
+            </div>
+            <style>
+                {`
                 .messagedefilant div {
                   animation: scrollText ${textSlide.slideTime / 2}s linear infinite;
                 }
               `}
-                    </style>
-                </div>)}
+            </style>
+        </div>)}
 
-        </div>);
+    </div>);
 }
 
 export default App;
