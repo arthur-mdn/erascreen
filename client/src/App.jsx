@@ -158,12 +158,7 @@ function App() {
 
             if (data.command === 'getAvailableCommands') {
                 socket.emit('client_control_response', {
-                    commandId: data.commandId,
-                    command: data.command,
-                    response: "Commands retrieved",
-                    appVersion,
-                    availableCommands,
-                    defaultValues
+                    commandId: data.commandId, command: data.command, response: "Commands retrieved", appVersion, availableCommands, defaultValues
                 });
             } else if (data.command === 'refresh') {
                 socket.emit('client_control_response', {commandId: data.commandId, response: 'Refreshing...'});
@@ -174,72 +169,58 @@ function App() {
             } else if (data.command === 'reboot') {
                 if (!availableCommands.includes('reboot')) {
                     socket.emit('client_control_response', {
-                        commandId: data.commandId,
-                        error: 'Advanced commands not available'
+                        commandId: data.commandId, error: 'Advanced commands not available'
                     });
                     return;
                 }
                 socket.emit('client_control_response', {commandId: data.commandId, response: 'Rebooting...'});
                 const response = await fetch('http://localhost:3002/execute', {
-                    method: 'POST',
-                    headers: {
+                    method: 'POST', headers: {
                         'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({command: 'reboot'}),
+                    }, body: JSON.stringify({command: 'reboot'}),
                 });
             } else if (data.command === 'shutdown') {
                 if (!availableCommands.includes('shutdown')) {
                     socket.emit('client_control_response', {
-                        commandId: data.commandId,
-                        error: 'Advanced commands not available'
+                        commandId: data.commandId, error: 'Advanced commands not available'
                     });
                     return;
                 }
                 socket.emit('client_control_response', {commandId: data.commandId, response: 'Shutting down...'});
                 const response = await fetch('http://localhost:3002/execute', {
-                    method: 'POST',
-                    headers: {
+                    method: 'POST', headers: {
                         'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({command: 'shutdown'}),
+                    }, body: JSON.stringify({command: 'shutdown'}),
                 });
             } else if (data.command === 'update') {
                 if (!availableCommands.includes('update')) {
                     socket.emit('client_control_response', {
-                        commandId: data.commandId,
-                        error: 'Advanced commands not available'
+                        commandId: data.commandId, error: 'Advanced commands not available'
                     });
                     return;
                 }
                 const response = await fetch('http://localhost:3002/execute', {
-                    method: 'POST',
-                    headers: {
+                    method: 'POST', headers: {
                         'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({command: 'update'}),
+                    }, body: JSON.stringify({command: 'update'}),
                 });
                 const responseData = await response.json();
                 socket.emit('client_control_response', {commandId: data.commandId, response: responseData.message});
             } else if (data.command === 'brightness') {
                 if (!availableCommands.includes('brightness')) {
                     socket.emit('client_control_response', {
-                        commandId: data.commandId,
-                        error: 'Brightness command not available'
+                        commandId: data.commandId, error: 'Brightness command not available'
                     });
                     return;
                 }
                 const response = await fetch('http://localhost:3002/execute', {
-                    method: 'POST',
-                    headers: {
+                    method: 'POST', headers: {
                         'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({command: 'brightness', value: data.value}),
+                    }, body: JSON.stringify({command: 'brightness', value: data.value}),
                 });
                 const responseData = await response.json();
                 socket.emit('client_control_response', {
-                    commandId: data.commandId,
-                    response: responseData.message,
-                    valueConfirmed: responseData.valueConfirmed
+                    commandId: data.commandId, response: responseData.message, valueConfirmed: responseData.valueConfirmed
                 });
             } else {
                 socket.emit('client_control_response', {commandId: data.commandId, error: 'Command not found'});
@@ -329,38 +310,22 @@ function App() {
                 </div>);
             case 'configured':
                 return (<>
-                    {showUpdateIcon &&
-                        <div className={"iconIndicator p0-5 br0-5 of-h"} style={{
-                            position: "absolute",
-                            top: 0,
-                            right: 0,
-                            margin: '1rem',
-                            zIndex: 9999,
-                            backgroundColor: 'rgba(255,255,255,0.8)',
-                            backdropFilter: 'blur(5px)'
-                        }}>
-                            <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
-                                <FaCloudDownloadAlt size={'2rem'} style={{color: "#a1a1a1"}}/>
-                            </div>
+                    {showUpdateIcon && <div className={"iconIndicator p0-5 br0-5 of-h"} style={{
+                        position: "absolute", top: 0, right: 0, margin: '1rem', zIndex: 9999, backgroundColor: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(5px)'
+                    }}>
+                        <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
+                            <FaCloudDownloadAlt size={'2rem'} style={{color: "#a1a1a1"}}/>
                         </div>
-                    }
-                    {showOffline &&
-                        <div className={"iconIndicator p0-5 br0-5 of-h"} style={{
-                            position: "absolute",
-                            top: 0,
-                            right: 0,
-                            margin: '1rem',
-                            zIndex: 9999,
-                            backgroundColor: 'rgba(255,255,255,0.8)',
-                            backdropFilter: 'blur(5px)'
-                        }}>
-                            <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
-                                <FaCloud size={'2rem'} style={{color: "#a1a1a1"}}/>
-                                <FaSlash size={'2rem'}
-                                         style={{color: "#a1a1a1", position: "absolute", top: 0, right: 0}}/>
-                            </div>
+                    </div>}
+                    {showOffline && <div className={"iconIndicator p0-5 br0-5 of-h"} style={{
+                        position: "absolute", top: 0, right: 0, margin: '1rem', zIndex: 9999, backgroundColor: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(5px)'
+                    }}>
+                        <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
+                            <FaCloud size={'2rem'} style={{color: "#a1a1a1"}}/>
+                            <FaSlash size={'2rem'}
+                                     style={{color: "#a1a1a1", position: "absolute", top: 0, right: 0}}/>
                         </div>
-                    }
+                    </div>}
                     {showIdentify && <div className="fc g4 identify-overlay">
                         <div className={"identify-progress"}>
                             <div></div>
@@ -371,9 +336,9 @@ function App() {
                         <h1 style={{fontSize: "2.5rem", color: "black"}} className={"fw-b"}>Identification de
                             l'écran</h1>
                         <div className={"g1 fr p1 shadow bg-white br0-5"}>
-                            <DisplayImage image={configData.featured_image} width={"6rem"} borderRadius={"0.5rem"}/>
+                            <DisplayImage image={configData.featured_image} width={"6rem"} height={"6rem"} borderRadius={"0.5rem"}/>
                             <div className={"fc g0-5 ai-fs"}>
-                                <h2 style={{fontSize: "2rem", color: "black"}} className={"fw-b"}>{configData.name}</h2>
+                                <h2 style={{fontSize: "1.8rem", color: "black"}} className={"fw-b"}>{configData.name}</h2>
                                 <p style={{color: "black"}}>{configData._id}</p>
                             </div>
                         </div>
@@ -415,11 +380,7 @@ function App() {
         </style>}
         {renderContent()}
 
-        {(configData && textSlide) && (<div className="messagedefilant"
-                                            style={{
-                                                backgroundColor: textSlide.backgroundColor,
-                                                color: textSlide.textColor
-                                            }}>
+        {(configData && textSlide) && (<div className="messagedefilant" style={{backgroundColor: textSlide.backgroundColor, color: textSlide.textColor}}>
             <div>
                 {textSlide.text + " " + textSlide.text} {/* Duplication du texte */}
             </div>
