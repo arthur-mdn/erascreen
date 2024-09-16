@@ -13,6 +13,7 @@ const Screen = require('./models/Screen');
 const Image = require('./models/Image');
 const authRoutes = require('./routes/authRoutes');
 const screenRoutes = require('./routes/screenRoutes');
+const apiRoutes = require('./routes/apiRoutes');
 const config = require('./others/config');
 const database = require('./others/database');
 const verifyToken = require("./others/verifyToken");
@@ -58,6 +59,7 @@ initDatabase();
 
 app.use(authRoutes);
 app.use(screenRoutes);
+app.use(apiRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/public', express.static('public'));
 

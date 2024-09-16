@@ -16,7 +16,7 @@ async function initDatabase() {
     }
 }
 
-async function insertSystemDefaults(){
+async function insertSystemDefaults() {
     const dataToInsert = [
         {
             screen: null,
@@ -31,11 +31,18 @@ async function insertSystemDefaults(){
             where: 'server',
             value: 'public/logo.svg',
             system: 'default-logo'
+        },
+        {
+            screen: null,
+            type: 'icon',
+            where: 'server',
+            value: 'public/icons/wifi.png',
+            system: 'default-icon'
         }
     ];
 
     for (const data of dataToInsert) {
-        const existingImage = await Image.findOne({ system: data.system });
+        const existingImage = await Image.findOne({system: data.system});
         if (!existingImage) {
             const newImage = new Image(data);
             await newImage.save();
@@ -75,7 +82,7 @@ async function detectUploadedImagesUsingOldWay() {
             }
 
             // Update the screen document in the database with the new photos array
-            await Screen.updateOne({ _id: screen._id }, { photos: screen.photos });
+            await Screen.updateOne({_id: screen._id}, {photos: screen.photos});
         }
 
         // Migrate old icons field (array of strings)
@@ -97,7 +104,7 @@ async function detectUploadedImagesUsingOldWay() {
             }
 
             // Update the screen document in the database with the new icons array
-            await Screen.updateOne({ _id: screen._id }, { icons: screen.icons });
+            await Screen.updateOne({_id: screen._id}, {icons: screen.icons});
         }
 
         // Migrate old logo field (string)
@@ -111,17 +118,17 @@ async function detectUploadedImagesUsingOldWay() {
             await newImage.save();
 
             // Replace the old string with the new ObjectId
-            await Screen.updateOne({ _id: screen._id }, { logo: newImage._id });
+            await Screen.updateOne({_id: screen._id}, {logo: newImage._id});
             console.log(`Logo ${screen.logo} converted to image id: ${newImage._id}`);
         } else if (!screen.logo || screen.logo === null) {
             // Set the default logo image if the logo field is empty
-            await Screen.updateOne({ _id: screen._id }, { logo: defaultImages['default-logo'] });
+            await Screen.updateOne({_id: screen._id}, {logo: defaultImages['default-logo']});
             console.log(`Default logo image set for screen ${screen._id}`);
-        } else if( screen.logo && typeof screen.logo === "string" && screen.logo === "" ) {
-            await Screen.updateOne({ _id: screen._id }, { logo: defaultImages['default-logo'] });
+        } else if (screen.logo && typeof screen.logo === "string" && screen.logo === "") {
+            await Screen.updateOne({_id: screen._id}, {logo: defaultImages['default-logo']});
             console.log(`Logo converted to image id: ${defaultImages['default-logo']}`);
         } else if (screen.logo && typeof screen.logo === "string" && screen.logo.includes("public")) {
-            await Screen.updateOne({ _id: screen._id }, { logo: defaultImages['default-logo'] });
+            await Screen.updateOne({_id: screen._id}, {logo: defaultImages['default-logo']});
             console.log(`Logo ${screen.logo} converted to image id: ${defaultImages['default-logo']}`);
         }
 
@@ -136,13 +143,13 @@ async function detectUploadedImagesUsingOldWay() {
             await newImage.save();
 
             // Replace the old string with the new ObjectId
-            await Screen.updateOne({ _id: screen._id }, { featured_image: newImage._id });
+            await Screen.updateOne({_id: screen._id}, {featured_image: newImage._id});
             console.log(`Featured image ${screen.featured_image} converted to image id: ${newImage._id}`);
-        } else if( screen.featured_image && typeof screen.featured_image === "string" && screen.featured_image.includes("public") ) {
-            await Screen.updateOne({ _id: screen._id }, { featured_image: defaultImages['default-featured-image'] });
+        } else if (screen.featured_image && typeof screen.featured_image === "string" && screen.featured_image.includes("public")) {
+            await Screen.updateOne({_id: screen._id}, {featured_image: defaultImages['default-featured-image']});
             console.log(`Featured image ${screen.featured_image} converted to image id: ${defaultImages['default-featured-image']}`);
-        } else if( !screen.featured_image ) {
-            await Screen.updateOne({ _id: screen._id }, { featured_image: defaultImages['default-featured-image'] });
+        } else if (!screen.featured_image) {
+            await Screen.updateOne({_id: screen._id}, {featured_image: defaultImages['default-featured-image']});
             console.log(`Featured image converted to image id: ${defaultImages['default-featured-image']}`);
         }
     }

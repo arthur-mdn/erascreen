@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useEffect, useState} from 'react';
 import axios from 'axios';
 import config from '../../config';
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
@@ -8,8 +8,9 @@ import {toast} from "react-toastify";
 import {FaTimes} from "react-icons/fa";
 import DisplayImage from "../DisplayImage.jsx";
 
-function IconManager({ screenId, initialIcons, onIconsChange }) {
+function IconManager({screenId, initialIcons, onIconsChange}) {
     const [icons, setIcons] = useState(initialIcons);
+    const [defaultIcons, setDefaultIcons] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -18,7 +19,7 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
         formData.append('icon', file);
         try {
             const response = await axios.post(`${config.serverUrl}/screens/icons`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: {'Content-Type': 'multipart/form-data'},
                 withCredentials: true
             });
             return response.data.screen;
@@ -50,13 +51,17 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
         }
     };
 
-    const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: {'image/*': ['.jpeg', '.jpg', '.png', '.gif']}, multiple: true });
+    const {getRootProps, getInputProps} = useDropzone({
+        onDrop,
+        accept: {'image/*': ['.jpeg', '.jpg', '.png', '.gif']},
+        multiple: true
+    });
 
     const handleDelete = async (iconId) => {
         setIsLoading(true);
         try {
             const response = await axios.delete(`${config.serverUrl}/screens/icons`, {
-                data: { iconId },
+                data: {iconId},
                 withCredentials: true
             });
             setIcons(response.data.screenObj.icons);
@@ -79,7 +84,7 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
 
         setIsLoading(true);
         try {
-            const response = await axios.post(`${config.serverUrl}/screens/icons/reorder`, { newOrder: items }, {
+            const response = await axios.post(`${config.serverUrl}/screens/icons/reorder`, {newOrder: items}, {
                 withCredentials: true
             });
             setIcons(response.data.screen.icons);
@@ -92,6 +97,37 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
             setIsLoading(false);
         }
     };
+
+    const handleAddDefaultIcon = async (iconId) => {
+        setIsLoading(true);
+        try {
+            const response = await axios.post(`${config.serverUrl}/screens/icons/addDefault`, {iconId}, {
+                withCredentials: true
+            });
+            setIcons(response.data.screen.icons);
+            onIconsChange(response.data.screen);
+            toast.success("Icône ajoutée avec succès !");
+        } catch (error) {
+            console.error('Erreur lors de l\'ajout de l\'icone par défaut:', error);
+            toast.error("Erreur lors de l'ajout de l'icône par défaut");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        const fetchDefaultIcons = async () => {
+            try {
+                const response = await axios.get(`${config.serverUrl}/api/defaultIcons`, {
+                    withCredentials: true
+                });
+                setDefaultIcons(response.data.defaultIcons);
+            } catch (error) {
+                setError(error.response.data.error);
+            }
+        };
+        fetchDefaultIcons();
+    }, []);
 
     if (isLoading) return (
         <Loading/>
@@ -112,7 +148,8 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
                                             className={"fr g0-5 ai-c pr "}
                                         >
                                             <DisplayImage image={icon} alt={`Icon ${index}`} width={'4rem'}/>
-                                            <button type={"button"} className={"actionButton quickDel"} onClick={() => handleDelete(icon._id)}>
+                                            <button type={"button"} className={"actionButton quickDel"}
+                                                    onClick={() => handleDelete(icon._id)}>
                                                 <FaTimes size={12}/>
                                             </button>
                                         </div>
@@ -124,15 +161,32 @@ function IconManager({ screenId, initialIcons, onIconsChange }) {
                     )}
                 </Droppable>
             </DragDropContext>
-            <div style={{ marginTop: '20px' }}>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <div {...getRootProps()} style={{ marginTop: '20px', border: '2px dashed #ccc', padding: '10px', textAlign: 'center' }}>
+            <div>
+                {error && <p style={{color: 'red'}}>{error}</p>}
+                <div {...getRootProps()}
+                     style={{border: '2px dashed #ccc', padding: '10px', textAlign: 'center'}}>
                     <input type={"file"} {...getInputProps()} />
                     Glissez et déposez des icônes ici, ou cliquez pour sélectionner des icônes
                 </div>
             </div>
+            {
+                defaultIcons.filter(icon => !icons.find(i => i._id === icon._id)).length > 0 &&
+                <div>
+                    <h3>Icônes par défaut</h3>
+                    <div className={"fr g0-5"}>
+                        {
+                            defaultIcons.filter(icon => !icons.find(i => i._id === icon._id)).map((icon, index) => (
+                                <button key={icon._id} onClick={() => {
+                                    handleAddDefaultIcon(icon._id)
+                                }}>
+                                    <DisplayImage image={icon} alt={`Default Icon ${index}`} width={'4rem'}/>
+                                </button>
+                            ))
+                        }
+                    </div>
+                </div>
+            }
         </div>
-
     );
 }
 
