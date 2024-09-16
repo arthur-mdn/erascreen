@@ -7,7 +7,6 @@ function useDarkMode(configData) {
         let timeoutId;
 
         const checkDarkMode = () => {
-            console.log('Checking dark mode');
 
             if (!configData?.dark_mode?.ranges || configData.dark_mode.ranges.length === 0) {
                 setIsDarkModeActive(false);

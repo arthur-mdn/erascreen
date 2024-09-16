@@ -36,13 +36,34 @@ async function insertSystemDefaults() {
             screen: null,
             type: 'icon',
             where: 'server',
-            value: 'public/icons/wifi.png',
+            value: 'public/icons/defibrillator.svg',
+            system: 'default-icon'
+        },
+        {
+            screen: null,
+            type: 'icon',
+            where: 'server',
+            value: 'public/icons/smoke.svg',
+            system: 'default-icon'
+        },
+        {
+            screen: null,
+            type: 'icon',
+            where: 'server',
+            value: 'public/icons/wifi.svg',
+            system: 'default-icon'
+        },
+        {
+            screen: null,
+            type: 'icon',
+            where: 'server',
+            value: 'public/icons/camera.svg',
             system: 'default-icon'
         }
     ];
 
     for (const data of dataToInsert) {
-        const existingImage = await Image.findOne({system: data.system});
+        const existingImage = await Image.findOne({system: data.system, value: data.value});
         if (!existingImage) {
             const newImage = new Image(data);
             await newImage.save();

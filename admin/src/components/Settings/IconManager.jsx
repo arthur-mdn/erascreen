@@ -171,12 +171,13 @@ function IconManager({screenId, initialIcons, onIconsChange}) {
             </div>
             {
                 defaultIcons.filter(icon => !icons.find(i => i._id === icon._id)).length > 0 &&
-                <div>
-                    <h3>Icônes par défaut</h3>
-                    <div className={"fr g0-5"}>
+                <div className={"fc g0-5"}>
+                    <h3>Icônes par défaut disponibles</h3>
+                    <div className={"fr g0-5 fw-w"}>
                         {
                             defaultIcons.filter(icon => !icons.find(i => i._id === icon._id)).map((icon, index) => (
-                                <button key={icon._id} onClick={() => {
+                                <button type={"button"} className={"actionButton"} style={{padding: '0.5rem'}}
+                                        key={icon._id} onClick={() => {
                                     handleAddDefaultIcon(icon._id)
                                 }}>
                                     <DisplayImage image={icon} alt={`Default Icon ${index}`} width={'4rem'}/>

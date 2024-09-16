@@ -13,7 +13,7 @@ function Screen({configData, isDarkModeActive}) {
             <Helmet>
                 <title>{configData.name}</title>
             </Helmet>
-            <div className={"fr jc-sb ai-c"}>
+            <div className={"fr jc-sb ai-c g1"}>
                 <DisplayLogo logo={configData.logo} isDarkModeActive={isDarkModeActive}/>
                 {
                     configData.meteo && (
@@ -23,7 +23,7 @@ function Screen({configData, isDarkModeActive}) {
                 <TimeViewer/>
                 {
                     configData.icons && configData.icons.length > 0 && (
-                        <DisplayIcons icons={configData.icons}/>
+                        <DisplayIcons icons={configData.icons} isDarkModeActive={isDarkModeActive}/>
                     )
                 }
             </div>

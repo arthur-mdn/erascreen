@@ -10,6 +10,7 @@ import {QRCodeCanvas} from 'qrcode.react';
 import {FaArrowRotateLeft, FaKeyboard, FaMobileScreenButton, FaRightToBracket} from "react-icons/fa6";
 import Pub from "./components/Pub.jsx";
 import {deleteDatabases} from "./utils/cacheUtils";
+import DisplayImage from "./components/DisplayImage.jsx";
 
 function App() {
     const [code, setCode] = useState('');
@@ -370,8 +371,7 @@ function App() {
                         <h1 style={{fontSize: "2.5rem", color: "black"}} className={"fw-b"}>Identification de
                             l'écran</h1>
                         <div className={"g1 fr p1 shadow bg-white br0-5"}>
-                            <img src={`${config.serverUrl}/${configData.featured_image}`}
-                                 style={{width: "6rem", borderRadius: '0.5rem'}}/>
+                            <DisplayImage image={configData.featured_image} width={"6rem"} borderRadius={"0.5rem"}/>
                             <div className={"fc g0-5 ai-fs"}>
                                 <h2 style={{fontSize: "2rem", color: "black"}} className={"fw-b"}>{configData.name}</h2>
                                 <p style={{color: "black"}}>{configData._id}</p>
