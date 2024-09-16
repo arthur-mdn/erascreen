@@ -4,19 +4,8 @@ import EditScreenAttribute from "./EditScreenAttribute.jsx";
 import IconManager from "./Settings/IconManager.jsx";
 import DirectionsManager from "./Settings/DirectionsManager.jsx";
 import PhotosManager from "./Settings/PhotosManager.jsx";
-import {
-    FaArrowRightArrowLeft,
-    FaChevronRight,
-    FaCopyright,
-    FaHeading,
-    FaIcons,
-    FaImages,
-    FaSun,
-    FaTextWidth,
-    FaUmbrella,
-    FaUsers
-} from "react-icons/fa6";
-import {FaCogs, FaGamepad} from "react-icons/fa";
+import {FaArrowRightArrowLeft, FaChevronRight, FaCopyright, FaGamepad, FaIcons, FaImages, FaSun, FaTag, FaTextWidth, FaUmbrella, FaUsers} from "react-icons/fa6";
+import {FaCogs} from "react-icons/fa";
 import ConfigManager from "./Settings/ConfigManager.jsx";
 import DarkModeManager from "./Settings/DarkModeManager.jsx";
 import TimeIndicator from "./TimeIndicator.jsx";
@@ -31,7 +20,7 @@ import {useSocket} from '../SocketContext.jsx';
 import Control from "./Settings/Control.jsx";
 
 function Screen() {
-    const { screenId } = useParams();
+    const {screenId} = useParams();
     const [screen, setScreen] = useState({});
     const [cookies, setCookie] = useCookies(['selectedScreen']);
     const [isLoading, setIsLoading] = useState(true);
@@ -39,12 +28,12 @@ function Screen() {
     const socket = useSocket();
 
     useEffect(() => {
-        setCookie('selectedScreen', screenId, { path: '/', domain: config.cookieDomain });
+        setCookie('selectedScreen', screenId, {path: '/', domain: config.cookieDomain});
     }, [screenId, setCookie]);
 
     const fetchScreenDetails = async () => {
         try {
-            const response = await axios.get(`${config.serverUrl}/screens/${screenId}`, { withCredentials: true });
+            const response = await axios.get(`${config.serverUrl}/screens/${screenId}`, {withCredentials: true});
             if (response.status === 404) {
                 throw new Error("Screen not found");
             } else {
@@ -78,12 +67,12 @@ function Screen() {
             console.log("Socket is connected");
             socket.on('screen_status', (updatedScreen) => {
                 if (updatedScreen.screenId === screenId) {
-                    setScreen((prevScreen) => ({ ...prevScreen, status: updatedScreen.status }));
+                    setScreen((prevScreen) => ({...prevScreen, status: updatedScreen.status}));
                 }
             });
 
             socket.on('disconnect', () => {
-                setScreen((prevScreen) => ({ ...prevScreen, status: "offline" }));
+                setScreen((prevScreen) => ({...prevScreen, status: "offline"}));
             });
 
             return () => {
@@ -98,17 +87,17 @@ function Screen() {
     };
 
     const buttons = [
-        { id: "name", label: "Nom de l'écran", icon: <FaHeading /> },
-        { id: "logo", label: "Logo", icon: <FaCopyright /> },
-        { id: "icons", label: "Icônes", icon: <FaIcons /> },
-        { id: "meteo", label: "Météo de ville", icon: <FaUmbrella /> },
-        { id: "directions", label: "Directions", icon: <FaArrowRightArrowLeft /> },
-        { id: "photos", label: "Galerie de photos", icon: <FaImages /> },
-        { id: "dark_mode", label: "Mode sombre", icon: <FaSun /> },
-        { id: "text_slides", label: "Textes défilants", icon: <FaTextWidth /> },
-        { id: "allowed_users", label: "Utilisateurs autorisés", icon: <FaUsers /> },
-        { id: "control", label: "Contrôle", icon: <FaGamepad /> },
-        { id: "avanced_settings", label: "Paramètres avancés", icon: <FaCogs /> }
+        {id: "name", label: "Nom de l'écran", icon: <FaTag/>},
+        {id: "logo", label: "Logo", icon: <FaCopyright/>},
+        {id: "icons", label: "Icônes", icon: <FaIcons/>},
+        {id: "meteo", label: "Météo de ville", icon: <FaUmbrella/>},
+        {id: "directions", label: "Directions", icon: <FaArrowRightArrowLeft/>},
+        {id: "photos", label: "Galerie de photos", icon: <FaImages/>},
+        {id: "dark_mode", label: "Mode sombre", icon: <FaSun/>},
+        {id: "text_slides", label: "Textes défilants", icon: <FaTextWidth/>},
+        {id: "allowed_users", label: "Utilisateurs autorisés", icon: <FaUsers/>},
+        {id: "control", label: "Contrôle", icon: <FaGamepad/>},
+        {id: "avanced_settings", label: "Paramètres avancés", icon: <FaCogs/>}
     ];
 
     let allowedButtons = [];
@@ -161,14 +150,14 @@ function Screen() {
                         onScreenUpdate(screenObj)
                     }}
                     inputType="file"
-                />} />
+                />}/>
                 <Route path="/icons" element={<IconManager
                     screenId={screen._id}
                     initialIcons={screen.icons}
                     onIconsChange={(newConfig) => {
                         onScreenUpdate(newConfig)
                     }}
-                />} />
+                />}/>
                 <Route path="/meteo" element={<>
                     <EditScreenAttribute
                         screen={screen}
@@ -179,23 +168,23 @@ function Screen() {
                             onScreenUpdate(screenObj)
                         }}
                     />
-                </>} />
+                </>}/>
                 <Route path="/directions" element={<DirectionsManager
                     screenId={screen._id}
                     initialDirections={screen.directions}
                     onDirectionsChange={(newConfig) => {
                         onScreenUpdate(newConfig)
                     }}
-                />} />
+                />}/>
                 <Route path="/photos" element={<PhotosManager
                     screenId={screen._id}
                     initialPhotos={screen.photos}
                     onPhotosChange={(newConfig) => {
                         onScreenUpdate(newConfig)
                     }}
-                />} />
+                />}/>
                 <Route path="/dark_mode" element={<>
-                    <TimeIndicator ranges={screen.dark_mode.ranges} />
+                    <TimeIndicator ranges={screen.dark_mode.ranges}/>
                     <DarkModeManager
                         screenId={screen._id}
                         initialDarkMode={screen.dark_mode}
@@ -203,9 +192,9 @@ function Screen() {
                             onScreenUpdate(newConfig)
                         }}
                     />
-                </>} />
+                </>}/>
                 <Route path="/text_slides" element={<>
-                    <TimeIndicator ranges={screen.text_slides.ranges} />
+                    <TimeIndicator ranges={screen.text_slides.ranges}/>
                     <TextSlidesManager
                         screenId={screen._id}
                         initialTextSlides={screen.text_slides}
@@ -213,17 +202,17 @@ function Screen() {
                             onScreenUpdate(newConfig)
                         }}
                     />
-                </>} />
+                </>}/>
                 <Route path="/allowed_users" element={<AllowedUsersManager
                     screenId={screen._id}
                     initialAllowedUsers={screen.users}
                     onConfigChange={(newConfig) => {
                         onScreenUpdate(newConfig)
                     }}
-                />} />
+                />}/>
                 <Route path="/control" element={<Control
                     screen={screen}
-                />} />
+                />}/>
                 <Route path="/avanced_settings" element={<ConfigManager
                     screen={screen}
                     initialConfig={screen.config}
@@ -233,7 +222,7 @@ function Screen() {
                     onRemoveScreenSelected={() => {
                         setScreen(null);
                     }}
-                />} />
+                />}/>
                 <Route path="*" element={<>
                     <div className={"screen-detail screen b0"}>
                         <div className={"img-container"}>
@@ -267,7 +256,7 @@ function Screen() {
                                     to={button.id}
                                     className={"setting_element"}
                                 >
-                                    <div className={"fr g1 ai-c"} style={{ textAlign: "left" }}>
+                                    <div className={"fr g1 ai-c"} style={{textAlign: "left"}}>
                                         <div className={"skeleton-status-bubble fr ai-c"}>
                                             {button.icon}
                                         </div>
@@ -275,12 +264,12 @@ function Screen() {
                                             {button.label}
                                         </div>
                                     </div>
-                                    <FaChevronRight style={{ marginLeft: "auto" }} />
+                                    <FaChevronRight style={{marginLeft: "auto"}}/>
                                 </Link>
                             ))}
                         </div>
                     </div>
-                </>} />
+                </>}/>
             </Routes>
         </>
     );
