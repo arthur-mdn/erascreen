@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   DisplayHub-mongodb:
     image: mongo
@@ -47,7 +45,8 @@ services:
       - "traefik.http.routers.DisplayHub-server.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-server.tls.certresolver=myresolver"
     volumes:
-      - uploads_volume:/app/uploads
+      - ./server/uploads:/app/uploads
+      - ./server/public:/app/public
 
   DisplayHub-vitrine:
     build:
@@ -61,6 +60,4 @@ services:
 
 volumes:
   DisplayHub_mongodb_data:
-    driver: local
-  uploads_volume:
     driver: local
