@@ -129,49 +129,43 @@ async function detectUploadedImagesUsingOldWay() {
         }
 
         // Migrate old logo field (string)
-        if (screen.logo && typeof screen.logo === "string" && screen.logo.includes("uploads")) {
-            const newImage = new Image({
-                screen: screen._id,
-                type: 'logo',
-                value: screen.logo,
-                where: 'server'
-            });
-            await newImage.save();
+        if (screen.logo && typeof screen.logo === "string") {
+            if (screen.logo === "") {
+                // Set to default logo if logo is empty
+                await Screen.updateOne({_id: screen._id}, {logo: defaultImages['default-logo']});
+                console.log(`Default logo set for screen ${screen._id}`);
+            } else if (screen.logo.includes("uploads")) {
+                const newImage = new Image({
+                    screen: screen._id,
+                    type: 'logo',
+                    value: screen.logo,
+                    where: 'server'
+                });
+                await newImage.save();
 
-            // Replace the old string with the new ObjectId
-            await Screen.updateOne({_id: screen._id}, {logo: newImage._id});
-            console.log(`Logo ${screen.logo} converted to image id: ${newImage._id}`);
-        } else if (!screen.logo || screen.logo === null) {
-            // Set the default logo image if the logo field is empty
-            await Screen.updateOne({_id: screen._id}, {logo: defaultImages['default-logo']});
-            console.log(`Default logo image set for screen ${screen._id}`);
-        } else if (screen.logo && typeof screen.logo === "string" && screen.logo === "") {
-            await Screen.updateOne({_id: screen._id}, {logo: defaultImages['default-logo']});
-            console.log(`Logo converted to image id: ${defaultImages['default-logo']}`);
-        } else if (screen.logo && typeof screen.logo === "string" && screen.logo.includes("public")) {
-            await Screen.updateOne({_id: screen._id}, {logo: defaultImages['default-logo']});
-            console.log(`Logo ${screen.logo} converted to image id: ${defaultImages['default-logo']}`);
+                await Screen.updateOne({_id: screen._id}, {logo: newImage._id});
+                console.log(`Logo ${screen.logo} converted to image id: ${newImage._id}`);
+            }
         }
 
         // Migrate old featured_image field (string)
-        if (screen.featured_image && typeof screen.featured_image === "string" && screen.featured_image.includes("uploads")) {
-            const newImage = new Image({
-                screen: screen._id,
-                type: 'featured_image',
-                value: screen.featured_image,
-                where: 'server'
-            });
-            await newImage.save();
+        if (screen.featured_image && typeof screen.featured_image === "string") {
+            if (screen.featured_image === "") {
+                // Set to default featured image if empty
+                await Screen.updateOne({_id: screen._id}, {featured_image: defaultImages['default-featured-image']});
+                console.log(`Default featured image set for screen ${screen._id}`);
+            } else if (screen.featured_image.includes("uploads")) {
+                const newImage = new Image({
+                    screen: screen._id,
+                    type: 'featured_image',
+                    value: screen.featured_image,
+                    where: 'server'
+                });
+                await newImage.save();
 
-            // Replace the old string with the new ObjectId
-            await Screen.updateOne({_id: screen._id}, {featured_image: newImage._id});
-            console.log(`Featured image ${screen.featured_image} converted to image id: ${newImage._id}`);
-        } else if (screen.featured_image && typeof screen.featured_image === "string" && screen.featured_image.includes("public")) {
-            await Screen.updateOne({_id: screen._id}, {featured_image: defaultImages['default-featured-image']});
-            console.log(`Featured image ${screen.featured_image} converted to image id: ${defaultImages['default-featured-image']}`);
-        } else if (!screen.featured_image) {
-            await Screen.updateOne({_id: screen._id}, {featured_image: defaultImages['default-featured-image']});
-            console.log(`Featured image converted to image id: ${defaultImages['default-featured-image']}`);
+                await Screen.updateOne({_id: screen._id}, {featured_image: newImage._id});
+                console.log(`Featured image ${screen.featured_image} converted to image id: ${newImage._id}`);
+            }
         }
     }
 }
