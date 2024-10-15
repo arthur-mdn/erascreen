@@ -1,7 +1,8 @@
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import {format} from 'date-fns';
+import {fr} from 'date-fns/locale';
 import {FaTimes} from "react-icons/fa";
 import React from "react";
+
 function MeteoViewer({ screen, onResetMeteo }) {
     const date = (screen.meteo && screen.meteo.lastUpdated) ? screen.meteo.lastUpdated : Date.now();
     const formattedDate = format(new Date(date), 'PPPpp', { locale: fr });

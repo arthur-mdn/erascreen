@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import config from "../config.js";
 import {useCookies} from "react-cookie";
@@ -6,8 +6,9 @@ import {toast} from "react-toastify";
 import {Link} from "react-router-dom";
 import {useSocket} from "../SocketContext.jsx";
 import {MonitorSmartphone, MonitorX} from "lucide-react";
+import DisplayImage from "./DisplayImage.jsx";
 
-function ScreenSelector({ onSelectScreen }) {
+function ScreenSelector({onSelectScreen}) {
     const [cookies, setCookie] = useCookies(['selectedScreen']);
     const [screens, setScreens] = useState([]);
     const selectedScreenId = cookies.selectedScreen;
@@ -16,7 +17,7 @@ function ScreenSelector({ onSelectScreen }) {
 
     useEffect(() => {
         setIsLoading(true);
-        axios.get(`${config.serverUrl}/screens`, { withCredentials: true })
+        axios.get(`${config.serverUrl}/screens`, {withCredentials: true})
             .then(response => {
                 setScreens(response.data.screens);
             })
@@ -34,7 +35,7 @@ function ScreenSelector({ onSelectScreen }) {
             socket.on('screen_status', (updatedScreen) => {
                 setScreens((prevScreens) =>
                     prevScreens.map((screen) =>
-                        screen._id === updatedScreen.screenId ? { ...screen, status: updatedScreen.status } : screen
+                        screen._id === updatedScreen.screenId ? {...screen, status: updatedScreen.status} : screen
                     )
                 );
             });
@@ -42,7 +43,7 @@ function ScreenSelector({ onSelectScreen }) {
             socket.on('disconnect', () => {
                 setScreens((prevScreens) =>
                     prevScreens.map((screen) =>
-                        screen.status === "online" ? { ...screen, status: "offline" } : screen
+                        screen.status === "online" ? {...screen, status: "offline"} : screen
                     )
                 );
             });
@@ -78,7 +79,7 @@ function ScreenSelector({ onSelectScreen }) {
                     {screens.map(screen => (
                         <Link to={`/screens/list/${screen._id}`} key={screen._id} className={"screen"}>
                             <div className={"img-container"}>
-                                <img src={`${config.serverUrl}/${screen.featured_image}`}/>
+                                <DisplayImage image={screen.featured_image}/>
                             </div>
                             <div className={"fc ai-fs g0-5 h100"}>
                                 <h3 className={"fw-b"}>

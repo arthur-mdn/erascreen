@@ -1,6 +1,5 @@
 // App.jsx
-import React, {useEffect} from 'react';
-import config from './config';
+import React from 'react';
 import {BrowserRouter as Router, Navigate, Route, Routes} from 'react-router-dom';
 import {AuthProvider, useAuth} from './AuthContext';
 import Login from "./pages/Login.jsx";

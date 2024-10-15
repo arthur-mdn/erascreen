@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import config from '../../config';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import {FaTrash} from "react-icons/fa6";
-import { useDropzone } from 'react-dropzone';
+import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
+import {useDropzone} from 'react-dropzone';
 import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
 import {FaTimes} from "react-icons/fa";
+import DisplayImage from "../DisplayImage.jsx";
 
 function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
     const [photos, setPhotos] = useState(initialPhotos);
@@ -50,11 +50,11 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
 
     const { getRootProps, getInputProps } = useDropzone({ onDrop, accept: {'image/*': ['.jpeg', '.jpg', '.png', '.gif']}, multiple: true });
 
-    const handleDelete = async (photoName) => {
+    const handleDelete = async (photoId) => {
         setIsLoading(true);
         try {
             const response = await axios.delete(`${config.serverUrl}/screens/photos`, {
-                data: { photoName },
+                data: { photoId },
                 withCredentials: true
             });
             console.log(response.data.screenObj)
@@ -107,7 +107,7 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef} className={"fr g0-5 ofy-s"}>
                             {photos.map((photo, index) => (
-                                <Draggable key={photo} draggableId={photo} index={index}>
+                                <Draggable key={photo._id} draggableId={photo._id} index={index}>
                                     {(provided) => (
                                         <div
                                             ref={provided.innerRef}
@@ -115,10 +115,9 @@ function PhotosManager({ screenId, initialPhotos, onPhotosChange }) {
                                             {...provided.dragHandleProps}
                                             className={"fr ai-c g1 pr"}
                                         >
-                                            <img src={`${config.serverUrl}/${photo}`} alt={`Photo ${index}`}
-                                                 style={{width: '150px'}}/>
+                                            <DisplayImage image={photo} alt={`Icon ${index}`} width={'150px'}/>
                                             <button type={"button"} className={"actionButton quickDel"}
-                                                    onClick={() => handleDelete(photo)}><FaTimes size={12}/></button>
+                                                    onClick={() => handleDelete(photo._id)}><FaTimes size={12}/></button>
                                         </div>
                                     )}
                                 </Draggable>

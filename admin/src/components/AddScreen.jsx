@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 import Loading from "./Loading.jsx";
-import { useParams, useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import {useNavigate, useParams} from "react-router-dom";
+import {useCookies} from "react-cookie";
 import Modal from "./Modal.jsx";
 import Scan from "./Scan.jsx";
 import config from "../config.js";
-import { FaQrcode } from "react-icons/fa6";
+import {FaQrcode} from "react-icons/fa6";
 
 function AddScreen({ fromUrl = false }) {
     const [code, setCode] = useState('');

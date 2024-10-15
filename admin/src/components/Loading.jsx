@@ -1,6 +1,4 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {FaTimes} from "react-icons/fa";
 
 const Loading = () => {
     return (

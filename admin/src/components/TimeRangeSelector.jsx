@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {FaArrowRight, FaCopy, FaPen, FaPencil, FaPlus, FaTrash} from "react-icons/fa6";
+import React, {useState} from 'react';
+import {FaArrowRight, FaCopy, FaPen, FaPlus, FaTrash} from "react-icons/fa6";
 import {toast} from 'react-toastify';
 import Modal from "./Modal.jsx";
-import {FaEdit} from "react-icons/fa";
 
 function TimeRangeSelector({onRangesChange, initialRanges, timeRangeName = "", additionalInputs = []}) {
     const [ranges, setRanges] = useState(initialRanges || []);

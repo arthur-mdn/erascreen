@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 
 function Pub({ displayTime, animationTime, intervalTime }) {
     const [isVisible, setIsVisible] = useState(false);
-    const [leftPosition, setLeftPosition] = useState(-100);
+    const [rightPosition, setRightPosition] = useState(-100);
     const [transitionTime, setTransitionTime] = useState(animationTime);
 
     useEffect(() => {
@@ -10,10 +10,10 @@ function Pub({ displayTime, animationTime, intervalTime }) {
             setIsVisible(true);
             setTransitionTime(animationTime);
             setTimeout(() => {
-                setLeftPosition(0);
+                setRightPosition(0);
                 setTimeout(() => {
                     setTransitionTime(animationTime * 2);
-                    setLeftPosition(-100);
+                    setRightPosition(-100);
                     setTimeout(() => {
                         setIsVisible(false);
                     }, animationTime * 2);
@@ -23,12 +23,11 @@ function Pub({ displayTime, animationTime, intervalTime }) {
 
         const intervalId = setInterval(animate, displayTime + animationTime * 2 + intervalTime);
         animate();
-
         return () => clearInterval(intervalId);
     }, [displayTime, animationTime, intervalTime]);
 
     return isVisible ? (
-        <div className={"pub-card card"} style={{ left: `${leftPosition}%`, transition: `left ${transitionTime}ms` }}>
+        <div className={"pub-card card"} style={{ right: `${rightPosition}%`, transition: `right ${transitionTime}ms` }}>
             <img src={"/elements/logo.svg"} alt="Ad" style={{ height: "4rem" }} />
         </div>
     ) : null;

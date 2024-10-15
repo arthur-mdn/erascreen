@@ -1,8 +1,8 @@
 // Breadcrumbs.jsx
-import React, { useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ChevronRight, Menu } from 'lucide-react';
-import { getTranslation } from "../../utils/translations.js";
+import React, {useEffect, useRef} from 'react';
+import {Link, useLocation} from 'react-router-dom';
+import {ChevronRight, Menu} from 'lucide-react';
+import {getTranslation} from "../../utils/translations.js";
 
 const Breadcrumbs = () => {
     const location = useLocation();

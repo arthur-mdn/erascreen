@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import config from '../../config';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import {FaTrash} from "react-icons/fa6";
-import Modal from "../Modal.jsx";
 import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
 

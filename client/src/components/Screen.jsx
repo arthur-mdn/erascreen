@@ -1,5 +1,4 @@
-import config from "../config.js";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import MeteoViewer from "./MeteoViewer";
 import TimeViewer from "./TimeViewer";
 import DirectionsViewer from "./DirectionsViewer";
@@ -8,13 +7,13 @@ import DisplayLogo from "./DisplayLogo.jsx";
 import {Helmet} from "react-helmet";
 import DisplayIcons from "./DisplayIcons.jsx";
 
-function Screen({configData, isDarkModeActive}){
+function Screen({configData, isDarkModeActive}) {
     return (
         <div>
             <Helmet>
                 <title>{configData.name}</title>
             </Helmet>
-            <div className={"fr jc-sb ai-c"}>
+            <div className={"fr jc-sb ai-c g1"}>
                 <DisplayLogo logo={configData.logo} isDarkModeActive={isDarkModeActive}/>
                 {
                     configData.meteo && (
@@ -24,11 +23,12 @@ function Screen({configData, isDarkModeActive}){
                 <TimeViewer/>
                 {
                     configData.icons && configData.icons.length > 0 && (
-                        <DisplayIcons icons={configData.icons}/>
+                        <DisplayIcons icons={configData.icons} isDarkModeActive={isDarkModeActive}/>
                     )
                 }
             </div>
-            <div style={{marginTop:'1vw', maxWidth:'100%', height:'75vh',maxHeight:'75vh', gap:'2vw'}} className={"fr jc-sb directions-and-photos"}>
+            <div style={{marginTop: '1vw', maxWidth: '100%', height: '75vh', maxHeight: '75vh', gap: '2vw'}}
+                 className={"fr jc-sb directions-and-photos"}>
                 {
                     configData.directions && configData.directions.length > 0 && (
                         <DirectionsViewer screen={configData}/>
@@ -45,9 +45,8 @@ function Screen({configData, isDarkModeActive}){
                     )
                 }
             </div>
-            {/*<h2 style={{fontSize:'1.3vw'}}>{configData.name}</h2>*/}
-            {/*<p>{configData._id}</p>*/}
         </div>
     );
 }
+
 export default Screen;

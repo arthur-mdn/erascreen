@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import config from '../../config';
 import Loading from "../Loading.jsx";
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
 import Modal from "../Modal.jsx";
 import {FaPen, FaPlus, FaTrash} from "react-icons/fa6";
 

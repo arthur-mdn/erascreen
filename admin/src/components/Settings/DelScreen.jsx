@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import config from '../../config';
 import Loading from "../Loading.jsx";
 import {toast} from "react-toastify";
-import {FaArrowRight, FaTrash} from "react-icons/fa6";
+import {FaTrash} from "react-icons/fa6";
 import Modal from "../Modal.jsx";
 import {useCookies} from "react-cookie";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 
 function DelScreen( { onRemoveScreenSelected } ) {
     const [isLoading, setIsLoading] = useState(false);

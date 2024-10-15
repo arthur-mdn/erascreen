@@ -1,6 +1,6 @@
 // Modal.jsx
 import React, {useState} from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {AnimatePresence, motion} from 'framer-motion';
 import {FaTimes} from "react-icons/fa";
 import {FaEllipsis} from "react-icons/fa6";
 import {Link} from "react-router-dom";

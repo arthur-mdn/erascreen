@@ -1,12 +1,14 @@
-// hooks/useDarkMode.js
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
-function useDarkMode(configData)  {
+function useDarkMode(configData) {
     const [isDarkModeActive, setIsDarkModeActive] = useState(false);
 
     useEffect(() => {
+        let timeoutId;
+
         const checkDarkMode = () => {
-            if (!configData?.dark_mode?.ranges) {
+
+            if (!configData?.dark_mode?.ranges || configData.dark_mode.ranges.length === 0) {
                 setIsDarkModeActive(false);
                 return;
             }
@@ -58,14 +60,21 @@ function useDarkMode(configData)  {
             );
 
             if (nextCheckTime > 0) {
-                setTimeout(checkDarkMode, nextCheckTime);
+                timeoutId = setTimeout(checkDarkMode, nextCheckTime);
             }
         };
 
-        if (configData?.dark_mode?.ranges) {
+        if (configData?.dark_mode?.ranges && configData.dark_mode.ranges.length > 0) {
             checkDarkMode();
+        } else {
+            setIsDarkModeActive(false);
         }
 
+        return () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+        };
     }, [configData]);
 
     return isDarkModeActive;
