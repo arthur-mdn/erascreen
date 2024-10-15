@@ -11,6 +11,7 @@ async function initDatabase() {
         await insertSystemDefaults();
         console.log("Before Detecting old images...");
         await detectUploadedImagesUsingOldWay();
+        console.log("After Detecting old images...");
     } catch (error) {
         console.error("Error initializing database:", error);
     }
@@ -129,7 +130,7 @@ async function detectUploadedImagesUsingOldWay() {
         }
 
         // Migrate old logo field (string)
-        if (screen.logo && typeof screen.logo === "string") {
+        if (typeof screen.logo === "string") {
             if (screen.logo === "") {
                 // Set to default logo if logo is empty
                 await Screen.updateOne({_id: screen._id}, {logo: defaultImages['default-logo']});
@@ -165,6 +166,15 @@ async function detectUploadedImagesUsingOldWay() {
 
                 await Screen.updateOne({_id: screen._id}, {featured_image: newImage._id});
                 console.log(`Featured image ${screen.featured_image} converted to image id: ${newImage._id}`);
+            } else {
+                await Screen.updateOne({_id: screen._id}, {featured_image: defaultImages['default-featured-image']});
+            }
+        } else {
+            if(!screen.featured_image) {
+                console.log(`Featured image is null for screen ${screen._id}`);
+                // Set to default featured image if not a string
+                await Screen.updateOne({_id: screen._id}, {featured_image: defaultImages['default-featured-image']});
+                console.log(`Default featured image set for screen ${screen._id}`);
             }
         }
     }
