@@ -9,7 +9,7 @@ const Breadcrumbs = () => {
     const breadcrumbRef = useRef(null);
 
     const pathnames = location.pathname.split('/').filter((x) => x);
-    const knownPaths = ['screens', 'list', 'add', 'edit', 'delete', 'programmes', 'profil', 'login', 'register', 'logout', 'name', 'logo', 'icons', 'meteo', 'directions', 'photos', 'dark_mode', 'text_slides', 'allowed_users', 'control', 'avanced_settings'];
+    const knownPaths = ['screens', 'list', 'add', 'edit', 'delete', 'programmes', 'profil', 'login', 'register', 'logout', 'admin', 'name', 'logo', 'icons', 'meteo', 'directions', 'photos', 'dark_mode', 'text_slides', 'allowed_users', 'control', 'avanced_settings'];
 
     const isObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
 
@@ -41,14 +41,14 @@ const Breadcrumbs = () => {
 
     return (
         <nav className={"fr ai-c g1 p1 bread"} ref={breadcrumbRef}>
-            <Menu className={"fs-0 hide-mobile"} />
+            <Menu className={"fs-0 hide-mobile"}/>
             <ul className="breadcrumb">
                 {breadcrumbItems.map((item, index) => (
                     <li key={item.to}>
                         <Link to={item.to}>
                             {item.displayName}
                         </Link>
-                        {index < breadcrumbItems.length - 1 && <ChevronRight />}
+                        {index < breadcrumbItems.length - 1 && <ChevronRight/>}
                     </li>
                 ))}
             </ul>
