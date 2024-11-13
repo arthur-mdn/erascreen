@@ -72,6 +72,7 @@ Screen.updateMany({}, {status: "offline"})
 
 const activeSockets = {};
 const activeAdminSockets = {};
+const activeDebugSockets = [];
 
 io.on('connection', async (socket) => {
     const origin = socket.handshake.headers.origin;
@@ -155,7 +156,16 @@ io.on('connection', async (socket) => {
             }
         });
 
+        socket.on('askDebug', () => {
+            console.log('askDebug from', socket.id);
+            activeDebugSockets.push(socket.id);
+            socket.emit('adminDebugList', activeDebugSockets);
+        })
+
         socket.on('disconnect', async () => {
+            if (activeDebugSockets.includes(socket.id)) {
+                activeDebugSockets.splice(activeDebugSockets.indexOf(socket.id), 1);
+            }
             const screenId = socketUtils.removeSocketId(socket.id);
             if (screenId) {
                 await Screen.findByIdAndUpdate(screenId, {status: "offline"});
@@ -237,6 +247,11 @@ io.on('connection', async (socket) => {
                     console.log('Screen not found');
                     socket.emit('server_forward_client_response_to_admin', {commandId, error: 'Écran non trouvé'});
                 }
+            });
+
+            socket.on('adminAskDebugList', () => {
+                console.log('adminAskDebugList from', userId);
+                socket.emit('adminDebugList', activeDebugSockets);
             });
 
             socket.on('disconnect', () => {

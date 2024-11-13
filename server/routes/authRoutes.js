@@ -6,38 +6,38 @@ const router = express.Router();
 const config = require('../others/config');
 
 router.post('/auth/login', async (req, res) => {
-    const { email, password } = req.body;
+    const {email, password} = req.body;
 
     try {
-        const user = await User.findOne({ email: email });
+        const user = await User.findOne({email: email});
         if (!user) {
-            return res.status(401).json({ message: 'Utilisateur non trouvé' });
+            return res.status(401).json({message: 'Utilisateur non trouvé'});
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ success: false, message: "Mot de passe incorrect" });
+            return res.status(401).json({success: false, message: "Mot de passe incorrect"});
         }
 
         user.lastLogin = Date.now();
         await user.save();
 
-        const token = jwt.sign({ userId: user._id }, config.secretKey, { expiresIn: '365d' });
-        res.cookie('session_token', token, { httpOnly: true,  maxAge: 365 * 24 * 60 * 60 * 1000 });
-        res.json({ message: 'Authentification réussie'});
+        const token = jwt.sign({userId: user._id}, config.secretKey, {expiresIn: '365d'});
+        res.cookie('session_token', token, {httpOnly: true, maxAge: 365 * 24 * 60 * 60 * 1000});
+        res.json({message: 'Authentification réussie'});
 
     } catch (error) {
-        res.status(500).json({ message: 'Erreur serveur' });
+        res.status(500).json({message: 'Erreur serveur'});
     }
 });
 
 router.post('/auth/register', async (req, res) => {
     try {
-        const { email, password, lastName, firstName } = req.body;
+        const {email, password, lastName, firstName} = req.body;
 
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
         if (existingUser) {
-            return res.status(400).json({ message: 'Un compte avec cette adresse e-mail existe déjà.' });
+            return res.status(400).json({message: 'Un compte avec cette adresse e-mail existe déjà.'});
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -51,12 +51,12 @@ router.post('/auth/register', async (req, res) => {
 
         await newUser.save();
 
-        const token = jwt.sign({ userId: newUser._id }, config.secretKey, { expiresIn: '365d' });
-        res.cookie('session_token', token, { httpOnly: true, maxAge: 365 * 24 * 60 * 60 * 1000 }); // 365d
+        const token = jwt.sign({userId: newUser._id}, config.secretKey, {expiresIn: '365d'});
+        res.cookie('session_token', token, {httpOnly: true, maxAge: 365 * 24 * 60 * 60 * 1000}); // 365d
 
-        res.status(201).json({ message: 'Inscription réussie' });
+        res.status(201).json({message: 'Inscription réussie'});
     } catch (error) {
-        res.status(500).json({ message: 'Erreur serveur: ' + error });
+        res.status(500).json({message: 'Erreur serveur: ' + error});
     }
 });
 
@@ -81,7 +81,9 @@ router.get('/auth/validate-session', async (req, res) => {
         user.lastLogin = Date.now();
         await user.save();
 
-        res.json({isAuthenticated: true});
+        user.password = undefined;
+
+        res.json({isAuthenticated: true, user: user});
     } catch (err) {
         res.json({isAuthenticated: false});
     }
@@ -89,7 +91,7 @@ router.get('/auth/validate-session', async (req, res) => {
 
 router.post('/auth/logout', (req, res) => {
     res.clearCookie('session_token');
-    res.json({ message: 'Déconnexion réussie' });
+    res.json({message: 'Déconnexion réussie'});
 });
 
 module.exports = router;
