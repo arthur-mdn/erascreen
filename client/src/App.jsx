@@ -121,8 +121,13 @@ function App() {
             console.error('Socket error:', error);
             setStatus('error');
             setError(error);
-            socket.emit('askDebug');
+            socket.emit('askDebug', savedConfig);
         });
+
+        socket.on('adminChangeScreenId', (data) => {
+            localStorage.setItem('screenConfig', JSON.stringify({'_id':data}));
+            window.location.reload();
+        })
 
         socket.on('server_send_control_to_client', async (data) => {
             console.log('server_send_control_to_client', data);
@@ -378,6 +383,7 @@ function App() {
                         window.location.reload();
                     }}>Réinitialiser les données locales
                     </button>
+                    {configData?.code}
                 </>;
             default:
                 return <p>État inconnu</p>;

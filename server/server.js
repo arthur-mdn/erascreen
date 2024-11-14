@@ -107,7 +107,7 @@ io.on('connection', async (socket) => {
                     console.error('Erreur lors de la mise à jour de la météo:', error);
                 }
             } else {
-                socket.emit('error', 'Écran non trouvé dans la base de données');
+                socket.emit('error', 'Écran non trouvé dans la base de données' + screenId);
             }
         });
 
@@ -130,7 +130,7 @@ io.on('connection', async (socket) => {
                         }
                     });
                 } else {
-                    socket.emit('error', 'Écran non trouvé dans la base de données');
+                    socket.emit('error', 'Écran non trouvé dans la base de données' + screenId);
                 }
             } catch (error) {
                 console.error('Erreur lors de la récupération de la configuration:', error);
@@ -156,15 +156,24 @@ io.on('connection', async (socket) => {
             }
         });
 
-        socket.on('askDebug', () => {
-            console.log('askDebug from', socket.id);
-            activeDebugSockets.push(socket.id);
-            socket.emit('adminDebugList', activeDebugSockets);
+        socket.on('askDebug', (screen) => {
+            activeDebugSockets[socket.id] = JSON.parse(screen);
+            // send debug list to all admins
+            Object.keys(activeAdminSockets).forEach(adminSocketId => {
+                const socket = io.sockets.sockets.get(activeAdminSockets[adminSocketId]);
+                if (socket) {
+                    console.log('Sending debug list to', adminSocketId, activeDebugSockets);
+                    socket.emit('adminDebugList', Object.entries(activeDebugSockets).map(([socketId, data]) => ({
+                        socketId,
+                        ...data
+                    })));
+                }
+            });
         })
 
         socket.on('disconnect', async () => {
-            if (activeDebugSockets.includes(socket.id)) {
-                activeDebugSockets.splice(activeDebugSockets.indexOf(socket.id), 1);
+            if (activeDebugSockets[socket.id]) {
+                delete activeDebugSockets[socket.id];
             }
             const screenId = socketUtils.removeSocketId(socket.id);
             if (screenId) {
@@ -251,8 +260,57 @@ io.on('connection', async (socket) => {
 
             socket.on('adminAskDebugList', () => {
                 console.log('adminAskDebugList from', userId);
-                socket.emit('adminDebugList', activeDebugSockets);
+                socket.emit('adminDebugList', Object.entries(activeDebugSockets).map(([socketId, data]) => ({
+                    socketId,
+                    ...data
+                })));
             });
+
+            socket.on('adminOrderToChangeScreenId', async (data) => {
+                console.log(data)
+
+                if (!Object.keys(activeDebugSockets).includes(data.socketId)) {
+                    console.log('SocketId not found');
+                    return
+                }
+                if (activeDebugSockets[data.socketId].code !== data.code) {
+                    console.log("code incorrect");
+                    return;
+                }
+
+                const screen = await Screen.findById(data.newScreenId);
+
+                if (!screen) {
+                    console.log('Screen not found');
+                    return;
+                }
+
+                const socket = io.sockets.sockets.get(data.socketId);
+                if (socket) {
+                    socket.emit('adminChangeScreenId', data.newScreenId);
+                }
+            })
+
+
+            socket.on('adminOrderToResetScreen', async (data) => {
+                console.log(data)
+
+                if (!Object.keys(activeDebugSockets).includes(data.socketId)) {
+                    console.log('SocketId not found');
+                    return
+                }
+                if (activeDebugSockets[data.socketId].code !== data.code) {
+                    console.log("code incorrect");
+                    return;
+                }
+
+                const socket = io.sockets.sockets.get(data.socketId);
+                if (socket) {
+                    socket.emit('screen_deleted');
+                }
+            })
+
+
 
             socket.on('disconnect', () => {
                 console.log(`Admin disconnected: ${userId}`);
