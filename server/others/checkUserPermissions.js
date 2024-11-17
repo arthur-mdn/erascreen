@@ -1,4 +1,5 @@
 const Screen = require("../models/Screen");
+const User = require("../models/User");
 
 const checkUserPermissions = (requiredPermissions) => {
     return async (req, res, next) => {
@@ -14,7 +15,7 @@ const checkUserPermissions = (requiredPermissions) => {
                 return res.status(403).send({ error: 'Accès refusé' });
             }
 
-            if (user.role === 'creator') {
+            if (user.role === 'creator' || user.role === 'superadmin') {
                 return next(); // Les créateurs ont toutes les permissions
             }
 
@@ -36,14 +37,20 @@ const checkUserPermissionsOfThisScreen = async (requiredPermission, screenId, us
         if (!screen) {
             return false
         }
-
+        const dbUser = await User.findById(userId);
+        if (!dbUser) {
+            return false
+        }
+        if (dbUser.userRole === 'superadmin') {
+            return true
+        }
         const user = screen.users.find(u => u.user._id.toString() === userId);
 
         if (!user) {
             return false
         }
 
-        if (user.role === 'creator') {
+        if (user.role === 'creator' || user.role === 'superadmin') {
             return true // Les créateurs ont toutes les permissions
         }
 

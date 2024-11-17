@@ -69,30 +69,47 @@ Screen.updateMany({}, {status: "offline"})
     .then(() => console.log("Tous les écrans sont maintenant hors ligne"))
     .catch((error) => console.error("Erreur lors de la mise à jour des écrans:", error));
 
+async function emitToAllAdmins(message, data) {
+    const adminSocketList = await socketUtils.getAdminSocketList();
+    Object.keys(adminSocketList).forEach((socketId) => {
+        const socket = io.sockets.sockets.get(socketId);
+        if (socket) {
+            socket.emit(message,data);
+        }
+    })
+}
 
-const activeSockets = {};
-const activeAdminSockets = {};
-const activeDebugSockets = [];
+async function emitSocketListToAllAdmins() {
+    const socketListArray = await socketUtils.getSocketList();
+    await emitToAllAdmins('adminSocketList', socketListArray);
+}
 
 io.on('connection', async (socket) => {
     const origin = socket.handshake.headers.origin;
     const cookies = socket.handshake.headers.cookie || '';
     const sessionToken = cookies.split('; ').find(row => row.startsWith('session_token='))?.split('=')[1];
-
+    // ip address console.log(socket.handshake.address)
     if (origin === config.clientUrl) {
         console.log('Raspberry Pi connected:', socket.id);
 
         socket.on('associate', async (data) => {
+            console.log('Associate event received:', data);
             const {screenId} = data;
             await Screen.findByIdAndUpdate(screenId, {status: "online"});
-            socketUtils.associateScreenSocket(screenId, socket.id);
+            await socketUtils.associateScreenSocket(screenId, socket.id);
         });
 
-        socket.on('request_code', () => {
+        socket.on('request_code', async () => {
+            const [screenId, debugScreen] = await socketUtils.getScreenId(socket.id);
+            try {
+                await Screen.findByIdAndUpdate(screenId, {status: "offline"});
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour de l\'écran:', error);
+            }
             const uniqueCode = uuid.v4();
-            activeSockets[uniqueCode] = socket.id;
+            await socketUtils.associateSocketWaitingForConfiguration(socket.id, uniqueCode);
             socket.emit('receive_code', uniqueCode);
-            console.log('Unique code sent:', uniqueCode);
+            await emitSocketListToAllAdmins();
         });
 
         socket.on('update_weather', async (data) => {
@@ -107,21 +124,23 @@ io.on('connection', async (socket) => {
                     console.error('Erreur lors de la mise à jour de la météo:', error);
                 }
             } else {
-                socket.emit('error', 'Écran non trouvé dans la base de données' + screenId);
+                console.log('Écran non trouvé dans la base de données', screenId)
+                socket.emit('error', 'Écran non trouvé dans la base de données');
             }
         });
 
         socket.on('update_config', async (data) => {
+            console.log('update_config', data);
             try {
                 const {screenId} = data;
 
                 const screen = await Screen.findById(screenId);
                 if (screen) {
-                    socketUtils.associateScreenSocket(screenId, socket.id);
+                    await socketUtils.associateScreenSocket(screenId, socket.id);
                     await Screen.findByIdAndUpdate(screenId, {status: "online"});
                     socket.emit('config_updated', screen);
                     screen.users.forEach(async (user) => {
-                        const socketId = activeAdminSockets[user.user._id];
+                        const socketId = await socketUtils.getAdminSocketId(user.user._id);
                         if (socketId) {
                             const socket = io.sockets.sockets.get(socketId);
                             if (socket) {
@@ -130,72 +149,69 @@ io.on('connection', async (socket) => {
                         }
                     });
                 } else {
-                    socket.emit('error', 'Écran non trouvé dans la base de données' + screenId);
+                    console.log('Écran non trouvé dans la base de données', screenId)
+                    socket.emit('error', 'Écran non trouvé dans la base de données');
                 }
             } catch (error) {
                 console.error('Erreur lors de la récupération de la configuration:', error);
                 socket.emit('error', 'Erreur lors de la récupération de la configuration');
             }
+            await emitSocketListToAllAdmins();
         });
 
         socket.on('client_control_response', async (data) => {
-            const screenId = socketUtils.getScreenId(socket.id);
+            console.log('client_control_response', data);
+            const [screenId, debugScreen] = await socketUtils.getScreenId(socket.id);
             if (screenId) {
                 const screen = await Screen.findById(screenId);
                 if (screen) {
+                    console.log('screen.users', screen.users);
                     screen.users.forEach(async (user) => {
-                        const socketId = activeAdminSockets[user.user._id];
+                        const socketId = await socketUtils.getAdminSocketId(user.user._id);
                         if (socketId) {
                             const socket = io.sockets.sockets.get(socketId);
                             if (socket) {
                                 socket.emit('server_forward_client_response_to_admin', data);
                             }
                         }
+                        emitToAllAdmins('server_forward_client_response_to_admin', data);
                     });
                 }
             }
         });
 
-        socket.on('askDebug', (screen) => {
-            activeDebugSockets[socket.id] = JSON.parse(screen);
-            // send debug list to all admins
-            Object.keys(activeAdminSockets).forEach(adminSocketId => {
-                const socket = io.sockets.sockets.get(activeAdminSockets[adminSocketId]);
-                if (socket) {
-                    console.log('Sending debug list to', adminSocketId, activeDebugSockets);
-                    socket.emit('adminDebugList', Object.entries(activeDebugSockets).map(([socketId, data]) => ({
-                        socketId,
-                        ...data
-                    })));
-                }
-            });
+        socket.on('askDebug', async (screen) => {
+            await socketUtils.associateSocketDebug(socket.id, JSON.parse(screen));
+            await emitSocketListToAllAdmins();
         })
 
         socket.on('disconnect', async () => {
-            if (activeDebugSockets[socket.id]) {
-                delete activeDebugSockets[socket.id];
-            }
-            const screenId = socketUtils.removeSocketId(socket.id);
-            if (screenId) {
-                await Screen.findByIdAndUpdate(screenId, {status: "offline"});
-                console.log('Screen disconnected:', screenId);
-            }
-            const screen = await Screen.findById(screenId);
-            if (screen) {
-                screen.users.forEach(async (user) => {
-                    const socketId = activeAdminSockets[user.user._id];
-                    if (socketId) {
-                        const socket = io.sockets.sockets.get(socketId);
-                        if (socket) {
-                            socket.emit('screen_status', {screenId, status: "offline"});
+            try {
+                const screenId = await socketUtils.removeSocketId(socket.id);
+                if (screenId) {
+                    await Screen.findByIdAndUpdate(screenId, {status: "offline"});
+                    console.log('Screen disconnected:', screenId);
+                }
+                const screen = await Screen.findById(screenId);
+                if (screen) {
+                    screen.users.forEach(async (user) => {
+                        const socketId = await socketUtils.getAdminSocketId(user.user._id);
+                        if (socketId) {
+                            const socket = io.sockets.sockets.get(socketId);
+                            if (socket) {
+                                socket.emit('screen_status', {screenId, status: "offline"});
+                            }
                         }
-                    }
-                });
+                    });
+                }
+            } catch (error) {
+                console.error('ecran non trouvé', error)
             }
+            await emitSocketListToAllAdmins();
         });
 
         socket.conn.on('pingTimeout', async () => {
-            const screenId = socketUtils.removeSocketId(socket.id);
+            const screenId = await socketUtils.removeSocketId(socket.id);
             if (screenId) {
                 await Screen.findByIdAndUpdate(screenId, {status: "offline"});
             }
@@ -213,8 +229,7 @@ io.on('connection', async (socket) => {
             const decoded = verify(sessionToken, config.secretKey);
             const userId = decoded.userId;
             console.log('Admin connected:', socket.id, userId);
-
-            activeAdminSockets[userId] = socket.id;
+            await socketUtils.associateAdminSocket(userId, socket.id);
 
             const screens = await Screen.find();
             screens.forEach(screen => {
@@ -258,50 +273,67 @@ io.on('connection', async (socket) => {
                 }
             });
 
-            socket.on('adminAskDebugList', () => {
-                console.log('adminAskDebugList from', userId);
-                socket.emit('adminDebugList', Object.entries(activeDebugSockets).map(([socketId, data]) => ({
-                    socketId,
-                    ...data
-                })));
+            socket.on('adminAskSocketList', async () => {
+                console.log('adminAskSocketList from', userId);
+                const socketListArray = await socketUtils.getSocketList();
+                socket.emit('adminSocketList', socketListArray);
+            });
+
+            socket.on('adminAskSocketDetails', async (socketId) => {
+                console.log('adminAskSocketDetails from', userId);
+                const socketDetails = await socketUtils.getSocketDetails(socketId);
+                socket.emit('adminSocketDetails', socketDetails);
+            });
+
+            socket.on('adminAskSocketRefresh', async (socketId) => {
+                console.log('adminAskSocketRefresh from', userId);
+                try {
+                    const screenSocket = io.sockets.sockets.get(socketId);
+                    if (screenSocket) {
+                        screenSocket.emit('refresh');
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la récupération des détails de l\'écran:', error);
+                }
+
             });
 
             socket.on('adminOrderToChangeScreenId', async (data) => {
-                console.log(data)
+                const socketId = data.socketId;
+                const sockett = (io.sockets.sockets.get(socketId));
 
-                if (!Object.keys(activeDebugSockets).includes(data.socketId)) {
+                if(!sockett){
                     console.log('SocketId not found');
                     return
                 }
-                if (activeDebugSockets[data.socketId].code !== data.code) {
-                    console.log("code incorrect");
-                    return;
-                }
 
-                const screen = await Screen.findById(data.newScreenId);
+                try {
+                    const screen = await Screen.findById(data.newScreenId);
 
-                if (!screen) {
-                    console.log('Screen not found');
-                    return;
+                    if (!screen) {
+                        console.log('Screen not found');
+                        return;
+                    }
+
+
+                } catch (error) {
+                    console.log(error)
                 }
 
                 const socket = io.sockets.sockets.get(data.socketId);
                 if (socket) {
                     socket.emit('adminChangeScreenId', data.newScreenId);
                 }
+
             })
 
 
             socket.on('adminOrderToResetScreen', async (data) => {
-                console.log(data)
+                console.log('adminOrderToResetScreen',data)
 
-                if (!Object.keys(activeDebugSockets).includes(data.socketId)) {
+                if (!socketUtils.isSocketConnected(data.socketId)) {
                     console.log('SocketId not found');
                     return
-                }
-                if (activeDebugSockets[data.socketId].code !== data.code) {
-                    console.log("code incorrect");
-                    return;
                 }
 
                 const socket = io.sockets.sockets.get(data.socketId);
@@ -312,9 +344,16 @@ io.on('connection', async (socket) => {
 
 
 
-            socket.on('disconnect', () => {
+            socket.on('disconnect', async () => {
                 console.log(`Admin disconnected: ${userId}`);
-                delete activeAdminSockets[userId];
+                const socketId = socketUtils.getAdminSocketId(userId);
+                console.log('disco', socketId)
+                if (socketId) {
+                    console.log(await socketUtils.getAdminSocketList())
+                    await socketUtils.removeAdminSocketId(socketId);
+                    console.log('removes')
+                    console.log(await socketUtils.getAdminSocketList())
+                }
             });
 
         } catch (err) {
@@ -339,7 +378,7 @@ app.post('/associate-screen', verifyToken, async (req, res) => {
             return res.status(400).send({error: 'Ce code est déjà associé à un écran.'});
         }
 
-        const socketId = activeSockets[code];
+        const socketId = socketUtils.getSocketIdWithThisAssociationCode(code);
         if (socketId) {
             const socket = io.sockets.sockets.get(socketId);
             if (socket) {

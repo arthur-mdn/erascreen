@@ -3,7 +3,7 @@ import {io} from 'socket.io-client';
 import './App.css';
 import config from './config';
 import Screen from './components/Screen';
-import {FaCloud, FaCloudDownloadAlt, FaSlash} from "react-icons/fa";
+import {FaCloud, FaCloudDownloadAlt, FaSlash, FaTrash} from "react-icons/fa";
 import useDarkMode from './hooks/useDarkMode';
 import useTextSlides from './hooks/useTextSlides';
 import {QRCodeCanvas} from 'qrcode.react';
@@ -23,6 +23,7 @@ function App() {
     const [error, setError] = useState(null);
     const [showIdentify, setShowIdentify] = useState(false);
     const identifyTimerRef = useRef(null);
+    const [socketId, setSocketId] = useState(null);
 
     useEffect(() => {
         let savedConfig = localStorage.getItem('screenConfig');
@@ -33,6 +34,7 @@ function App() {
         let intervalId;
 
         socket.on('connect', () => {
+            setSocketId(socket.id);
             setShowOffline(false);
             if (savedConfig) {
                 const parsedConfig = JSON.parse(savedConfig);
@@ -122,12 +124,19 @@ function App() {
             setStatus('error');
             setError(error);
             socket.emit('askDebug', savedConfig);
+            if (savedConfig) {
+                setConfigData(JSON.parse(savedConfig));
+            }
         });
 
         socket.on('adminChangeScreenId', (data) => {
             localStorage.setItem('screenConfig', JSON.stringify({'_id':data}));
             window.location.reload();
-        })
+        });
+
+        socket.on('refresh', () => {
+            window.location.reload();
+        });
 
         socket.on('server_send_control_to_client', async (data) => {
             console.log('server_send_control_to_client', data);
@@ -377,13 +386,36 @@ function App() {
                 return <p>Connexion perdue. Tentative de reconnexion...</p>;
             case 'error':
                 return <>
-                    <p>{`Une erreur s'est produite. ${error} `}</p>
-                    <button type={"button"} onClick={() => {
-                        localStorage.clear();
-                        window.location.reload();
-                    }}>Réinitialiser les données locales
-                    </button>
-                    {configData?.code}
+
+                    <div className={"fc ai-c g1"}>
+                        <img src={"/elements/icons/broken-link.svg"} style={{width: "8rem"}}/>
+                        <p>{`Une erreur s'est produite. ${error} `}</p>
+                        <button type={"button"} onClick={() => {
+                            localStorage.clear();
+                            window.location.reload();
+                        }}>
+                            <FaTrash/>
+
+                            Réinitialiser les données locales
+                        </button>
+                        <button type={"button"} onClick={() => {
+                            window.location.reload();
+                        }}>
+                            <FaArrowRotateLeft/>
+                            Réessayer
+                        </button>
+                        <div>
+                            <h3 style={{marginBottom:'0.5rem'}}>Informations de dépannage</h3>
+                            {configData?._id && (
+                                <p>ScreenId : {configData?._id}</p>
+                            )}
+                            {configData?.code && (
+                                <p>Code : {configData?.code}</p>
+                            )}
+                            <p>SocketId : {socketId}</p>
+                        </div>
+                    </div>
+
                 </>;
             default:
                 return <p>État inconnu</p>;
