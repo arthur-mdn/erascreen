@@ -1,5 +1,5 @@
 // utils/socketUtils.js
-const Screen = require("../models/Screen");
+const Screen = require("../../models/Screen");
 let io = null;
 const socketMap = {};
 const adminSocketMap = {};
@@ -51,7 +51,7 @@ const getAdminId = (socketId) => {
 }
 
 const removeAdminSocketId = (socketId) => {
-    if(adminSocketMap[socketId]){
+    if (adminSocketMap[socketId]) {
         const adminId = adminSocketMap[socketId];
         delete adminSocketMap[socketId];
         return adminId
@@ -78,7 +78,7 @@ const getScreenId = (lookingForThisSocketId) => {
 };
 
 const removeSocketId = (socketId) => {
-    if(socketMap[socketId]){
+    if (socketMap[socketId]) {
         const [screenId, debugScreen] = getScreenId(socketId);
         delete socketMap[socketId];
         return screenId
@@ -126,7 +126,7 @@ async function getAdminSocketList() {
 }
 
 async function getSocketDetails(socketId) {
-    if (!socketMap[socketId]){
+    if (!socketMap[socketId]) {
         return false;
     }
     const [screenId, debugScreen] = getScreenId(socketId);
@@ -134,7 +134,7 @@ async function getSocketDetails(socketId) {
     if (debugScreen) {
         return {socketId, debugScreen, added: socketMap[socketId].added};
     }
-    if(socketMap[socketId].associationCode){
+    if (socketMap[socketId].associationCode) {
         return {socketId, associationCode: socketMap[socketId].associationCode, added: socketMap[socketId].added};
     }
     try {
@@ -145,5 +145,54 @@ async function getSocketDetails(socketId) {
     }
 }
 
+async function emitToAllAdmins(message, data) {
+    const adminSocketList = await getAdminSocketList();
+    Object.keys(adminSocketList).forEach((socketId) => {
+        const socket = io.sockets.sockets.get(socketId);
+        if (socket) {
+            socket.emit(message, data);
+        }
+    })
+}
 
-module.exports = { setIo, emitConfigUpdate, associateScreenSocket, associateSocketDebug, associateSocketWaitingForConfiguration, isSocketConnected, removeSocketId, getScreenId, getSocketId, emitScreenDeletion, getScreenSocketMap, getSocketList, getSocketDetails, getSocketIdWithThisAssociationCode, associateAdminSocket, getAdminSocketId, getAdminId, removeAdminSocketId, getAdminSocketList };
+async function emitSocketListToAllAdmins() {
+    const socketListArray = await getSocketList();
+    await emitToAllAdmins('adminSocketList', socketListArray);
+}
+
+async function getSocketObject(socketId) {
+    return io.sockets.sockets.get(socketId);
+}
+
+async function emitMessageToSocket(socketId, message, data) {
+    const socket = io.sockets.sockets.get(socketId);
+    if (socket) {
+        socket.emit(message, data);
+    }
+}
+
+module.exports = {
+    setIo,
+    emitConfigUpdate,
+    associateScreenSocket,
+    associateSocketDebug,
+    associateSocketWaitingForConfiguration,
+    isSocketConnected,
+    removeSocketId,
+    getScreenId,
+    getSocketId,
+    emitScreenDeletion,
+    getScreenSocketMap,
+    getSocketList,
+    getSocketDetails,
+    getSocketIdWithThisAssociationCode,
+    associateAdminSocket,
+    getAdminSocketId,
+    getAdminId,
+    removeAdminSocketId,
+    getAdminSocketList,
+    emitToAllAdmins,
+    emitSocketListToAllAdmins,
+    getSocketObject,
+    emitMessageToSocket
+};

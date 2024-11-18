@@ -6,13 +6,13 @@ const checkUserPermissions = (requiredPermissions) => {
         try {
             const screen = await Screen.findById(req.selectedScreen).populate('users.user');
             if (!screen) {
-                return res.status(404).send({ error: 'Écran non trouvé' });
+                return res.status(404).send({error: 'Écran non trouvé'});
             }
 
             const user = screen.users.find(u => u.user._id.toString() === req.user.userId);
 
             if (!user) {
-                return res.status(403).send({ error: 'Accès refusé' });
+                return res.status(403).send({error: 'Accès refusé'});
             }
 
             if (user.role === 'creator' || user.role === 'superadmin') {
@@ -21,16 +21,17 @@ const checkUserPermissions = (requiredPermissions) => {
 
             const hasPermission = requiredPermissions.every(permission => user.permissions.includes(permission));
             if (!hasPermission) {
-                return res.status(403).send({ error: 'Permission refusée' });
+                return res.status(403).send({error: 'Permission refusée'});
             }
 
             next();
         } catch (error) {
             console.error('Erreur lors de la vérification des permissions:', error);
-            res.status(500).send({ error: 'Erreur serveur' });
+            res.status(500).send({error: 'Erreur serveur'});
         }
     };
 };
+
 const checkUserPermissionsOfThisScreen = async (requiredPermission, screenId, userId) => {
     try {
         const screen = await Screen.findById(screenId).populate('users.user');
@@ -62,4 +63,14 @@ const checkUserPermissionsOfThisScreen = async (requiredPermission, screenId, us
         return false
     }
 }
-module.exports = {checkUserPermissions, checkUserPermissionsOfThisScreen};
+
+const isUserSuperAdmin = async (userId) => {
+    try {
+        const dbUser = await User.findById(userId.toString());
+        return dbUser && dbUser.userRole === 'superadmin';
+    } catch (error) {
+        console.error('Erreur lors de la vérification des permissions:', error);
+        return false;
+    }
+};
+module.exports = {checkUserPermissions, checkUserPermissionsOfThisScreen, isUserSuperAdmin};
