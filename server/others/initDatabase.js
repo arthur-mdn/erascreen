@@ -9,9 +9,8 @@ async function initDatabase() {
     console.log("Initializing database...");
     try {
         await insertSystemDefaults();
-        console.log("Before Detecting old images...");
         await detectUploadedImagesUsingOldWay();
-        console.log("After Detecting old images...");
+        await setAllScreensOffline();
     } catch (error) {
         console.error("Error initializing database:", error);
     }
@@ -170,7 +169,7 @@ async function detectUploadedImagesUsingOldWay() {
                 await Screen.updateOne({_id: screen._id}, {featured_image: defaultImages['default-featured-image']});
             }
         } else {
-            if(!screen.featured_image) {
+            if (!screen.featured_image) {
                 console.log(`Featured image is null for screen ${screen._id}`);
                 // Set to default featured image if not a string
                 await Screen.updateOne({_id: screen._id}, {featured_image: defaultImages['default-featured-image']});
@@ -178,6 +177,11 @@ async function detectUploadedImagesUsingOldWay() {
             }
         }
     }
+}
+
+async function setAllScreensOffline() {
+    await Screen.updateMany({}, {status: "offline"});
+    console.log("All screens are now offline");
 }
 
 module.exports = initDatabase;

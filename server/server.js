@@ -61,12 +61,6 @@ app.use(defaultRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/public', express.static('public'));
 
-
-// set all screens "offline"
-Screen.updateMany({}, {status: "offline"})
-    .then(() => console.log("Tous les écrans sont maintenant hors ligne"))
-    .catch((error) => console.error("Erreur lors de la mise à jour des écrans:", error));
-
 io.on('connection', (socket) => {
     const origin = socket.handshake.headers.origin;
 
