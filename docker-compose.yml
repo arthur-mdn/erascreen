@@ -18,10 +18,14 @@ services:
       - "traefik.http.routers.DisplayHub-client.rule=Host(`client.displayhub.fr`)"
       - "traefik.http.routers.DisplayHub-client.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-client.tls.certresolver=myresolver"
-    env_file: .env
+    environment:
+      VITE_CLIENT_URL: ${VITE_CLIENT_URL}
+      VITE_SERVER_URL: ${VITE_SERVER_URL}
+      VITE_ADMIN_URL: ${VITE_ADMIN_URL}
+      VITE_COOKIE_DOMAIN: ${VITE_COOKIE_DOMAIN}
+      VITE_CLIENT_PORT: ${VITE_CLIENT_PORT}
     volumes:
       - ./client:/app
-      - ./client/.env:/app/.env
       - /app/node_modules
     ports:
       - "${VITE_CLIENT_PORT}:${VITE_CLIENT_PORT}"
@@ -37,10 +41,14 @@ services:
       - "traefik.http.routers.DisplayHub-admin.rule=Host(`admin.displayhub.fr`)"
       - "traefik.http.routers.DisplayHub-admin.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-admin.tls.certresolver=myresolver"
-    env_file: .env
+    environment:
+      VITE_CLIENT_URL: ${VITE_CLIENT_URL}
+      VITE_SERVER_URL: ${VITE_SERVER_URL}
+      VITE_ADMIN_URL: ${VITE_ADMIN_URL}
+      VITE_COOKIE_DOMAIN: ${VITE_COOKIE_DOMAIN}
+      VITE_ADMIN_PORT: ${VITE_ADMIN_PORT}
     volumes:
       - ./admin:/app
-      - ./admin/.env:/app/.env
       - /app/node_modules
     ports:
       - "${VITE_ADMIN_PORT}:${VITE_ADMIN_PORT}"
@@ -60,7 +68,6 @@ services:
       - "traefik.http.routers.DisplayHub-server.tls.certresolver=myresolver"
     volumes:
       - ./server:/app
-      - ./server/.env:/app/.env
       - ./server/uploads:/app/uploads
       - ./server/public:/app/public
       - /app/node_modules
@@ -82,7 +89,6 @@ services:
     env_file: .env
     volumes:
       - ./vitrine:/app
-      - ./vitrine/.env:/app/.env
       - /app/node_modules
     ports:
       - "${VITE_VITRINE_PORT}:3000"
