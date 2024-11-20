@@ -16,6 +16,7 @@ const screenRoutes = require('./routes/screenRoutes');
 const apiRoutes = require('./routes/apiRoutes');
 const defaultRoutes = require('./routes/defaultRoutes');
 const config = require('./others/config');
+console.log(config);
 const database = require('./others/database');
 const initDatabase = require("./others/initDatabase");
 
@@ -63,10 +64,9 @@ app.use('/public', express.static('public'));
 
 io.on('connection', (socket) => {
     const origin = socket.handshake.headers.origin;
-
-    if (origin === process.env.CLIENT_URL) {
+    if (origin === config.clientUrl) {
         clientSocket(io, socket);
-    } else if (origin === process.env.ADMIN_URL) {
+    } else if (origin === config.adminUrl) {
         adminSocket(io, socket);
         superadminSocket(io, socket);
     } else {

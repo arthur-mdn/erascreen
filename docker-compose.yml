@@ -3,41 +3,53 @@ services:
     image: mongo
     volumes:
       - DisplayHub_mongodb_data:/data/db
+    container_name: displayhub-mongodb
+    ports:
+      - "27018:${MONGODB_PORT}"
 
   DisplayHub-client:
     build:
       context: ./client
-      args:
-        VITE_INSTANCE_URL: "https://client.displayhub.fr"
-        VITE_SERVER_URL: "https://api.displayhub.fr"
+      dockerfile: ./Dockerfile.dev
+    container_name: displayhub-client
     image: displayhub-client
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.DisplayHub-client.rule=Host(`client.displayhub.fr`)"
       - "traefik.http.routers.DisplayHub-client.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-client.tls.certresolver=myresolver"
+    env_file: .env
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "${CLIENT_PORT}:5173"
 
   DisplayHub-admin:
     build:
       context: ./admin
-      args:
-        VITE_INSTANCE_URL: "https://admin.displayhub.fr"
-        VITE_SERVER_URL: "https://api.displayhub.fr"
+      dockerfile: ./Dockerfile.dev
+    container_name: displayhub-admin
     image: displayhub-admin
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.DisplayHub-admin.rule=Host(`admin.displayhub.fr`)"
       - "traefik.http.routers.DisplayHub-admin.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-admin.tls.certresolver=myresolver"
+    env_file: .env
+    volumes:
+      - ./admin:/app
+      - /app/node_modules
+    ports:
+      - "${ADMIN_PORT}:5174"
 
 
   DisplayHub-server:
     build:
       context: ./server
-    env_file: ./server/.env
-    environment:
-      DB_URI: mongodb://DisplayHub-mongodb:27017/DisplayHub
+      dockerfile: ./Dockerfile.dev
     image: displayhub-server
+    container_name: displayhub-server
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.DisplayHub-server.rule=Host(`api.displayhub.fr`)"
@@ -45,18 +57,31 @@ services:
       - "traefik.http.routers.DisplayHub-server.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-server.tls.certresolver=myresolver"
     volumes:
+      - ./server:/app
+      - /app/node_modules
       - ./server/uploads:/app/uploads
       - ./server/public:/app/public
+    env_file: .env
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
 
   DisplayHub-vitrine:
     build:
       context: ./vitrine
+      dockerfile: ./Dockerfile.dev
     image: displayhub-vitrine
+    container_name: displayhub-vitrine
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.DisplayHub-vitrine.rule=Host(`displayhub.fr`)"
       - "traefik.http.routers.DisplayHub-vitrine.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-vitrine.tls.certresolver=myresolver"
+    env_file: .env
+    volumes:
+      - ./vitrine:/app
+      - /app/node_modules
+    ports:
+      - "${VITRINE_PORT}:5175"
 
 volumes:
   DisplayHub_mongodb_data:

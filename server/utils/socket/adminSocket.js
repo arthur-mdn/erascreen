@@ -3,6 +3,7 @@ const {verify} = require('jsonwebtoken');
 const Screen = require('../../models/Screen');
 const socketUtils = require('./socketUtils');
 const {checkUserPermissionsOfThisScreen, isUserSuperAdmin} = require('../../others/checkUserPermissions');
+const config = require('../../others/config');
 
 module.exports = (io, socket) => {
     const cookies = socket.handshake.headers.cookie || '';
@@ -15,7 +16,7 @@ module.exports = (io, socket) => {
     }
 
     try {
-        const decoded = verify(sessionToken, process.env.SECRET_KEY);
+        const decoded = verify(sessionToken, config.secretKey);
         const userId = decoded.userId;
         console.log('Admin connected:', socket.id, userId);
         socketUtils.associateAdminSocket(userId, socket.id);
