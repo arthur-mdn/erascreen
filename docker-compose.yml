@@ -10,7 +10,7 @@ services:
   DisplayHub-client:
     build:
       context: ./client
-      dockerfile: ./Dockerfile.dev
+      dockerfile: ${DOCKERFILE_CLIENT:-Dockerfile}
     container_name: displayhub-client
     image: displayhub-client
     labels:
@@ -28,7 +28,7 @@ services:
   DisplayHub-admin:
     build:
       context: ./admin
-      dockerfile: ./Dockerfile.dev
+      dockerfile: ${DOCKERFILE_CLIENT:-Dockerfile.dev}
     container_name: displayhub-admin
     image: displayhub-admin
     labels:
@@ -47,7 +47,7 @@ services:
   DisplayHub-server:
     build:
       context: ./server
-      dockerfile: ./Dockerfile.dev
+      dockerfile: ${DOCKERFILE_CLIENT:-Dockerfile.dev}
     image: displayhub-server
     container_name: displayhub-server
     labels:
@@ -68,7 +68,7 @@ services:
   DisplayHub-vitrine:
     build:
       context: ./vitrine
-      dockerfile: ./Dockerfile.dev
+      dockerfile: ${DOCKERFILE_CLIENT:-Dockerfile.dev}
     image: displayhub-vitrine
     container_name: displayhub-vitrine
     labels:
