@@ -14,11 +14,13 @@ import Screens from "./pages/Screens.jsx";
 import Programmes from "./pages/Programmes.jsx";
 import Profil from "./pages/Profil.jsx";
 import {SocketProvider} from "./SocketContext.jsx";
+import Admin from "./pages/Admin.jsx";
+import SocketControl from "./components/Admin/SocketControl/SocketControl.jsx";
 
 const AuthenticatedApp = () => {
-    const {authStatus} = useAuth();
+    const {authStatus, user} = useAuth();
 
-        return (
+    return (
         <Router>
             {authStatus === "loading" ? (
                 <Loading/>
@@ -26,7 +28,8 @@ const AuthenticatedApp = () => {
                 <>
                     <NavBar hidden={authStatus === "unauthenticated"}/>
                     <ToastContainer pauseOnFocusLoss={false} closeOnClick={true}/>
-                    <div className={`fc w100 h100 content ofy-h ${authStatus === "unauthenticated" ? "logged-out" : ""}`}>
+                    <div
+                        className={`fc w100 h100 content ofy-s ${authStatus === "unauthenticated" ? "logged-out" : ""}`}>
                         <Routes>
                             {authStatus === "unauthenticated" ? (
                                 <>
@@ -46,6 +49,13 @@ const AuthenticatedApp = () => {
                                     <Route path="/programmes" element={<Programmes/>}/>
                                     <Route path="/profil" element={<Profil/>}/>
                                     <Route path="/logout" element={<Logout/>}/>
+                                    {
+                                        user && user.userRole === 'superadmin' &&
+                                        <>
+                                            <Route path="/admin" element={<Admin/>}/>
+                                            <Route path="/admin/socketControl/*" element={<SocketControl/>}/>
+                                        </>
+                                    }
                                 </>
                             )}
 

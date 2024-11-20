@@ -452,11 +452,14 @@ button:focus-visible {
   background-color: #ffffff;
   padding: 1rem;
   border-radius: 10px;
-  cursor: pointer;
   transition: 0.3s background-color;
   color:black;
   border: 1px solid lightgray;
   position: relative;
+}
+
+.screen:not(.without-arrow):hover{
+  cursor: pointer;
 }
 
 .screen.screen-detail{
@@ -477,7 +480,7 @@ button:focus-visible {
     border: 0;
     animation: fadeIn 0.5s;
 }
-.screen:after{
+.screen:not(.without-arrow):after{
   content:"\203A";
   position: absolute;
   top: 0;
@@ -813,7 +816,7 @@ button[type=button].Toastify__close-button{
   padding: 0;
 }
 
-div.online, div.offline{
+div.online, div.offline, div.debug, div.config{
   width: 15px;
   height: 15px;
   background-color: grey;
@@ -826,13 +829,24 @@ div.offline{
 div.online{
   background-color: green;
 }
+div.debug{
+  background-color: blue;
+}
+div.config {
+  background-color: #792091;
+}
 span.offline{
   color: red;
 }
 span.online{
   color: green;
 }
-
+span.debug{
+  color: blue;
+}
+span.config{
+  color: #792091;
+}
 
 
 

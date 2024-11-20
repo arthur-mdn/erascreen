@@ -19,5 +19,8 @@
   "text_slides": "Textes défilants",
   "allowed_users": "Utilisateurs autorisés",
   "control": "Contrôle",
-  "avanced_settings": "Paramètres avancés"
+  "avanced_settings": "Paramètres avancés",
+  "admin": "Admin",
+  "debug": "Debug",
+  "socketControl": "Contrôle Socket"
 }

@@ -3,7 +3,7 @@ import {io} from 'socket.io-client';
 import './App.css';
 import config from './config';
 import Screen from './components/Screen';
-import {FaCloud, FaCloudDownloadAlt, FaSlash} from "react-icons/fa";
+import {FaCloud, FaCloudDownloadAlt, FaSlash, FaTrash} from "react-icons/fa";
 import useDarkMode from './hooks/useDarkMode';
 import useTextSlides from './hooks/useTextSlides';
 import {QRCodeCanvas} from 'qrcode.react';
@@ -23,6 +23,7 @@ function App() {
     const [error, setError] = useState(null);
     const [showIdentify, setShowIdentify] = useState(false);
     const identifyTimerRef = useRef(null);
+    const [socketId, setSocketId] = useState(null);
 
     useEffect(() => {
         let savedConfig = localStorage.getItem('screenConfig');
@@ -33,6 +34,7 @@ function App() {
         let intervalId;
 
         socket.on('connect', () => {
+            setSocketId(socket.id);
             setShowOffline(false);
             if (savedConfig) {
                 const parsedConfig = JSON.parse(savedConfig);
@@ -121,7 +123,20 @@ function App() {
             console.error('Socket error:', error);
             setStatus('error');
             setError(error);
-        })
+            socket.emit('askDebug', savedConfig);
+            if (savedConfig) {
+                setConfigData(JSON.parse(savedConfig));
+            }
+        });
+
+        socket.on('adminChangeScreenId', (data) => {
+            localStorage.setItem('screenConfig', JSON.stringify({'_id':data}));
+            window.location.reload();
+        });
+
+        socket.on('refresh', () => {
+            window.location.reload();
+        });
 
         socket.on('server_send_control_to_client', async (data) => {
             console.log('server_send_control_to_client', data);
@@ -158,7 +173,12 @@ function App() {
 
             if (data.command === 'getAvailableCommands') {
                 socket.emit('client_control_response', {
-                    commandId: data.commandId, command: data.command, response: "Commands retrieved", appVersion, availableCommands, defaultValues
+                    commandId: data.commandId,
+                    command: data.command,
+                    response: "Commands retrieved",
+                    appVersion,
+                    availableCommands,
+                    defaultValues
                 });
             } else if (data.command === 'refresh') {
                 socket.emit('client_control_response', {commandId: data.commandId, response: 'Refreshing...'});
@@ -220,7 +240,9 @@ function App() {
                 });
                 const responseData = await response.json();
                 socket.emit('client_control_response', {
-                    commandId: data.commandId, response: responseData.message, valueConfirmed: responseData.valueConfirmed
+                    commandId: data.commandId,
+                    response: responseData.message,
+                    valueConfirmed: responseData.valueConfirmed
                 });
             } else {
                 socket.emit('client_control_response', {commandId: data.commandId, error: 'Command not found'});
@@ -311,14 +333,26 @@ function App() {
             case 'configured':
                 return (<>
                     {showUpdateIcon && <div className={"iconIndicator p0-5 br0-5 of-h"} style={{
-                        position: "absolute", top: 0, right: 0, margin: '1rem', zIndex: 9999, backgroundColor: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(5px)'
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        margin: '1rem',
+                        zIndex: 9999,
+                        backgroundColor: 'rgba(255,255,255,0.8)',
+                        backdropFilter: 'blur(5px)'
                     }}>
                         <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
                             <FaCloudDownloadAlt size={'2rem'} style={{color: "#a1a1a1"}}/>
                         </div>
                     </div>}
                     {showOffline && <div className={"iconIndicator p0-5 br0-5 of-h"} style={{
-                        position: "absolute", top: 0, right: 0, margin: '1rem', zIndex: 9999, backgroundColor: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(5px)'
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        margin: '1rem',
+                        zIndex: 9999,
+                        backgroundColor: 'rgba(255,255,255,0.8)',
+                        backdropFilter: 'blur(5px)'
                     }}>
                         <div className={""} style={{position: "relative", width: "32px", height: "32px"}}>
                             <FaCloud size={'2rem'} style={{color: "#a1a1a1"}}/>
@@ -336,9 +370,11 @@ function App() {
                         <h1 style={{fontSize: "2.5rem", color: "black"}} className={"fw-b"}>Identification de
                             l'écran</h1>
                         <div className={"g1 fr p1 shadow bg-white br0-5"}>
-                            <DisplayImage image={configData.featured_image} width={"6rem"} height={"6rem"} borderRadius={"0.5rem"}/>
+                            <DisplayImage image={configData.featured_image} width={"6rem"} height={"6rem"}
+                                          borderRadius={"0.5rem"}/>
                             <div className={"fc g0-5 ai-fs"}>
-                                <h2 style={{fontSize: "1.8rem", color: "black"}} className={"fw-b"}>{configData.name}</h2>
+                                <h2 style={{fontSize: "1.8rem", color: "black"}}
+                                    className={"fw-b"}>{configData.name}</h2>
                                 <p style={{color: "black"}}>{configData._id}</p>
                             </div>
                         </div>
@@ -350,12 +386,36 @@ function App() {
                 return <p>Connexion perdue. Tentative de reconnexion...</p>;
             case 'error':
                 return <>
-                    <p>{`Une erreur s'est produite. ${error} `}</p>
-                    <button type={"button"} onClick={() => {
-                        localStorage.clear();
-                        window.location.reload();
-                    }}>Réinitialiser les données locales
-                    </button>
+
+                    <div className={"fc ai-c g1"}>
+                        <img src={"/elements/icons/broken-link.svg"} style={{width: "8rem"}}/>
+                        <p>{`Une erreur s'est produite. ${error} `}</p>
+                        <button type={"button"} onClick={() => {
+                            localStorage.clear();
+                            window.location.reload();
+                        }}>
+                            <FaTrash/>
+
+                            Réinitialiser les données locales
+                        </button>
+                        <button type={"button"} onClick={() => {
+                            window.location.reload();
+                        }}>
+                            <FaArrowRotateLeft/>
+                            Réessayer
+                        </button>
+                        <div>
+                            <h3 style={{marginBottom:'0.5rem'}}>Informations de dépannage</h3>
+                            {configData?._id && (
+                                <p>ScreenId : {configData?._id}</p>
+                            )}
+                            {configData?.code && (
+                                <p>Code : {configData?.code}</p>
+                            )}
+                            <p>SocketId : {socketId}</p>
+                        </div>
+                    </div>
+
                 </>;
             default:
                 return <p>État inconnu</p>;
@@ -380,7 +440,10 @@ function App() {
         </style>}
         {renderContent()}
 
-        {(configData && textSlide) && (<div className="messagedefilant" style={{backgroundColor: textSlide.backgroundColor, color: textSlide.textColor}}>
+        {(configData && textSlide) && (<div className="messagedefilant" style={{
+            backgroundColor: textSlide.backgroundColor,
+            color: textSlide.textColor
+        }}>
             <div>
                 {textSlide.text + " " + textSlide.text} {/* Duplication du texte */}
             </div>
