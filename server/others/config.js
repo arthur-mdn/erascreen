@@ -1,6 +1,6 @@
 module.exports = {
     dbUri: process.env.DB_URI,
-    port: process.env.SERVER_PORT || 3001,
+    port: process.env.VITE_SERVER_PORT,
     clientUrl: process.env.VITE_CLIENT_URL,
     adminUrl: process.env.VITE_ADMIN_URL,
     secretKey: process.env.SECRET_KEY || 'SECRET_KEY_FOR_JWT',

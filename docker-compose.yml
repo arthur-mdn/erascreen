@@ -23,7 +23,7 @@ services:
       - ./client:/app
       - /app/node_modules
     ports:
-      - "${CLIENT_PORT}:5173"
+      - "${VITE_CLIENT_PORT}:${VITE_CLIENT_PORT}"
 
   DisplayHub-admin:
     build:
@@ -41,7 +41,7 @@ services:
       - ./admin:/app
       - /app/node_modules
     ports:
-      - "${ADMIN_PORT}:5174"
+      - "${VITE_ADMIN_PORT}:${VITE_ADMIN_PORT}"
 
 
   DisplayHub-server:
@@ -63,7 +63,7 @@ services:
       - ./server/public:/app/public
     env_file: .env
     ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+      - "${VITE_SERVER_PORT}:${VITE_SERVER_PORT}"
 
   DisplayHub-vitrine:
     build:
@@ -81,7 +81,7 @@ services:
       - ./vitrine:/app
       - /app/node_modules
     ports:
-      - "${VITRINE_PORT}:5175"
+      - "${VITE_VITRINE_PORT}:3000"
 
 volumes:
   DisplayHub_mongodb_data:
