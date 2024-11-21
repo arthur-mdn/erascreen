@@ -26,6 +26,7 @@ services:
       VITE_CLIENT_PORT: ${VITE_CLIENT_PORT}
     volumes:
       - ./client:/app
+      - .env:/app/.env
       - /app/node_modules
     ports:
       - "${VITE_CLIENT_PORT}:${VITE_CLIENT_PORT}"
@@ -49,6 +50,7 @@ services:
       VITE_ADMIN_PORT: ${VITE_ADMIN_PORT}
     volumes:
       - ./admin:/app
+      - .env:/app/.env
       - /app/node_modules
     ports:
       - "${VITE_ADMIN_PORT}:${VITE_ADMIN_PORT}"
@@ -71,6 +73,7 @@ services:
       - ./server/uploads:/app/uploads
       - ./server/public:/app/public
       - /app/node_modules
+      - .env:/app/.env
     env_file: .env
     ports:
       - "${VITE_SERVER_PORT}:${VITE_SERVER_PORT}"
@@ -89,6 +92,7 @@ services:
     env_file: .env
     volumes:
       - ./vitrine:/app
+      - .env:/app/.env
       - /app/node_modules
     ports:
       - "${VITE_VITRINE_PORT}:3000"
