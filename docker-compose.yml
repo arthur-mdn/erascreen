@@ -15,7 +15,7 @@ services:
     image: displayhub-client
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.DisplayHub-client.rule=Host(`client.displayhub.fr`)"
+      - "traefik.http.routers.DisplayHub-client.rule=Host(`${VITE_CLIENT_URL}`)"
       - "traefik.http.routers.DisplayHub-client.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-client.tls.certresolver=myresolver"
     environment:
@@ -38,7 +38,7 @@ services:
     image: displayhub-admin
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.DisplayHub-admin.rule=Host(`admin.displayhub.fr`)"
+      - "traefik.http.routers.DisplayHub-admin.rule=Host(`${VITE_ADMIN_URL}`)"
       - "traefik.http.routers.DisplayHub-admin.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-admin.tls.certresolver=myresolver"
     environment:
@@ -62,7 +62,7 @@ services:
     container_name: displayhub-server
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.DisplayHub-server.rule=Host(`api.displayhub.fr`)"
+      - "traefik.http.routers.DisplayHub-server.rule=Host(`${VITE_SERVER_URL}`)"
       - "traefik.http.services.DisplayHub-server.loadbalancer.server.port=${VITE_SERVER_PORT}"
       - "traefik.http.routers.DisplayHub-server.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-server.tls.certresolver=myresolver"
@@ -83,7 +83,7 @@ services:
     container_name: displayhub-vitrine
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.DisplayHub-vitrine.rule=Host(`displayhub.fr`)"
+      - "traefik.http.routers.DisplayHub-vitrine.rule=Host(`${VITE_VITRINE_URL}`)"
       - "traefik.http.routers.DisplayHub-vitrine.entrypoints=websecure"
       - "traefik.http.routers.DisplayHub-vitrine.tls.certresolver=myresolver"
     env_file: .env
