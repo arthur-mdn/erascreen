@@ -1,10 +1,11 @@
 FROM node:18 as builder
 WORKDIR /app
-COPY . .
+COPY package.json package-lock.json ./
 RUN npm install
+COPY . .
 RUN npm run build
 
-FROM node:latest
+FROM node:18-alpine
 WORKDIR /app
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
